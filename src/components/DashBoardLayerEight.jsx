@@ -12,37 +12,20 @@ import HealthReportsDocument from "./child/HealthReportsDocument";
 const DashBoardLayerEight = () => {
   return (
     <>
-      <div className='row gy-4'>
-        <div className='col-xxxl-9'>
-          <div className='row gy-4'>
-            {/* UnitCountSix */}
+      <div className="row gy-4">
+        <div className="col-xxxl-12">
+          <div className="row gy-4">
             <UnitCountSix />
-            {/* Earning Statistic */}
+
             <EarningStatistic />
 
-            {/* PatientVisitedDepartment */}
             <PatientVisitedDepartment />
 
-            {/* PatientVisitByGender */}
             <PatientVisitByGender />
 
-            {/* TopPerformanceTwo */}
             <TopPerformanceTwo />
 
-            {/* LatestAppointmentsOne */}
             <LatestAppointmentsOne />
-          </div>
-        </div>
-        <div className='col-xxxl-3'>
-          <div className='row gy-4'>
-            {/* TotalIncome */}
-            <TotalIncome />
-
-            {/* AvailableTreatments */}
-            <AvailableTreatments />
-
-            {/* HealthReportsDocument */}
-            <HealthReportsDocument />
           </div>
         </div>
       </div>
