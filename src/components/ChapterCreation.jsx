@@ -1,12 +1,12 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import React from 'react';
 
-const DefaultInputs = ({ title }) => {
+const ChapterCreation = ({ title }) => {
     return (
         <div className="col-lg-8">
             <div className="card">
                 <div className="card-header">
-                    <h6 className="card-title mb-0">{title || "Default Inputs"}</h6>
+                    <h6 className="card-title mb-0">{title || "Chapter Creation"}</h6>
                 </div>
                 <div className="card-body">
                     <div className="row gy-3">
@@ -58,4 +58,4 @@ const DefaultInputs = ({ title }) => {
     );
 };
 
-export default DefaultInputs;
+export default ChapterCreation;
