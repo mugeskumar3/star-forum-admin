@@ -150,18 +150,14 @@ function App() {
           path="/admin-registration/edit/:id"
           element={<AdminRegistrationEditPage />}
         />
-        <Route exact path="/zone" element={<FormPage title="Zone" />} />
-        <Route exact path="/region" element={<FormPage title="Region" />} />
-        <Route
-          exact
-          path="/ed-assign"
-          element={<FormPage title="ED Assign" />}
-        />
-        <Route
-          exact
-          path="/rd-assign"
-          element={<FormPage title="RD Assign" />}
-        />
+        <Route exact path='/master-creation/organisation' element={<OrganisationListPage />} />
+        <Route exact path='/master-creation/organisation/add' element={<OrganisationFormPage />} />
+        <Route exact path='/master-creation/organisation/edit/:id' element={<OrganisationFormPage />} />
+        <Route exact path='/master-creation/badge' element={<BadgeCreationPage />} />
+
+        <Route exact path='/master-creation/badge/create' element={<BadgeCreateFormPage />} />
+        <Route exact path='/master-creation/badge/assign' element={<BadgeAssignFormPage />} />
+
         <Route
           exact
           path="/chapter-badge"
