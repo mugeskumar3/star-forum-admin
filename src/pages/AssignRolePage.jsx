@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import AssignRoleLayer from "../components/AssignRoleLayer";
 
 
@@ -9,10 +8,6 @@ const AssignRolePage = () => {
     <>
       {/* MasterLayout */}
       <MasterLayout>
-
-        {/* Breadcrumb */}
-        <Breadcrumb title="Assign Role" />
-
         {/* AssignRoleLayer */}
         <AssignRoleLayer />
 

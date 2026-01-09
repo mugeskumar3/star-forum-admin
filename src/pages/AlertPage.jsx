@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import AlertLayer from "../components/AlertLayer";
 
 
@@ -10,10 +9,6 @@ const AlertPage = () => {
       {/* MasterLayout */}
       <MasterLayout>
 
-        {/* Breadcrumb */}
-        <Breadcrumb title="Components / Alerts" />
-
-        {/* AlertLayer */}
         <AlertLayer />
 
 

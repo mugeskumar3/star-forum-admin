@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import BlogDetailsLayer from "../components/BlogDetailsLayer";
 
 const BlogDetailsPage = () => {
@@ -8,9 +7,6 @@ const BlogDetailsPage = () => {
     <>
       {/* MasterLayout */}
       <MasterLayout>
-        {/* Breadcrumb */}
-        <Breadcrumb title='Blog Details' />
-
         {/* BlogDetailsLayer */}
         <BlogDetailsLayer />
       </MasterLayout>

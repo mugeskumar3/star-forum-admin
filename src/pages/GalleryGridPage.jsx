@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import GalleryGridLayer from "../components/GalleryGridLayer";
 
 const GalleryGridPage = () => {
@@ -8,9 +7,6 @@ const GalleryGridPage = () => {
     <>
       {/* MasterLayout */}
       <MasterLayout>
-        {/* Breadcrumb */}
-        <Breadcrumb title='Gallery Grid' />
-
         {/* GalleryLayer */}
         <GalleryGridLayer />
       </MasterLayout>
