@@ -3,23 +3,17 @@ import MasterLayout from "../masterLayout/MasterLayout";
 import Breadcrumb from "../components/Breadcrumb";
 import FormPageLayer from "../components/FormPageLayer";
 
-
-
-const FormPage = () => {
+const FormPage = ({ title }) => {
   return (
     <>
-
       {/* MasterLayout */}
       <MasterLayout>
-
         {/* Breadcrumb */}
-        <Breadcrumb title="Input Form" />
+        <Breadcrumb title={title || "Input Form"} />
 
         {/* FormPageLayer */}
-        <FormPageLayer />
-
+        <FormPageLayer title={title} />
       </MasterLayout>
-
     </>
   );
 };

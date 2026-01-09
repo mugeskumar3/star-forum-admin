@@ -38,6 +38,25 @@
   background-color: var(--primary-600) !important;
 }
 
+/* Main menu hover */
+.dropdown>a:hover span {
+  color: #C4161C !important;
+  /* header color */
+}
+
+/* Submenu hover */
+.sidebar-submenu li a:hover {
+  color: #C4161C !important;
+  /* header color */
+}
+
+/* Optional: icon color change on hover */
+.dropdown>a:hover i,
+.sidebar-submenu li a:hover i {
+  color: #C4161C !important;
+}
+
+
 .fc-button-active:hover {
   color: #fff !important;
   background-color: var(--primary-600) !important;
@@ -105,7 +124,7 @@
   margin: 0 -7px;
 }
 
-.slick-slide > div {
+.slick-slide>div {
   padding: 0 10px;
 }
 
@@ -137,8 +156,17 @@ table.dataTable td.dt-type-date {
   /* display: none; */
   list-style: none;
   padding-left: 20px;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
   /* Adjust as needed */
 }
+
+/* Ensure list items have consistent spacing */
+.sidebar-menu li {
+  margin-bottom: 5px;
+  /* Consistent small gap */
+}
+
 
 .sidebar-menu .sidebar-submenu {
   display: block;
@@ -155,7 +183,7 @@ table.dataTable td.dt-type-date {
   max-height: 1000px;
 } */
 
-.sidebar-menu li > a > i {
+.sidebar-menu li>a>i {
   margin-inline-end: 0;
 }
 
@@ -167,14 +195,23 @@ table.dataTable td.dt-type-date {
   gap: 12px;
 }
 
-.sidebar-menu .sidebar-submenu li > .active-page {
-  background-color: var(--button-secondary);
-  color: var(--text-primary-light);
+/* Active Page State */
+.sidebar-menu .sidebar-submenu li>.active-page {
+  background-color: #fa0000 !important;
+  color: #ffd5d7 !important;
 }
 
-.sidebar-menu li > a.active-page:hover {
-  color: var(--text-primary-light);
+/* Active Page Hover (Blue) */
+.sidebar-menu .sidebar-submenu li>a.active-page:hover {
+  background-color: #fa0000 !important;
+  color: #1f1e46 !important;
 }
+
+.sidebar-menu li>a.active-page:hover {
+  background-color: #fa0000 !important;
+  color: #1f1e46 !important;
+}
+
 .me-8 {
   margin-right: 8px;
 }
