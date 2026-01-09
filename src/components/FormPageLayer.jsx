@@ -1,23 +1,12 @@
 import React from 'react'
 import DefaultInputs from './child/DefaultInputs'
-import InputSizing from './child/InputSizing'
-import TextareaInputField from './child/TextareaInputField'
 
-const FormPageLayer = () => {
+const FormPageLayer = ({ title }) => {
     return (
-        <div className="row gy-4">
-
+        <div className="row justify-content-center">
             {/* DefaultInputs */}
-            <DefaultInputs />
-
-            {/* InputSizing */}
-            <InputSizing />
-
-            {/* TextareaInputField */}
-            <TextareaInputField />
-
+            <DefaultInputs title={title} />
         </div>
-
     )
 }
 
