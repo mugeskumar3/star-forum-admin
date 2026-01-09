@@ -1,13 +1,12 @@
-import React from 'react'
-import DefaultInputs from './child/DefaultInputs'
+import React from "react";
+import ChapterCreation from "./ChapterCreation";
 
 const FormPageLayer = ({ title }) => {
-    return (
-        <div className="row justify-content-center">
-            {/* DefaultInputs */}
-            <DefaultInputs title={title} />
-        </div>
-    )
-}
+  return (
+    <div className="row justify-content-center">
+      <ChapterCreation title={title} />
+    </div>
+  );
+};
 
-export default FormPageLayer
+export default FormPageLayer;
