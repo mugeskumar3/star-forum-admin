@@ -31,19 +31,24 @@ const DashBoardLayerEight = () => {
 
   return (
     <>
-      <div className='row gy-4'>
-        <div className='col-xxxl-12'>
-          <div className='row gy-4'>
+      <div className="row gy-4">
+        <div className="col-xxxl-12">
+          <div className="row gy-4">
             {/* UnitCountSix */}
             <UnitCountSix />
 
-            {/* PatientVisitByGender */}
             <PatientVisitByGender />
 
             {/* Top 5 Monthly Performance - Row 3 */}
             <TopPerformanceList title="Top 121 Members" data={top121Members} />
-            <TopPerformanceList title="Top Referral Members" data={topReferralMembers} />
-            <TopPerformanceList title="Top Business Givers" data={topBusinessGivers} />
+            <TopPerformanceList
+              title="Top Referral Members"
+              data={topReferralMembers}
+            />
+            <TopPerformanceList
+              title="Top Business Givers"
+              data={topBusinessGivers}
+            />
 
             {/* Recently Members Joined */}
             <RecentlyMembersJoined />

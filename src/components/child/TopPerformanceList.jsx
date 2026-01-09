@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const TopPerformanceList = ({ title, data, valuePrefix = "" }) => {
     return (
-        <div className='col-xxl-4'>
+        <div className='col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12'>
             <div className='card h-100'>
                 <div className='card-header border-bottom'>
                     <div className='d-flex align-items-center flex-wrap gap-2 justify-content-between'>
