@@ -107,6 +107,10 @@ import BadgeCreationPage from "./pages/BadgeCreationPage";
 import BadgeCreateFormPage from "./pages/BadgeCreateFormPage";
 import BadgeAssignFormPage from "./pages/BadgeAssignFormPage";
 
+import MemberListPage from "./pages/MemberListPage";
+import MemberFormPage from "./pages/MemberFormPage";
+import AttendanceListPage from "./pages/AttendanceListPage";
+
 import ChapterListPage from "./pages/ChapterListPage";
 import ChapterFormPage from "./pages/ChapterFormPage";
 
@@ -150,13 +154,37 @@ function App() {
           path="/admin-registration/edit/:id"
           element={<AdminRegistrationEditPage />}
         />
-        <Route exact path='/master-creation/organisation' element={<OrganisationListPage />} />
-        <Route exact path='/master-creation/organisation/add' element={<OrganisationFormPage />} />
-        <Route exact path='/master-creation/organisation/edit/:id' element={<OrganisationFormPage />} />
-        <Route exact path='/master-creation/badge' element={<BadgeCreationPage />} />
+        <Route
+          exact
+          path="/master-creation/organisation"
+          element={<OrganisationListPage />}
+        />
+        <Route
+          exact
+          path="/master-creation/organisation/add"
+          element={<OrganisationFormPage />}
+        />
+        <Route
+          exact
+          path="/master-creation/organisation/edit/:id"
+          element={<OrganisationFormPage />}
+        />
+        <Route
+          exact
+          path="/master-creation/badge"
+          element={<BadgeCreationPage />}
+        />
 
-        <Route exact path='/master-creation/badge/create' element={<BadgeCreateFormPage />} />
-        <Route exact path='/master-creation/badge/assign' element={<BadgeAssignFormPage />} />
+        <Route
+          exact
+          path="/master-creation/badge/create"
+          element={<BadgeCreateFormPage />}
+        />
+        <Route
+          exact
+          path="/master-creation/badge/assign"
+          element={<BadgeAssignFormPage />}
+        />
 
         <Route
           exact
@@ -181,18 +209,28 @@ function App() {
         />
         <Route
           exact
-          path="/chapter-select"
-          element={<FormPage title="Chapter Select" />}
+          path="/members-registration"
+          element={<MemberListPage />}
         />
         <Route
           exact
-          path="/meeting-creation"
+          path="/members-registration/add"
+          element={<MemberFormPage />}
+        />
+        <Route
+          exact
+          path="/members-registration/edit/:id"
+          element={<MemberFormPage />}
+        />
+        <Route
+          exact
+          path="/meetings-create"
           element={<FormPage title="Meeting Creation" />}
         />
         <Route
           exact
           path="/attendance-report"
-          element={<FormPage title="Attendance Report" />}
+          element={<AttendanceListPage />}
         />
         <Route
           exact

@@ -183,18 +183,14 @@ const MasterLayout = ({ children }) => {
             </li>
 
             {/* Members Registration */}
-            <li className='dropdown'>
-              <Link to='#'>
+            <li>
+              <NavLink
+                to='/members-registration'
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
                 <i className='ri-user-add-line menu-icon' />
                 <span>Members Registration</span>
-              </Link>
-              <ul className='sidebar-submenu'>
-                <li>
-                  <NavLink to='/chapter-select' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Chapter Select
-                  </NavLink>
-                </li>
-              </ul>
+              </NavLink>
             </li>
 
             {/* Meeting Creation */}
