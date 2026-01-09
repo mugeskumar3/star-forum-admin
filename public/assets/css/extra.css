@@ -197,18 +197,18 @@ table.dataTable td.dt-type-date {
 
 /* Active Page State */
 .sidebar-menu .sidebar-submenu li>.active-page {
-  background-color: #fa0000 !important;
+  background-color: #c4161c !important;
   color: #ffd5d7 !important;
 }
 
 /* Active Page Hover (Blue) */
 .sidebar-menu .sidebar-submenu li>a.active-page:hover {
-  background-color: #fa0000 !important;
+  background-color: #c4161c !important;
   color: #1f1e46 !important;
 }
 
 .sidebar-menu li>a.active-page:hover {
-  background-color: #fa0000 !important;
+  background-color: #c4161c !important;
   color: #1f1e46 !important;
 }
 

@@ -101,6 +101,11 @@ import AdminRegistrationListPage from "./pages/AdminRegistrationListPage";
 import AdminRegistrationFormPage from "./pages/AdminRegistrationFormPage";
 import AdminRegistrationViewPage from "./pages/AdminRegistrationViewPage";
 import AdminRegistrationEditPage from "./pages/AdminRegistrationEditPage";
+import OrganisationListPage from "./pages/OrganisationListPage";
+import OrganisationFormPage from "./pages/OrganisationFormPage";
+import BadgeCreationPage from "./pages/BadgeCreationPage";
+import BadgeCreateFormPage from "./pages/BadgeCreateFormPage";
+import BadgeAssignFormPage from "./pages/BadgeAssignFormPage";
 
 import ChapterListPage from "./pages/ChapterListPage";
 import ChapterFormPage from "./pages/ChapterFormPage";
