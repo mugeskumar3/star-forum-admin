@@ -97,12 +97,18 @@ import AccessDeniedPage from "./pages/AccessDeniedPage";
 import MaintenancePage from "./pages/MaintenancePage";
 import BlankPagePage from "./pages/BlankPagePage";
 
+import AdminRegistrationListPage from "./pages/AdminRegistrationListPage";
+import AdminRegistrationFormPage from "./pages/AdminRegistrationFormPage";
+import AdminRegistrationViewPage from "./pages/AdminRegistrationViewPage";
+import AdminRegistrationEditPage from "./pages/AdminRegistrationEditPage";
+
 function App() {
   return (
     <BrowserRouter>
       <RouteScrollToTop />
       <Routes>
         <Route exact path='/' element={<HomePageEight />} />
+
         <Route exact path='/index-2' element={<HomePageTwo />} />
         <Route exact path='/index-3' element={<HomePageThree />} />
         <Route exact path='/index-4' element={<HomePageFour />} />
@@ -112,7 +118,44 @@ function App() {
         <Route exact path='/index-1' element={<HomePageOne />} />
         <Route exact path='/index-9' element={<HomePageNine />} />
         <Route exact path='/index-10' element={<HomePageTen />} />
+
         <Route exact path='/index-11' element={<HomePageEleven />} />
+
+        {/* New Sidebar Routes */}
+        <Route exact path='/admin-registration' element={<AdminRegistrationListPage />} />
+        <Route exact path='/admin-registration/add' element={<AdminRegistrationFormPage />} />
+        <Route exact path='/admin-registration/view/:id' element={<AdminRegistrationViewPage />} />
+        <Route exact path='/admin-registration/edit/:id' element={<AdminRegistrationEditPage />} />
+        <Route exact path='/zone' element={<FormPage title="Zone" />} />
+        <Route exact path='/region' element={<FormPage title="Region" />} />
+        <Route exact path='/ed-assign' element={<FormPage title="ED Assign" />} />
+        <Route exact path='/rd-assign' element={<FormPage title="RD Assign" />} />
+        <Route exact path='/chapter-badge' element={<FormPage title="Chapter Badge" />} />
+        <Route exact path='/member-badge' element={<FormPage title="Member Badge" />} />
+        <Route exact path='/chapter-creation' element={<FormPage title="Chapter Creation" />} />
+        <Route exact path='/chapter-select' element={<FormPage title="Chapter Select" />} />
+        <Route exact path='/meeting-creation' element={<FormPage title="Meeting Creation" />} />
+        <Route exact path='/attendance-report' element={<FormPage title="Attendance Report" />} />
+        <Route exact path='/general-update' element={<FormPage title="General Update" />} />
+        <Route exact path='/training' element={<FormPage title="Training" />} />
+        <Route exact path='/shop-list' element={<FormPage title="Shop List" />} />
+        <Route exact path='/shop-create' element={<FormPage title="Shop Create" />} />
+        <Route exact path='/orders' element={<FormPage title="Orders" />} />
+        <Route exact path='/log-mobile' element={<FormPage title="Log Mobile" />} />
+        <Route exact path='/log-web' element={<FormPage title="Log Web" />} />
+        <Route exact path='/renewal-report' element={<FormPage title="Renewal Report" />} />
+        <Route exact path='/chapter-report' element={<FormPage title="Chapter Report" />} />
+        <Route exact path='/ed-report' element={<FormPage title="ED Report" />} />
+        <Route exact path='/rd-report' element={<FormPage title="RD Report" />} />
+        <Route exact path='/visitors-report' element={<FormPage title="Visitors Report" />} />
+        <Route exact path='/note-121' element={<FormPage title="121 Note" />} />
+        <Route exact path='/referral-note' element={<FormPage title="Referral Note" />} />
+        <Route exact path='/thank-you-slip' element={<FormPage title="Thank you Slip" />} />
+        <Route exact path='/power-date' element={<FormPage title="Power date" />} />
+        <Route exact path='/testimonials' element={<FormPage title="Testimonials" />} />
+        <Route exact path='/present-update' element={<FormPage title="Present Update" />} />
+        <Route exact path='/roles-permissions' element={<FormPage title="Roles & Permissions" />} />
+        <Route exact path='/office-location' element={<FormPage title="Office Location" />} />
 
         {/* SL */}
         <Route exact path='/add-user' element={<AddUserPage />} />
