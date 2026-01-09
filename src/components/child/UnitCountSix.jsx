@@ -1,186 +1,246 @@
 import React from "react";
 
 const UnitCountSix = () => {
-  const data = [
+  // Row 1 Data
+  const row1Data = [
     {
       label: "Zone",
       value: 5,
-      color: "text-cyan-600",
-      bg: "bg-cyan-100",
+      bg: "bg-primary-100",
+      color: "text-primary-600",
       icon: "ri-map-pin-line",
     },
     {
       label: "Region",
       value: 12,
-      color: "text-lilac-600",
-      bg: "bg-lilac-100",
-      icon: "ri-global-line",
+      bg: "bg-warning-100",
+      color: "text-warning-600",
+      icon: "ri-map-pin-user-line",
     },
     {
       label: "Chapters",
       value: 18,
-      color: "text-primary-600",
-      bg: "bg-primary-100",
-      icon: "ri-book-open-line",
+      bg: "bg-lilac-100",
+      color: "text-lilac-600",
+      icon: "ri-building-4-line",
     },
+  ];
+
+  // Row 2 Data
+  const row2Data = [
     {
-      label: "Chief Guest",
-      value: 45,
-      color: "text-success-600",
-      bg: "bg-success-100",
-      icon: "ri-user-star-line",
+      label: "Members",
+      value: 998,
+      bg: "bg-primary-100",
+      color: "text-primary-600",
+      icon: "ri-group-line",
     },
     {
       label: "Visitors",
       value: 80,
-      color: "text-orange-600",
-      bg: "bg-orange-100",
-      icon: "ri-group-line",
+      bg: "bg-green-100",
+      color: "text-green-600",
+      icon: "ri-user-follow-line",
     },
+    {
+      label: "Chief Guests",
+      value: 45,
+      bg: "bg-red-100",
+      color: "text-red-600",
+      icon: "ri-user-star-line",
+    },
+  ];
+
+  // Row 3 Data
+  const row3Data = [
     {
       label: "ED",
       value: 6,
-      color: "text-danger-600",
-      bg: "bg-danger-100",
-      icon: "ri-admin-line",
+      bg: "bg-info-100",
+      color: "text-info-600",
+      icon: "ri-user-settings-line",
     },
     {
       label: "RD",
       value: 13,
-      color: "text-info-600",
-      bg: "bg-info-100",
-      icon: "ri-user-settings-line",
+      bg: "bg-blue-100",
+      color: "text-blue-600",
+      icon: "ri-admin-line",
     },
     {
-      label: "Members",
-      value: 998,
-      color: "text-primary-600",
-      bg: "bg-primary-100",
-      icon: "ri-group-line",
+      label: "Trainings",
+      value: 110,
+      bg: "bg-cyan-100",
+      color: "text-cyan-600",
+      icon: "ri-presentation-line",
     },
+  ];
+
+  // Row 4 Left Data (Membership)
+  const membershipData = [
     {
       label: "Gold Club",
       value: 56,
-      color: "text-warning-600",
       bg: "bg-warning-100",
+      color: "text-warning-600",
       icon: "ri-vip-crown-line",
     },
     {
       label: "Diamond",
       value: 98,
-      color: "text-info-600",
       bg: "bg-info-100",
+      color: "text-info-600",
       icon: "ri-vip-diamond-line",
     },
     {
       label: "Platinum",
       value: 102,
-      color: "text-secondary-600",
       bg: "bg-secondary-100",
+      color: "text-secondary-600",
       icon: "ri-medal-line",
     },
     {
       label: "Prime",
       value: 10,
-      color: "text-success-600",
       bg: "bg-success-100",
+      color: "text-success-600",
       icon: "ri-user-star-line",
     },
     {
       label: "Elite",
       value: 6,
-      color: "text-danger-600",
       bg: "bg-danger-100",
+      color: "text-danger-600",
       icon: "ri-vip-line",
     },
+  ];
+
+  // Row 4 Right Data (Activity)
+  const activityData = [
     {
-      label: "Trainings",
-      value: 110,
-      color: "text-cyan-600",
-      bg: "bg-cyan-100",
-      icon: "ri-presentation-line",
-    },
-     {
-      label: "121 Count",
-      value: 1187,
-      color: "text-purple-600",
-      bg: "bg-purple-100",
-      icon: "ri-calendar-check-line",
-    },
-    {
-      label: "Referal Count",
+      label: "Referrals",
       value: 2018,
-      color: "text-orange-600",
       bg: "bg-orange-100",
+      color: "text-orange-600",
       icon: "ri-share-line",
     },
     {
-      label: "Thankyou slip",
+      label: "Thank You",
       value: 1678,
-      color: "text-pink-600",
       bg: "bg-pink-100",
+      color: "text-pink-600",
       icon: "ri-file-paper-line",
-    },
-    {
-      label: "Power Date",
-      value: 117,
-      color: "text-teal-600",
-      bg: "bg-teal-100",
-      icon: "ri-calendar-event-line",
-    },
-    {
-      label: "Star Update",
-      value: 56,
-      color: "text-blue-600",
-      bg: "bg-blue-100",
-      icon: "ri-star-line",
     },
     {
       label: "Testimonials",
       value: 1121,
-      color: "text-yellow-600",
       bg: "bg-yellow-100",
+      color: "text-yellow-600",
       icon: "ri-chat-quote-line",
     },
     {
-      label: "Next Renwal",
+      label: "121",
+      value: 1187,
+      bg: "bg-purple-100",
+      color: "text-purple-600",
+      icon: "ri-calendar-check-line",
+    },
+    {
+      label: "Renewal",
       value: 122,
-      color: "text-green-600",
       bg: "bg-green-100",
+      color: "text-green-600",
       icon: "ri-refresh-line",
     },
+    {
+      label: "Power",
+      value: 117,
+      bg: "bg-teal-100",
+      color: "text-teal-600",
+      icon: "ri-calendar-event-line",
+    },
+    {
+      label: "Star",
+      value: 56,
+      bg: "bg-blue-100",
+      color: "text-blue-600",
+      icon: "ri-star-line",
+    },
   ];
- 
-  return (
-    <>
-      {data.map((item, index) => (
-        <div
-          className="col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12"
-          key={`data-${index}`}
-        >
-          <div className="card p-3 shadow-2 radius-8 h-100 bg-gradient-end-1">
-            <div className="card-body p-0">
-              <div className="col-12">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="col-8">
-                    <span className="fw-medium text-secondary-light text-sm">
-                      {item.label}
-                    </span>
-                    <h6 className="fw-semibold">{item.value}</h6>
-                  </div>
-                  <div className="col-4 text-end">
-                    <span
-                      className={`mb-0 w-60-px h-60-px ${item.bg} ${item.color} flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6 mb-0`}
-                    >
-                      <i className={item.icon} />
-                    </span>
-                  </div>
+
+  const HorizontalCardRow = ({ data }) => (
+    <div className="card h-100 shadow-sm mb-24 mx-2">
+      <div className="card-body p-24">
+        <div className="row g-6">
+          {data.map((item, idx) => (
+            <div className="col-lg-4 col-sm-6 col-12" key={idx}>
+              <div className="d-flex align-items-center justify-content-between p-12 radius-8 bg-base border">
+                <div>
+                  <h6 className="mb-0 fw-bold text-lg">{item.value}</h6>
+                  <span className="text-secondary-light text-sm">
+                    {item.label}
+                  </span>
                 </div>
+                <span
+                  className={`w-40-px h-40-px rounded-circle d-flex align-items-center justify-content-center ${item.bg} ${item.color}`}
+                >
+                  <i className={`${item.icon} text-xl`} />
+                </span>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      ))}
+      </div>
+    </div>
+  );
+
+  const VerticalListCard = ({ data }) => (
+    <div className="card h-100 shadow-sm">
+      <div className="card-body p-24">
+        <div className="d-flex flex-column gap-3">
+          {data.map((item, idx) => (
+            <div
+              className="d-flex align-items-center justify-content-between p-12 radius-8 bg-base border"
+              key={idx}
+            >
+              <div>
+                <h6 className="mb-0 fw-bold">{item.value}</h6>
+                <span className="text-secondary-light text-sm">
+                  {item.label}
+                </span>
+              </div>
+              <span
+                className={`w-40-px h-40-px rounded-circle d-flex align-items-center justify-content-center ${item.bg} ${item.color}`}
+              >
+                <i className={`${item.icon} text-xl`} />
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Row 1: Zone, Region, Chapters */}
+      <HorizontalCardRow data={row1Data} />
+
+      {/* Row 2: Members, Visitors, Chief Guests */}
+      <HorizontalCardRow data={row2Data} />
+
+      {/* Row 3: ED, RD, Trainings */}
+      <HorizontalCardRow data={row3Data} />
+
+      {/* Row 4: Split Layout */}
+      <div className="row g-4">
+        <div className="col-lg-6 col-12">
+          <VerticalListCard data={membershipData} />
+        </div>
+        <div className="col-lg-6 col-12">
+          <VerticalListCard data={activityData} />
+        </div>
+      </div>
     </>
   );
 };
