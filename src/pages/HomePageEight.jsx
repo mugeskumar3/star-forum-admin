@@ -9,7 +9,7 @@ const HomePageEight = () => {
       {/* MasterLayout */}
       <MasterLayout>
         {/* Breadcrumb */}
-        <Breadcrumb title='Medical' />
+        <Breadcrumb title='Dashboard' />
 
         {/* DashBoardLayerEight */}
         <DashBoardLayerEight />

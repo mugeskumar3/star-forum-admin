@@ -4730,6 +4730,64 @@ const useReactApexChart = () => {
     },
   ];
 
+  let patientVisitChartOptions = {
+    chart: {
+      type: "bar",
+      height: 260,
+      toolbar: {
+        show: false,
+      },
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 4,
+        horizontal: false,
+        columnWidth: "40%",
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ["transparent"],
+    },
+    xaxis: {
+      categories: ["Male", "Female"],
+      axisBorder: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+    },
+    yaxis: {
+      show: false,
+    },
+    fill: {
+      opacity: 1,
+      colors: ["#FF9F29", "#45B369"], // Match the colors from the component text
+    },
+    grid: {
+      show: false,
+    },
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return val;
+        },
+      },
+    },
+  };
+
+  let patientVisitChartSeries = [
+    {
+      name: "Visits",
+      data: [200, 450],
+    },
+  ];
+
   let radialMultipleBarOptions = {
     chart: {
       height: 300,
@@ -5547,6 +5605,8 @@ const useReactApexChart = () => {
     gradientLineChartOptions,
     enrollmentChartOptions,
     enrollmentChartSeries,
+    patientVisitChartOptions,
+    patientVisitChartSeries,
   };
 };
 
