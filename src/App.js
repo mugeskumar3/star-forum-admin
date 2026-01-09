@@ -101,6 +101,11 @@ import AdminRegistrationListPage from "./pages/AdminRegistrationListPage";
 import AdminRegistrationFormPage from "./pages/AdminRegistrationFormPage";
 import AdminRegistrationViewPage from "./pages/AdminRegistrationViewPage";
 import AdminRegistrationEditPage from "./pages/AdminRegistrationEditPage";
+import OrganisationListPage from "./pages/OrganisationListPage";
+import OrganisationFormPage from "./pages/OrganisationFormPage";
+import BadgeCreationPage from "./pages/BadgeCreationPage";
+import BadgeCreateFormPage from "./pages/BadgeCreateFormPage";
+import BadgeAssignFormPage from "./pages/BadgeAssignFormPage";
 
 function App() {
   return (
@@ -126,12 +131,16 @@ function App() {
         <Route exact path='/admin-registration/add' element={<AdminRegistrationFormPage />} />
         <Route exact path='/admin-registration/view/:id' element={<AdminRegistrationViewPage />} />
         <Route exact path='/admin-registration/edit/:id' element={<AdminRegistrationEditPage />} />
-        <Route exact path='/zone' element={<FormPage title="Zone" />} />
-        <Route exact path='/region' element={<FormPage title="Region" />} />
-        <Route exact path='/ed-assign' element={<FormPage title="ED Assign" />} />
-        <Route exact path='/rd-assign' element={<FormPage title="RD Assign" />} />
-        <Route exact path='/chapter-badge' element={<FormPage title="Chapter Badge" />} />
-        <Route exact path='/member-badge' element={<FormPage title="Member Badge" />} />
+        <Route exact path='/admin-registration/edit/:id' element={<AdminRegistrationEditPage />} />
+
+        {/* Master Creation Routes */}
+        <Route exact path='/master-creation/organisation' element={<OrganisationListPage />} />
+        <Route exact path='/master-creation/organisation/add' element={<OrganisationFormPage />} />
+        <Route exact path='/master-creation/organisation/edit/:id' element={<OrganisationFormPage />} />
+        <Route exact path='/master-creation/badge' element={<BadgeCreationPage />} />
+        <Route exact path='/master-creation/badge/create' element={<BadgeCreateFormPage />} />
+        <Route exact path='/master-creation/badge/assign' element={<BadgeAssignFormPage />} />
+
         <Route exact path='/chapter-creation' element={<FormPage title="Chapter Creation" />} />
         <Route exact path='/chapter-select' element={<FormPage title="Chapter Select" />} />
         <Route exact path='/meeting-creation' element={<FormPage title="Meeting Creation" />} />

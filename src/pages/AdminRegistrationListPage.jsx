@@ -9,7 +9,7 @@ const AdminRegistrationListPage = () => {
             {/* MasterLayout */}
             <MasterLayout>
                 {/* Breadcrumb */}
-                <Breadcrumb title="Admin Users" />
+                {/* <Breadcrumb title="Admin Users" /> */}
 
                 {/* AdminRegistrationListLayer */}
                 <AdminRegistrationListLayer />

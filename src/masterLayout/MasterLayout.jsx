@@ -113,7 +113,7 @@ const MasterLayout = ({ children }) => {
               className='light-logo'
             />
             <img
-              src='assets/images/logo-light.png'
+              src='assets/images/logo.png'
               alt='site logo'
               className='dark-logo'
             />
@@ -159,33 +159,13 @@ const MasterLayout = ({ children }) => {
               </Link>
               <ul className='sidebar-submenu'>
                 <li>
-                  <NavLink to='/zone' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Zone
+                  <NavLink to='/master-creation/organisation' className={(navData) => navData.isActive ? "active-page" : ""}>
+                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Organisation
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to='/region' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Region
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to='/ed-assign' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> ED Assign
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to='/rd-assign' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> RD Assign
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to='/chapter-badge' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Chapter Badge
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to='/member-badge' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Member Badge
+                  <NavLink to='/master-creation/badge' className={(navData) => navData.isActive ? "active-page" : ""}>
+                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Badge Creation
                   </NavLink>
                 </li>
               </ul>
