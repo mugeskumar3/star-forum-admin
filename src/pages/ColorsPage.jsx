@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import ColorsLayer from "../components/ColorsLayer";
 
 
@@ -10,8 +9,6 @@ const ColorsPage = () => {
       {/* MasterLayout */}
       <MasterLayout>
 
-        {/* Breadcrumb */}
-        <Breadcrumb title="Components / Colors" />
 
         {/* ColorsLayer */}
         <ColorsLayer />

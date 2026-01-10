@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import PaymentGatewayLayer from "../components/PaymentGatewayLayer";
 
 
@@ -11,10 +10,6 @@ const PaymentGatewayPage = () => {
 
       {/* MasterLayout */}
       <MasterLayout>
-
-        {/* Breadcrumb */}
-        <Breadcrumb title="Settings - PaymentGateway" />
-
         {/* PaymentGatewayLayer */}
         <PaymentGatewayLayer />
 

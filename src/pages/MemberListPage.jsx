@@ -8,10 +8,7 @@ const MemberListPage = () => {
     <>
       {/* MasterLayout */}
       <MasterLayout>
-        {/* Breadcrumb */}
-        <Breadcrumb title="Members Registration" />
 
-        {/* MemberListLayer */}
         <MemberListLayer />
       </MasterLayout>
     </>

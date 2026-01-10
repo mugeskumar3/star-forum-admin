@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import AdminUserViewLayer from "../components/AdminUserViewLayer";
 
 const AdminRegistrationViewPage = () => {
@@ -8,9 +7,6 @@ const AdminRegistrationViewPage = () => {
         <>
             {/* MasterLayout */}
             <MasterLayout>
-                {/* Breadcrumb */}
-                <Breadcrumb title="User Details" />
-
                 {/* AdminUserViewLayer */}
                 <AdminUserViewLayer />
             </MasterLayout>

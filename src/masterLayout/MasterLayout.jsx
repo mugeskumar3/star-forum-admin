@@ -227,6 +227,16 @@ const MasterLayout = ({ children }) => {
                     <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> General Update
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink to='/community-update' className={(navData) => navData.isActive ? "active-page" : ""}>
+                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Community Update
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to='/star-update' className={(navData) => navData.isActive ? "active-page" : ""}>
+                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Star Update
+                  </NavLink>
+                </li>
               </ul>
             </li>
 

@@ -41,24 +41,38 @@ const BadgeCreateLayer = () => {
 
     return (
         <div className="card h-100 p-0 radius-12 col-lg-8 mx-auto">
+
+            {/* 🔹 HEADER */}
+            <div className="card-header bg-transparent border-bottom">
+                <h5 className="mb-0 fw-600">Badge Creation</h5>
+            </div>
+
             <div className="card-body p-24">
                 <form onSubmit={handleSubmit}>
                     <div className="row gy-3">
+
                         <div className="col-12">
-                            <label className="form-label">Type <span className="text-danger-600">*</span></label>
+                            <label className="form-label">
+                                Type <span className="text-danger-600">*</span>
+                            </label>
                             <select
                                 className="form-select"
                                 required
                                 value={type}
                                 onChange={(e) => setType(e.target.value)}
                             >
-                                <option value="" disabled selected>Select Type</option>
+                                <option value="" disabled>
+                                    Select Type
+                                </option>
                                 <option value="Chapter">Chapter</option>
                                 <option value="Member">Member</option>
                             </select>
                         </div>
+
                         <div className="col-12">
-                            <label className="form-label">Badge Name <span className="text-danger-600">*</span></label>
+                            <label className="form-label">
+                                Badge Name <span className="text-danger-600">*</span>
+                            </label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -68,8 +82,11 @@ const BadgeCreateLayer = () => {
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
+
                         <div className="col-12">
-                            <label className="form-label">Badge Image <span className="text-danger-600">*</span></label>
+                            <label className="form-label">
+                                Badge Image <span className="text-danger-600">*</span>
+                            </label>
                             <div className="position-relative">
                                 <input
                                     type="file"
@@ -79,21 +96,35 @@ const BadgeCreateLayer = () => {
                                     required
                                 />
                             </div>
+
                             {preview && (
                                 <div className="mt-2 text-center">
-                                    <img src={preview} alt="Preview" className="w-100-px h-100-px object-fit-cover rounded-8 border" />
+                                    <img
+                                        src={preview}
+                                        alt="Preview"
+                                        className="w-100-px h-100-px object-fit-cover rounded-8 border"
+                                    />
                                 </div>
                             )}
                         </div>
 
                         <div className="col-12 d-flex justify-content-start gap-3 mt-4">
-                            <Link to="/master-creation/badge" className="btn btn-outline-danger-600 px-32">Cancel</Link>
-                            <button type="submit" className="btn btn-primary-600 px-32">Submit</button>
+                            <Link
+                                to="/master-creation/badge"
+                                className="btn btn-outline-danger-600 px-32"
+                            >
+                                Cancel
+                            </Link>
+                            <button type="submit" className="btn btn-primary-600 px-32">
+                                Submit
+                            </button>
                         </div>
+
                     </div>
                 </form>
             </div>
         </div>
+
     );
 };
 
