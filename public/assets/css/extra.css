@@ -204,12 +204,12 @@ table.dataTable td.dt-type-date {
 /* Active Page Hover (Blue) */
 .sidebar-menu .sidebar-submenu li>a.active-page:hover {
   background-color: #c4161c !important;
-  color: #1f1e46 !important;
+  color: #ffffff !important;
 }
 
 .sidebar-menu li>a.active-page:hover {
   background-color: #c4161c !important;
-  color: #1f1e46 !important;
+  color: #ffffff !important;
 }
 
 .me-8 {
