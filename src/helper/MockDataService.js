@@ -3,7 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 const STORAGE_KEYS = {
     ORGANISATIONS: 'star_organisations',
     BADGES: 'star_badges',
-    ASSIGNED_BADGES: 'star_assigned_badges'
+    ASSIGNED_BADGES: 'star_assigned_badges',
+    MEETINGS: 'star_meetings'
 };
 
 const getFromStorage = (key) => {
@@ -84,5 +85,34 @@ export const MockDataService = {
         assignment.id = uuidv4();
         list.push(assignment);
         saveToStorage(STORAGE_KEYS.ASSIGNED_BADGES, list);
+    },
+
+    // --- Meetings ---
+    getMeetings: () => getFromStorage(STORAGE_KEYS.MEETINGS),
+
+    getMeetingById: (id) => {
+        const list = getFromStorage(STORAGE_KEYS.MEETINGS);
+        return list.find(item => item.id === id);
+    },
+
+    saveMeeting: (meeting) => {
+        const list = getFromStorage(STORAGE_KEYS.MEETINGS);
+        if (meeting.id) {
+            const index = list.findIndex(item => item.id === meeting.id);
+            if (index !== -1) {
+                list[index] = meeting;
+                saveToStorage(STORAGE_KEYS.MEETINGS, list);
+            }
+        } else {
+            meeting.id = uuidv4();
+            list.push(meeting);
+            saveToStorage(STORAGE_KEYS.MEETINGS, list);
+        }
+    },
+
+    deleteMeeting: (id) => {
+        let list = getFromStorage(STORAGE_KEYS.MEETINGS);
+        list = list.filter(item => item.id !== id);
+        saveToStorage(STORAGE_KEYS.MEETINGS, list);
     }
 };

@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import StarRatingLayer from "../components/StarRatingLayer";
 
 const StarRatingPage = () => {
@@ -10,8 +9,6 @@ const StarRatingPage = () => {
       {/* MasterLayout */}
       <MasterLayout>
 
-        {/* Breadcrumb */}
-        <Breadcrumb title="Components / Star Ratings" />
 
         {/* StarRatingLayer */}
         <StarRatingLayer />

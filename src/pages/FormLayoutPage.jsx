@@ -1,7 +1,6 @@
 import React from "react";
 import FormLayoutLayer from "../components/FormLayoutLayer";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 
 
 const FormLayoutPage = () => {
@@ -10,10 +9,6 @@ const FormLayoutPage = () => {
 
       {/* MasterLayout */}
       <MasterLayout>
-
-        {/* Breadcrumb */}
-        <Breadcrumb title="Input Layout" />
-
         {/* FormLayoutLayer */}
         <FormLayoutLayer />
 

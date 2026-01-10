@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import InvoiceAddLayer from "../components/InvoiceAddLayer";
 
 
@@ -12,10 +11,6 @@ const InvoiceAddPage = () => {
 
       {/* MasterLayout */}
       <MasterLayout>
-
-        {/* Breadcrumb */}
-        <Breadcrumb title="Invoice - Add" />
-
         {/* InvoiceAddLayer */}
         <InvoiceAddLayer />
 

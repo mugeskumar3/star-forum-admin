@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import FaqLayer from "../components/FaqLayer";
 
 
@@ -9,10 +8,6 @@ const FaqPage = () => {
     <>
       {/* MasterLayout */}
       <MasterLayout>
-
-        {/* Breadcrumb */}
-        <Breadcrumb title="Faq" />
-
         {/* FaqLayer */}
         <FaqLayer />
 

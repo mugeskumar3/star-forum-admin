@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import KanbanLayer from "../components/KanbanLayer";
 
 
@@ -12,10 +11,6 @@ const KanbanPage = () => {
 
       {/* MasterLayout */}
       <MasterLayout>
-
-        {/* Breadcrumb */}
-        <Breadcrumb title="Kanban" />
-
         {/* KanbanLayer */}
         <KanbanLayer />
 

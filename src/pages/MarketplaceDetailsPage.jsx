@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import MarketplaceDetailsLayer from "../components/MarketplaceDetailsLayer";
 
 
@@ -11,10 +10,6 @@ const MarketplaceDetailsPage = () => {
 
       {/* MasterLayout */}
       <MasterLayout>
-
-        {/* Breadcrumb */}
-        <Breadcrumb title="Marketplace Details" />
-
         {/* MarketplaceDetailsLayer */}
         <MarketplaceDetailsLayer />
 

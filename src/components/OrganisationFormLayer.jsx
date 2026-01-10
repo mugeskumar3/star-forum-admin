@@ -70,87 +70,104 @@ const OrganisationFormLayer = () => {
     };
 
     return (
-        <div className="card h-100 p-0 radius-12 col-lg-8 mx-auto">
+        <div className="card h-100 p-0 radius-12 col-lg-10 mx-auto">
+            {/* Card Header with Title and optional back button */}
+            <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h5 className="text-lg fw-semibold mb-0">Create Organisation</h5>
+                <Link to="/master-creation/organisation" className="btn btn-outline-secondary btn-sm">
+                    Back to List
+                </Link>
+            </div>
+
             <div className="card-body p-24">
                 <form onSubmit={handleSubmit}>
-                    <div className="row gy-3">
-                        {/* Zone Input with Datalist for "Memory" effect */}
-                        <div className="col-12">
-                            <label className="form-label">Zone <span className="text-danger-600">*</span></label>
-                            <input
-                                list="zone-options"
-                                name="zone"
-                                className="form-control"
-                                placeholder="Enter or Select Zone"
-                                value={formData.zone}
-                                onChange={handleInputChange}
-                                required
-                            />
-                            <datalist id="zone-options">
-                                {knownZones.map((z, i) => (
-                                    <option key={i} value={z} />
-                                ))}
-                            </datalist>
-                        </div>
+                    <div className="row gy-4">
+                        {/* Column 1 */}
+                        <div className="col-md-6">
+                            <div className="mb-4">
+                                <label className="form-label fw-medium">Zone <span className="text-danger-600">*</span></label>
+                                <input
+                                    list="zone-options"
+                                    name="zone"
+                                    className="form-control"
+                                    placeholder="Enter or Select Zone"
+                                    value={formData.zone}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                                <datalist id="zone-options">
+                                    {knownZones.map((z, i) => (
+                                        <option key={i} value={z} />
+                                    ))}
+                                </datalist>
+                                <div className="form-text">Select from dropdown or type new zone</div>
+                            </div>
 
-                        {/* Region */}
-                        <div className="col-12">
-                            <label className="form-label">Region <span className="text-danger-600">*</span></label>
-                            <input
-                                type="text"
-                                name="region"
-                                className="form-control"
-                                placeholder="Enter Region"
-                                value={formData.region}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </div>
-
-                        {/* ED */}
-                        <div className="col-12">
-                            <label className="form-label">ED (Executive Director) <span className="text-danger-600">*</span></label>
-                            <input
-                                type="text"
-                                name="ed"
-                                className="form-control"
-                                placeholder="Enter ED Name"
-                                value={formData.ed}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </div>
-
-                        {/* RD Multi-Select (Tag Input) */}
-                        <div className="col-12">
-                            <label className="form-label">RD (Regional Director) - Type & Press Enter <span className="text-danger-600">*</span></label>
-                            <div className="form-control d-flex flex-wrap gap-2 align-items-center">
-                                {formData.rds.map((rd, index) => (
-                                    <span key={index} className="badge bg-primary-100 text-primary-600 radius-4 text-sm d-flex align-items-center gap-1">
-                                        {rd}
-                                        <Icon
-                                            icon="iconamoon:close-bold"
-                                            className="cursor-pointer"
-                                            onClick={() => removeRd(index)}
-                                        />
-                                    </span>
-                                ))}
+                            <div className="mb-4">
+                                <label className="form-label fw-medium">ED (Executive Director) <span className="text-danger-600">*</span></label>
                                 <input
                                     type="text"
-                                    className="border-0 bg-transparent flex-grow-1"
-                                    style={{ outline: "none", minWidth: "100px" }}
-                                    placeholder={formData.rds.length === 0 ? "Type RD Name and Press Enter" : ""}
-                                    value={rdInput}
-                                    onChange={(e) => setRdInput(e.target.value)}
-                                    onKeyDown={handleRdKeyDown}
+                                    name="ed"
+                                    className="form-control"
+                                    placeholder="Enter ED Name"
+                                    value={formData.ed}
+                                    onChange={handleInputChange}
+                                    required
                                 />
                             </div>
-                            <small className="text-secondary-light">Type a name and press <strong>Enter</strong> to add multiple RDs.</small>
                         </div>
 
-                        <div className="col-12 d-flex justify-content-start gap-3 mt-4">
-                            <Link to="/master-creation/organisation" className="btn btn-outline-danger-600 px-32">Cancel</Link>
-                            <button type="submit" className="btn btn-primary-600 px-32">Submit</button>
+                        {/* Column 2 */}
+                        <div className="col-md-6">
+                            <div className="mb-4">
+                                <label className="form-label fw-medium">Region <span className="text-danger-600">*</span></label>
+                                <input
+                                    type="text"
+                                    name="region"
+                                    className="form-control"
+                                    placeholder="Enter Region"
+                                    value={formData.region}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+
+                            {/* RD Multi-Select - Placed in second column */}
+                            <div className="mb-4" style={{ marginTop: "30px" }}>
+                                <label className="form-label fw-medium">RD (Regional Director) <span className="text-danger-600">*</span></label>
+                                <div className="form-control d-flex flex-wrap gap-2 align-items-center min-height-48">
+                                    {formData.rds.map((rd, index) => (
+                                        <span key={index} className="badge bg-primary-100 text-primary-600 radius-4 text-sm d-flex align-items-center gap-1">
+                                            {rd}
+                                            <Icon
+                                                icon="iconamoon:close-bold"
+                                                className="cursor-pointer fs-6"
+                                                onClick={() => removeRd(index)}
+                                            />
+                                        </span>
+                                    ))}
+                                    <input
+                                        type="text"
+                                        className="border-0 bg-transparent flex-grow-1"
+                                        style={{ outline: "none", minWidth: "100px" }}
+                                        placeholder={formData.rds.length === 0 ? "Type RD Name and Press Enter" : ""}
+                                        value={rdInput}
+                                        onChange={(e) => setRdInput(e.target.value)}
+                                        onKeyDown={handleRdKeyDown}
+                                    />
+                                </div>
+                                <div className="form-text">Type a name and press <strong>Enter</strong> to add multiple RDs</div>
+                            </div>
+                        </div>
+
+                        {/* Full Width Buttons */}
+                        <div className="col-12 mt-4 pt-4 border-top">
+                            <div className="d-flex justify-content-end gap-3">
+                                <Link to="/master-creation/organisation" className="btn btn-outline-secondary px-32">Cancel</Link>
+                                <button type="submit" className="btn btn-primary px-32">
+                                    <i className="fas fa-save me-2"></i>Save Organisation
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>

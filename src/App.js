@@ -91,7 +91,6 @@ import GalleryHoverPage from "./pages/GalleryHoverPage";
 import BlogPage from "./pages/BlogPage";
 import BlogDetailsPage from "./pages/BlogDetailsPage";
 import AddBlogPage from "./pages/AddBlogPage";
-import TestimonialsPage from "./pages/TestimonialsPage";
 import ComingSoonPage from "./pages/ComingSoonPage";
 import AccessDeniedPage from "./pages/AccessDeniedPage";
 import MaintenancePage from "./pages/MaintenancePage";
@@ -113,6 +112,20 @@ import AttendanceListPage from "./pages/AttendanceListPage";
 
 import ChapterListPage from "./pages/ChapterListPage";
 import ChapterFormPage from "./pages/ChapterFormPage";
+
+import MeetingListPage from "./pages/MeetingListPage";
+import MeetingFormPage from "./pages/MeetingFormPage";
+
+import CommunityUpdatePage from "./pages/CommunityUpdatePage";
+import StarUpdatePage from "./pages/StarUpdatePage";
+
+import GeneralUpdatePage from "./pages/GeneralUpdatePage";
+import ChapterReportPage from "./pages/ChapterReportPage";
+import Note121Page from "./pages/Note121Page";
+import ReferralNotePage from "./pages/ReferralNotePage";
+import ThankYouSlipPage from "./pages/ThankYouSlipPage";
+import TestimonialsPage from "./pages/TestimonialsPage";
+import VisitorsReportPage from "./pages/VisitorsReportPage";
 
 function App() {
   return (
@@ -227,16 +240,17 @@ function App() {
           path="/meetings-create"
           element={<FormPage title="Meeting Creation" />}
         />
+        <Route exact path="/meeting-creation" element={<MeetingListPage />} />
+        <Route exact path="/meeting-creation/add" element={<MeetingFormPage />} />
+        <Route exact path="/meeting-creation/edit/:id" element={<MeetingFormPage />} />
         <Route
           exact
           path="/attendance-report"
           element={<AttendanceListPage />}
         />
-        <Route
-          exact
-          path="/general-update"
-          element={<FormPage title="General Update" />}
-        />
+        <Route exact path="/general-update" element={<GeneralUpdatePage />} />
+        <Route exact path="/community-update" element={<CommunityUpdatePage />} />
+        <Route exact path="/star-update" element={<StarUpdatePage />} />
         <Route exact path="/training" element={<FormPage title="Training" />} />
         <Route
           exact
@@ -260,11 +274,7 @@ function App() {
           path="/renewal-report"
           element={<FormPage title="Renewal Report" />}
         />
-        <Route
-          exact
-          path="/chapter-report"
-          element={<FormPage title="Chapter Report" />}
-        />
+        <Route exact path="/chapter-report" element={<ChapterReportPage />} />
         <Route
           exact
           path="/ed-report"
@@ -275,32 +285,16 @@ function App() {
           path="/rd-report"
           element={<FormPage title="RD Report" />}
         />
-        <Route
-          exact
-          path="/visitors-report"
-          element={<FormPage title="Visitors Report" />}
-        />
-        <Route exact path="/note-121" element={<FormPage title="121 Note" />} />
-        <Route
-          exact
-          path="/referral-note"
-          element={<FormPage title="Referral Note" />}
-        />
-        <Route
-          exact
-          path="/thank-you-slip"
-          element={<FormPage title="Thank you Slip" />}
-        />
+        <Route exact path="/visitors-report" element={<VisitorsReportPage />} />
+        <Route exact path="/note-121" element={<Note121Page />} />
+        <Route exact path="/referral-note" element={<ReferralNotePage />} />
+        <Route exact path="/thank-you-slip" element={<ThankYouSlipPage />} />
         <Route
           exact
           path="/power-date"
           element={<FormPage title="Power date" />}
         />
-        <Route
-          exact
-          path="/testimonials"
-          element={<FormPage title="Testimonials" />}
-        />
+        <Route exact path="/testimonials" element={<TestimonialsPage />} />
         <Route
           exact
           path="/present-update"
@@ -358,7 +352,6 @@ function App() {
         <Route exact path="/blog-details" element={<BlogDetailsPage />} />
         <Route exact path="/add-blog" element={<AddBlogPage />} />
 
-        <Route exact path="/testimonials" element={<TestimonialsPage />} />
         <Route exact path="/coming-soon" element={<ComingSoonPage />} />
         <Route exact path="/access-denied" element={<AccessDeniedPage />} />
         <Route exact path="/maintenance" element={<MaintenancePage />} />

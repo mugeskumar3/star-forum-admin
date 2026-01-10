@@ -1,6 +1,5 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import Breadcrumb from "../components/Breadcrumb";
 import BlankPageLayer from "../components/BlankPageLayer";
 
 const BlankPagePage = () => {
@@ -8,9 +7,6 @@ const BlankPagePage = () => {
     <>
       {/* MasterLayout */}
       <MasterLayout>
-        {/* Breadcrumb */}
-        <Breadcrumb title='Blank Page' />
-
         {/* BlankPageLayer */}
         <BlankPageLayer />
       </MasterLayout>

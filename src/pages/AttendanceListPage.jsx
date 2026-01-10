@@ -7,7 +7,6 @@ const AttendanceListPage = () => {
   return (
     <>
       <MasterLayout>
-        <Breadcrumb title="Attendance List" />
         <AttendanceListLayer />
       </MasterLayout>
     </>

@@ -12,7 +12,6 @@ const MemberFormPage = () => {
       {/* MasterLayout */}
       <MasterLayout>
         {/* Breadcrumb */}
-        <Breadcrumb title={title} />
 
         {/* MemberFormLayer */}
         <MemberFormLayer />
