@@ -112,7 +112,7 @@ const AdminUserViewLayer = () => {
                                 </div>
                             </div>
 
-                            <div className="col-12">
+                            <div className="col-md-6">
                                 <div className="info-box p-3 border rounded bg-white">
                                     <div className="d-flex align-items-center">
                                         <div className="icon-box bg-danger bg-opacity-10 p-3 rounded me-3">
@@ -120,7 +120,99 @@ const AdminUserViewLayer = () => {
                                         </div>
                                         <div>
                                             <p className="text-muted small mb-1">User Role</p>
-                                            <p className="fw-bold mb-0">Administrator (Full Access)</p>
+                                            <p className="fw-bold mb-0">Administrator</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="info-box p-3 border rounded bg-white">
+                                    <div className="d-flex align-items-center">
+                                        <div className="icon-box bg-dark bg-opacity-10 p-3 rounded me-3">
+                                            <i className="fas fa-toggle-on text-dark"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-muted small mb-1">Status</p>
+                                            <p className="fw-bold mb-0">Active</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-12 mt-4">
+                                <h6 className="fw-bold mb-3 text-primary border-bottom pb-2">Organisation Details</h6>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="info-box p-3 border rounded bg-white">
+                                    <div className="d-flex align-items-center">
+                                        <div className="icon-box bg-primary bg-opacity-10 p-3 rounded me-3">
+                                            <i className="fas fa-map-marker-alt text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-muted small mb-1">Zone</p>
+                                            <p className="fw-bold mb-0">North Zone</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="info-box p-3 border rounded bg-white">
+                                    <div className="d-flex align-items-center">
+                                        <div className="icon-box bg-secondary bg-opacity-10 p-3 rounded me-3">
+                                            <i className="fas fa-layer-group text-secondary"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-muted small mb-1">Region</p>
+                                            <p className="fw-bold mb-0">National Capital Region</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="info-box p-3 border rounded bg-white">
+                                    <div className="d-flex align-items-center">
+                                        <div className="icon-box bg-info bg-opacity-10 p-3 rounded me-3">
+                                            <i className="fas fa-user-shield text-info"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-muted small mb-1">ED (Executive Director)</p>
+                                            <p className="fw-bold mb-0">ED John Doe</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="info-box p-3 border rounded bg-white">
+                                    <div className="d-flex align-items-center">
+                                        <div className="icon-box bg-warning bg-opacity-10 p-3 rounded me-3">
+                                            <i className="fas fa-user-tie text-warning"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-muted small mb-1">RD (Regional Director)</p>
+                                            <p className="fw-bold mb-0">RD Michael Brown</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-12 mt-4">
+                                <h6 className="fw-bold mb-3 text-primary border-bottom pb-2">Additional Information</h6>
+                            </div>
+
+                            <div className="col-12">
+                                <div className="info-box p-3 border rounded bg-white">
+                                    <div className="d-flex align-items-start">
+                                        <div className="icon-box bg-danger bg-opacity-10 p-3 rounded me-3">
+                                            <i className="fas fa-comment-alt text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-muted small mb-1">New Message</p>
+                                            <p className="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                                         </div>
                                     </div>
                                 </div>

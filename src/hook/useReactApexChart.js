@@ -4740,7 +4740,7 @@ const useReactApexChart = () => {
     },
     plotOptions: {
       bar: {
-        borderRadius: 4,
+        borderRadius: 0,
         horizontal: false,
         columnWidth: "40%",
       },
@@ -4754,7 +4754,7 @@ const useReactApexChart = () => {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: ["Male", "Female"],
+      categories: ["Achieved"],
       axisBorder: {
         show: false,
       },
@@ -4767,7 +4767,7 @@ const useReactApexChart = () => {
     },
     fill: {
       opacity: 1,
-      colors: ["#FF9F29", "#45B369"], // Match the colors from the component text
+      colors: ["#c4161c"]
     },
     grid: {
       show: false,

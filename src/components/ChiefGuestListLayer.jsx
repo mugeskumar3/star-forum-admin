@@ -1,46 +1,54 @@
 import React, { useState } from "react";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import TablePagination from "./TablePagination";
 
-const MemberListLayer = () => {
-  const [members, setMembers] = useState([
+const ChiefGuestListLayer = () => {
+  // Static Dummy Data for Chief Guests
+  const [guests, setGuests] = useState([
     {
       id: 1,
-      name: "Darlene Robertson",
-      image: "assets/images/users/user1.png",
-      chapter: "Star Chapter",
-      region: "North Region",
-      membershipId: "MEM-001",
+      name: "Dr. A.P.J. Abdul Kalam",
+      designation: "Scientist & Former President",
+      organization: "DRDO / ISRO",
+      contact: "9876543210",
+      email: "contact@abdulkalam.com",
       status: "Active",
-      email: "darlene@example.com",
     },
     {
       id: 2,
-      name: "Cody Fisher",
-      image: "assets/images/users/user2.png",
-      chapter: "Galaxy Chapter",
-      region: "South Region",
-      membershipId: "MEM-002",
+      name: "Sundar Pichai",
+      designation: "CEO",
+      organization: "Google Alphabet",
+      contact: "9876543211",
+      email: "sundar@google.com",
+      status: "Active",
+    },
+    {
+      id: 3,
+      name: "Indra Nooyi",
+      designation: "Former CEO",
+      organization: "PepsiCo",
+      contact: "9876543212",
+      email: "indra.nooyi@pepsico.com",
       status: "Inactive",
-      email: "cody@example.com",
     },
   ]);
+
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter Data
-  const filteredMembers = members.filter(
-    (member) =>
-      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.membershipId.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredGuests = guests.filter(
+    (guest) =>
+      guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.organization.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalRecords = filteredMembers.length;
+  const totalRecords = filteredGuests.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
-  const currentData = filteredMembers.slice(
+  const currentData = filteredGuests.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
@@ -55,8 +63,8 @@ const MemberListLayer = () => {
   };
 
   const handleDeleteClick = (id) => {
-    if (window.confirm("Are you sure you want to delete this member?")) {
-      setMembers((prev) => prev.filter((m) => m.id !== id));
+    if (window.confirm("Are you sure you want to delete this chief guest?")) {
+      setGuests((prev) => prev.filter((guest) => guest.id !== id));
     }
   };
 
@@ -81,7 +89,7 @@ const MemberListLayer = () => {
               type="text"
               className="bg-base h-40-px w-auto"
               name="search"
-              placeholder="Search by Name or ID"
+              placeholder="Search"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -91,17 +99,6 @@ const MemberListLayer = () => {
             <Icon icon="ion:search-outline" className="icon" />
           </form>
         </div>
-        <Link
-          to="/members-registration/add"
-          className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-          style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-        >
-          <Icon
-            icon="ic:baseline-plus"
-            className="icon text-xl line-height-1"
-          />
-          Add New Member
-        </Link>
       </div>
       <div className="card-body p-24">
         <div className="table-responsive scroll-sm">
@@ -109,10 +106,11 @@ const MemberListLayer = () => {
             <thead>
               <tr>
                 <th scope="col">S.No</th>
-                <th scope="col">Member Profile</th>
-                <th scope="col">Chapter</th>
-                <th scope="col">Region</th>
-                <th scope="col">Membership ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Designation</th>
+                <th scope="col">Organization</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Email</th>
                 <th scope="col">Status</th>
                 <th scope="col" className="text-center">
                   Action
@@ -121,67 +119,47 @@ const MemberListLayer = () => {
             </thead>
             <tbody>
               {currentData.length > 0 ? (
-                currentData.map((member, index) => (
-                  <tr key={member.id}>
+                currentData.map((guest, index) => (
+                  <tr key={guest.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>
-                      <div className="d-flex align-items-center">
-                        <img
-                          src={member.image}
-                          alt=""
-                          className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
-                          onError={(e) => {
-                            e.target.src = "https://placehold.co/40x40"; // Fallback
-                          }}
-                        />
-                        <div className="flex-grow-1">
-                          <span className="text-md mb-0 fw-normal text-secondary-light d-block">
-                            {member.name}
-                          </span>
-                          <span className="text-xs text-secondary-light fw-normal">
-                            {member.email}
-                          </span>
-                        </div>
-                      </div>
+                      <span className="text-md mb-0 fw-medium text-secondary-light">
+                        {guest.name}
+                      </span>
                     </td>
-                    <td>{member.chapter}</td>
-                    <td>{member.region}</td>
-                    <td>{member.membershipId}</td>
+                    <td>{guest.designation}</td>
+                    <td>{guest.organization}</td>
+                    <td>{guest.contact}</td>
+                    <td>{guest.email}</td>
                     <td>
                       <span
-                        className={`badge ${member.status === "Active"
+                        className={`badge radius-4 px-10 py-4 text-sm ${guest.status === "Active"
                           ? "bg-success-focus text-success-main"
                           : "bg-danger-focus text-danger-main"
-                          } px-24 py-4 rounded-pill fw-medium text-sm`}
+                          }`}
                       >
-                        {member.status}
+                        {guest.status}
                       </span>
                     </td>
                     <td className="text-center">
                       <div className="d-flex align-items-center gap-10 justify-content-center">
-                        <Link
-                          to={`/members-registration/edit/${member.id}`}
+                        <button
+                          type="button"
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
                             icon="majesticons:eye-line"
                             className="icon text-xl"
                           />
-                        </Link>
-                        <Link
-                          to={`/members-registration/edit/${member.id}`}
-                          className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                        >
-                          <Icon icon="lucide:edit" className="menu-icon" />
-                        </Link>
+                        </button>
                         <button
                           type="button"
-                          onClick={() => handleDeleteClick(member.id)}
-                          className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                          onClick={() => handleDeleteClick(guest.id)}
+                          className="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
                         >
                           <Icon
                             icon="fluent:delete-24-regular"
-                            className="menu-icon"
+                            className="icon text-xl"
                           />
                         </button>
                       </div>
@@ -190,8 +168,8 @@ const MemberListLayer = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center py-4">
-                    No members found.
+                  <td colSpan="8" className="text-center py-4">
+                    No chief guests found.
                   </td>
                 </tr>
               )}
@@ -212,4 +190,4 @@ const MemberListLayer = () => {
   );
 };
 
-export default MemberListLayer;
+export default ChiefGuestListLayer;

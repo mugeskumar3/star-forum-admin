@@ -198,7 +198,7 @@ table.dataTable td.dt-type-date {
 /* Active Page State */
 .sidebar-menu .sidebar-submenu li>.active-page {
   background-color: #c4161c !important;
-  color: #ffd5d7 !important;
+  color: #ffff !important;
 }
 
 /* Active Page Hover (Blue) */
