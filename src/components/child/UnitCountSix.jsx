@@ -54,7 +54,9 @@ const UnitCountSix = () => {
               </span>
             </div>
             <div className="d-flex align-items-center justify-content-between gap-2">
-              <h6 className="fw-bolder text-1xl mb-0">{item.value}</h6>
+              <h6 className="fw-bolder text-1xl mb-0">
+                {item.value.toLocaleString("en-IN")}
+              </h6>
               <span
                 className={`w-48-px h-48-px d-flex justify-content-center align-items-center text-1xl`}
               >
@@ -97,7 +99,7 @@ const UnitCountSix = () => {
           </div>
         </div>
       </div>
-        <div className="card h-100 p-0 radius-12">
+      <div className="card h-100 p-0 radius-12">
         <div className="card-header border-bottom bg-base py-16 px-24">
           <h6 className="text-lg fw-semibold mb-0">Star Achievements</h6>
         </div>
