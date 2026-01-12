@@ -1,103 +1,251 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const AdminUserFormLayer = () => {
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const isEdit = !!id;
+
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        mobile: '',
+        email: '',
+        pin: '',
+        companyName: '',
+        role: '',
+        status: 'Active',
+        message: '',
+        zone: '',
+        region: '',
+        ed: '',
+        rd: ''
+    });
+
+    // Mock ED and RD options - in a real app, fetch these from API
+    const edOptions = ['ED John Doe', 'ED Jane Smith', 'ED Alex Wilson'];
+    const rdOptions = ['RD Michael Brown', 'RD Sarah Connor', 'RD David Miller'];
+
+    useEffect(() => {
+        if (isEdit) {
+            // Fetch user data if editing
+            // axios.get(`/api/admin/${id}`).then(res => setFormData(res.data));
+            console.log(`Fetching data for admin ID: ${id}`);
+        }
+    }, [isEdit, id]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'pin') {
+            // Only allow numbers and max 4 digits
+            const cleanedValue = value.replace(/\D/g, '').slice(0, 4);
+            setFormData(prev => ({ ...prev, [name]: cleanedValue }));
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }));
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Validation
+        if (!formData.name || !formData.mobile || !formData.email || !formData.pin || !formData.companyName || !formData.role) {
+            toast.error("Please fill in all required fields.");
+            return;
+        }
+
+        if (formData.pin.length !== 4) {
+            toast.error("PIN must be exactly 4 digits.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            // API integration pattern
+            const endpoint = isEdit ? `/api/admin/update/${id}` : '/api/admin/register';
+            console.log(`Submitting to ${endpoint}`, formData);
+
+            // Mocking API call for now since endpoint is not provided
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            toast.success(isEdit ? "Admin updated successfully!" : "Admin registered successfully!");
+            navigate('/admin-registration');
+        } catch (error) {
+            console.error("API Error:", error);
+            toast.error("Failed to save admin. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="card h-100 p-0 radius-12">
             <div className="card-header bg-transparent border-bottom px-24 py-16">
-                <h4 className="card-title mb-0">Add Admin</h4>
+                <h4 className="card-title mb-0">{isEdit ? 'Edit Admin' : 'Admin Registration'}</h4>
             </div>
 
             <div className="card-body p-24">
-                <div className="row justify-content-center mb-24">
-                    <div className="col-auto text-center">
-                        <label className="form-label fw-semibold">Profile Image</label>
-                        <div className="position-relative d-inline-block">
-                            <div className="w-120-px h-120-px rounded-circle overflow-hidden border border-secondary-light d-flex justify-content-center align-items-center bg-neutral-100">
-                                <span className="text-secondary-light">150X150</span>
+                <form onSubmit={handleSubmit}>
+                    <div className="row gy-3">
+                        {/* Section 1: Basic Information */}
+                        <div className="col-12">
+                            <h6 className="mb-3 text-primary-600 border-bottom pb-2">Basic Information</h6>
+                        </div>
+
+                        <div className="col-lg-6">
+                            <div className="mb-3">
+                                <label className="form-label">Name <span className="text-danger-600">*</span></label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="Enter full name"
+                                />
                             </div>
-                            <label htmlFor="profile-upload" className="position-absolute bottom-0 end-0 bg-base w-32-px h-32-px rounded-circle shadow-md d-flex justify-content-center align-items-center cursor-pointer border border-neutral-200">
-                                <Icon icon="solar:camera-outline" className="text-primary-600" />
-                                <input type="file" id="profile-upload" hidden />
-                            </label>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="row gy-3">
-                    {/* Left Column */}
-                    <div className="col-lg-6">
-                        <div className="mb-3">
-                            <label className="form-label">Name <span className="text-danger-600">*</span></label>
-                            <input type="text" className="form-control" placeholder="Enter full name" />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">Company Name <span className="text-danger-600">*</span></label>
-                            <input type="text" className="form-control" placeholder="Enter company name" />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">Mobile Number <span className="text-danger-600">*</span></label>
-                            <input type="text" className="form-control" placeholder="Enter mobile number" />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">Email <span className="text-danger-600">*</span></label>
-                            <input type="email" className="form-control" placeholder="Enter email address" />
-                        </div>
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="col-lg-6">
-                        <div className="mb-3">
-                            <label className="form-label">Username <span className="text-danger-600">*</span></label>
-                            <input type="text" className="form-control" placeholder="Enter username" />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">PIN <span className="text-danger-600">*</span></label>
-                            <div className="position-relative">
-                                <input type="password" className="form-control" placeholder="Enter 4-digit PIN" />
-                                <span className="position-absolute top-50 end-0 translate-middle-y me-16 cursor-pointer text-secondary-light">
-                                    <Icon icon="solar:eye-outline" />
-                                </span>
+                            <div className="mb-3">
+                                <label className="form-label">Company Name <span className="text-danger-600">*</span></label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="companyName"
+                                    value={formData.companyName}
+                                    onChange={handleChange}
+                                    placeholder="Enter company name"
+                                />
                             </div>
-                            <small className="text-secondary-light">Must be exactly 4 digits (numbers only)</small>
+
+                            <div className="mb-3">
+                                <label className="form-label">Phone Number <span className="text-danger-600">*</span></label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="mobile"
+                                    value={formData.mobile}
+                                    onChange={handleChange}
+                                    placeholder="Enter mobile number"
+                                />
+                            </div>
                         </div>
 
-                        <div className="mb-3">
-                            <label className="form-label">Role <span className="text-danger-600">*</span></label>
-                            <select className="form-select">
-                                <option value="" disabled selected>Select Role</option>
-                                <option value="Admin">Admin</option>
-                                <option value="Editor">Editor</option>
-                                <option value="User">User</option>
-                            </select>
-                        </div>
+                        <div className="col-lg-6">
+                            <div className="mb-3">
+                                <label className="form-label">Email <span className="text-danger-600">*</span></label>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="Enter email address"
+                                />
+                            </div>
 
-                        <div className="mb-3">
-                            <label className="form-label">Status</label>
-                            <div className="d-flex gap-3">
-                                <div className="form-check">
-                                    <input className="form-check-input" type="radio" name="status" id="active" defaultChecked />
-                                    <label className="form-check-label" htmlFor="active">Active</label>
-                                </div>
-                                <div className="form-check">
-                                    <input className="form-check-input" type="radio" name="status" id="inactive" />
-                                    <label className="form-check-label" htmlFor="inactive">Inactive</label>
+                            <div className="mb-3">
+                                <label className="form-label">PIN - Enter 4-digit Pin code <span className="text-danger-600">*</span></label>
+                                <div className="position-relative">
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        name="pin"
+                                        value={formData.pin}
+                                        onChange={handleChange}
+                                        placeholder="4-digit PIN"
+                                        maxLength={4}
+                                    />
+                                    <span className="position-absolute top-50 end-0 translate-middle-y me-16 cursor-pointer text-secondary-light">
+                                        <Icon icon="solar:eye-outline" />
+                                    </span>
                                 </div>
                             </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Role <span className="text-danger-600">*</span></label>
+                                <select
+                                    className="form-select"
+                                    name="role"
+                                    value={formData.role}
+                                    onChange={handleChange}
+                                >
+                                    <option value="" disabled>Select Role</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Executive">Executive</option>
+                                    <option value="Director">Director</option>
+                                    <option value="ED">ED</option>
+                                    <option value="RD">RD</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Section 3: Additional Details */}
+                        <div className="col-12 mt-4">
+                            <h6 className="mb-3 text-primary-600 border-bottom pb-2">Additional Status</h6>
+                        </div>
+
+                        <div className="col-lg-6">
+                            <div className="mb-3">
+                                <label className="form-label">Status</label>
+                                <div className="d-flex gap-3 mt-2">
+                                    <div className="form-check" style={{ display: 'flex', alignItems: 'center' }}>
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="status"
+                                            id="active"
+                                            value="Active"
+                                            checked={formData.status === 'Active'}
+                                            onChange={handleChange}
+                                        />
+                                        <label className="form-check-label" htmlFor="active">Active</label>
+                                    </div>
+                                    <div className="form-check" style={{ display: 'flex', alignItems: 'center' }}>
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="status"
+                                            id="inactive"
+                                            value="Inactive"
+                                            checked={formData.status === 'Inactive'}
+                                            onChange={handleChange}
+                                        />
+                                        <label className="form-check-label" htmlFor="inactive">Inactive</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-6">
+                            <div className="mb-3">
+                                <label className="form-label">New Message</label>
+                                <textarea
+                                    className="form-control"
+                                    name="message"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    placeholder="Enter message"
+                                    rows="3"
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="col-12 d-flex justify-content-center gap-3 mt-4 pt-3 border-top">
+                            <Link to="/admin-registration" className="btn btn-outline-danger-600 px-32">Cancel</Link>
+                            <button
+                                type="submit"
+                                className="btn btn-primary-600 px-32"
+                                disabled={loading}
+                            >
+                                {loading ? 'Saving...' : isEdit ? 'Update Admin' : 'Create Admin'}
+                            </button>
                         </div>
                     </div>
-
-                    {/* Full Width Buttons */}
-                    <div className="col-12 d-flex justify-content-center gap-3 mt-4 pt-3 border-top">
-                        <Link to="/admin-registration" className="btn btn-outline-danger-600 px-32">Cancel</Link>
-                        <button type="submit" className="btn btn-primary-600 px-32">Save Admin</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     );

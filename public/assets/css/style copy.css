@@ -10716,9 +10716,9 @@ h6,
 }
 
 .bordered-table thead tr th {
-  background-color: var(--neutral-50) !important;
+  background-color: #c4161c !important;
   border-bottom: 1px solid var(--neutral-200) !important;
-  color: var(--text-primary-light) !important;
+  color: white !important;
   padding: 16px !important;
   font-size: 1rem;
   font-weight: 600;

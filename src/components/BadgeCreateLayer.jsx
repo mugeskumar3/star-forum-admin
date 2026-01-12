@@ -36,7 +36,7 @@ const BadgeCreateLayer = () => {
         };
 
         MockDataService.saveBadge(badgeData);
-        navigate('/master-creation/badge');
+        navigate('/badge');
     };
 
     return (
@@ -110,7 +110,7 @@ const BadgeCreateLayer = () => {
 
                         <div className="col-12 d-flex justify-content-start gap-3 mt-4">
                             <Link
-                                to="/master-creation/badge"
+                                to="/badge"
                                 className="btn btn-outline-danger-600 px-32"
                             >
                                 Cancel

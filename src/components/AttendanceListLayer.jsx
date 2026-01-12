@@ -1,94 +1,21 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
+import TablePagination from "./TablePagination";
 
 const AttendanceListLayer = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const attendanceData = [
-    {
-      id: 1,
-      name: "Mathiarasu M",
-      chapter: "ARAM",
-      mobile: "9940222426",
-      company: "TECHMAXX ENGINEERING",
-      category: "Fire & Safety",
-      status: "Present",
-    },
-    {
-      id: 2,
-      name: "Mohamed Umar",
-      chapter: "ARAM",
-      mobile: "9786803746",
-      company: "Harxa Tech",
-      category: "Software Developer",
-      status: "Absent",
-    },
-    {
-      id: 3,
-      name: "Saranya ES",
-      chapter: "ARAM",
-      mobile: "9176715967",
-      company: "ES Saranya & Company",
-      category: "Tax Consultant",
-      status: "Present",
-    },
-    {
-      id: 4,
-      name: "Kumaran V M",
-      chapter: "ARAM",
-      mobile: "9840492148",
-      company: "Yogi electricals",
-      category: "Electrical Contractor",
-      status: "Present",
-    },
-    {
-      id: 5,
-      name: "Mano Neelamegam",
-      chapter: "ARAM",
-      mobile: "9884788409",
-      company: "WUDFE INC",
-      category: "Interior Designer",
-      status: "Present",
-    },
-    {
-      id: 6,
-      name: "Prakash A",
-      chapter: "ARAM",
-      mobile: "9095237572",
-      company: "Kalash roofing",
-      category: "Water Proofing",
-      status: "Absent",
-    },
-    {
-      id: 7,
-      name: "Prabhakaran A",
-      chapter: "ARAM",
-      mobile: "9003385222",
-      company: "Varnam planners",
-      category: "Plan Approval Consultant",
-      status: "Present",
-    },
-    {
-      id: 8,
-      name: "Nirmal Raj R",
-      chapter: "ARAM",
-      mobile: "9003528919",
-      company: "Om Sai sivan enterprises",
-      category: "Computer Sales & Service",
-      status: "Present",
-    },
-    {
-      id: 9,
-      name: "Justin S",
-      chapter: "ARAM",
-      mobile: "9841155116",
-      company: "NA",
-      category: "Interior Designer",
-      status: "Present",
-    },
-  ];
+  const attendanceData = Array.from({ length: 20 }).map((_, i) => ({
+    id: i + 1,
+    name: ['Rajesh Kumar', 'Priya Sharma', 'Amit Patel', 'Sneha Reddy', 'Vikram Singh', 'Ananya Iyer', 'Suresh Nair', 'Megha Gupta', 'Arjun Verma', 'Kavita Joshi', 'Rahul Deshmukh', 'Pooja Malhotra', 'Sandeep Bansal', 'Neha Choudhury', 'Vijay Ranganathan', 'Shilpa Kulkarni', 'Manish Tiwari', 'Divya Saxena', 'Pankaj Agarwal', 'Swati Bhattacharya'][i],
+    chapter: ['ARAM', 'STAR', 'GALAXY', 'ELITE', 'TITAN', 'WARRIOR', 'KING', 'FORT', 'COAST', 'PORT', 'SPICE', 'METRO', 'GIDC', 'PINK', 'NAWABS', 'ROYAL', 'CITY', 'ELITE', 'STAR', 'ARAM'][i],
+    mobile: `9876543${100 + i}`,
+    company: ['Alpha Tech', 'Beta Solutions', 'Gamma University', 'Delta Research', 'Epsilon Labs', 'Zeta Corp', 'Sigma Industries', 'Iota Systems', 'Kappa Ventures', 'Lambda Group', 'Mu Software', 'Nu Enterprises', 'Xi Services', 'Omicron Networks', 'Pi Healthcare', 'Rho Finance', 'Sigma Media', 'Tau Education', 'Upsilon Global', 'Phi Logistics'][i],
+    category: ['Fire & Safety', 'Software Developer', 'Tax Consultant', 'Electrical Contractor', 'Interior Designer', 'Water Proofing', 'Plan Approval Consultant', 'Computer Sales', 'Insurance', 'Real Estate', 'Education', 'Marketing', 'Healthcare', 'Logistics', 'Agriculture', 'Legal', 'Consulting', 'Events', 'Photography', 'Textiles'][i],
+    status: i % 2 === 0 ? "Present" : "Absent",
+  }));
 
   // Search Filter
   const filteredData = attendanceData.filter(
@@ -108,6 +35,11 @@ const AttendanceListLayer = () => {
     setCurrentPage(pageNumber);
   };
 
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
+
   const statusMap = {
     Present:
       "bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm",
@@ -119,18 +51,7 @@ const AttendanceListLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
-          <span className="text-md fw-medium text-secondary-light mb-0">
-            Show
-          </span>
-          <select
-            className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-          >
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <h4 className="mb-0"  >Attendance List</h4>
           <form className="navbar-search">
             <input
               type="text"
@@ -138,7 +59,10 @@ const AttendanceListLayer = () => {
               name="search"
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
@@ -208,48 +132,17 @@ const AttendanceListLayer = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
-          <span className="text-secondary-light">
-            Showing {indexOfFirstRow + 1} to{" "}
-            {Math.min(indexOfLastRow, filteredData.length)} of{" "}
-            {filteredData.length} entries
-          </span>
-          <ul className="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-            <li className="page-item">
-              <button
-                className="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <Icon icon="ep:arrow-left-bold" className="" />
-              </button>
-            </li>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <li key={i} className="page-item">
-                <button
-                  className={`page-link ${
-                    currentPage === i + 1
-                      ? "bg-primary-600 text-white"
-                      : "bg-neutral-200 text-secondary-light"
-                  } fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md`}
-                  onClick={() => handlePageChange(i + 1)}
-                >
-                  {i + 1}
-                </button>
-              </li>
-            ))}
-            <li className="page-item">
-              <button
-                className="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <Icon icon="ep:arrow-right-bold" className="" />
-              </button>
-            </li>
-          </ul>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          totalRecords={filteredData.length}
+        />
       </div>
     </div>
   );

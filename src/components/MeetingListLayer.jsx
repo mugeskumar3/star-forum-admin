@@ -3,9 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import { MockDataService } from '../helper/MockDataService';
+import TablePagination from './TablePagination';
 
 const MeetingListLayer = () => {
     const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [showQRModal, setShowQRModal] = useState(false);
@@ -33,6 +36,23 @@ const MeetingListLayer = () => {
         }
     };
 
+    const totalRecords = data.length;
+    const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+    const currentData = data.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+    );
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    const handleRowsPerPageChange = (e) => {
+        setRowsPerPage(parseInt(e.target.value));
+        setCurrentPage(1);
+    };
+
     const showQRCode = (meeting) => {
         setSelectedMeeting(meeting);
         setShowQRModal(true);
@@ -41,7 +61,9 @@ const MeetingListLayer = () => {
     return (
         <div className="card h-100 p-0 radius-12">
             <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-                <h6 className="text-lg fw-semibold mb-0">Meetings List</h6>
+                <div className="d-flex align-items-center flex-wrap gap-3">
+                    <h4 className="mb-0"  >Meetings List</h4>
+                </div>
                 <Link
                     to="/meeting-creation/add"
                     className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
@@ -67,13 +89,13 @@ const MeetingListLayer = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.length === 0 ? (
+                            {currentData.length === 0 ? (
                                 <tr>
                                     <td colSpan="8" className="text-center">No meetings found.</td>
                                 </tr>
-                            ) : data.map((item, index) => (
+                            ) : currentData.map((item, index) => (
                                 <tr key={item.id}>
-                                    <td>{index + 1}.</td>
+                                    <td>{(currentPage - 1) * rowsPerPage + index + 1}.</td>
                                     <td>{item.topic}</td>
                                     <td>₹{item.amount}</td>
                                     <td>{item.chapter}</td>
@@ -120,6 +142,15 @@ const MeetingListLayer = () => {
                         </tbody>
                     </table>
                 </div>
+
+                <TablePagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                    totalRecords={totalRecords}
+                />
             </div>
 
             {/* Delete Confirmation Modal */}

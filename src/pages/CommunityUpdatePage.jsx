@@ -1,11 +1,11 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import CommunityUpdateFormLayer from "../components/CommunityUpdateFormLayer";
+import CommunityUpdateListLayer from "../components/CommunityUpdateListLayer";
 
 const CommunityUpdatePage = () => {
     return (
         <MasterLayout>
-            <CommunityUpdateFormLayer />
+            <CommunityUpdateListLayer />
         </MasterLayout>
     );
 };

@@ -61,61 +61,101 @@ const TestimonialsLayer = () => {
         key={index}
         icon={index < rating ? "material-symbols:star" : "material-symbols:star-outline"}
         className={index < rating ? "text-warning" : "text-secondary-light"}
+        style={{ fontSize: '14px' }}
       />
     ));
   };
 
   return (
-    <div className="card h-100 p-0 radius-12">
-      <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-lg fw-semibold mb-0">Testimonials</h6>
+    <div
+      style={{
+        background: 'var(--bg-color)',
+        minHeight: '100vh',
+        padding: '1.25rem'
+      }}
+    >
+      {/* Header */}
+      <div className="container-fluid mb-2">
+        <div className="d-flex align-items-center">
+          <div
+            style={{
+              width: '4px',
+              height: '32px',
+              background: 'var(--primary-600)',
+              borderRadius: '2px',
+              marginRight: '0.75rem'
+            }}
+          />
+          <div>
+            <p className="fw-bold mb-0" style={{ fontSize: '24px', color: 'var(--text-primary-light)' }}>
+              Testimonials Report
+            </p>
+            <p className="mb-0 small" style={{ color: 'var(--text-secondary-light)' }}>Member testimonials and ratings</p>
+          </div>
+        </div>
       </div>
 
-      <div className="card-body p-24">
-        <div className="table-responsive">
-          <table className="table bordered-table sm-table mb-0">
-            <thead>
-              <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">Member Name</th>
-                <th scope="col">Company</th>
-                <th scope="col">Testimonial</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Date</th>
-                <th scope="col" className="text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {testimonials.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}.</td>
-                  <td className="fw-semibold">{item.memberName}</td>
-                  <td>{item.company}</td>
-                  <td>
-                    <div style={{ maxWidth: '300px' }}>
-                      <p className="mb-0 text-truncate">{item.testimonial}</p>
-                    </div>
-                  </td>
-                  <td>
+      {/* Cards */}
+      <div className="container-fluid">
+        <div className="row g-2">
+          {testimonials.map(testimonial => (
+            <div key={testimonial.id} className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+              <div
+                className="h-100 shadow-sm"
+                style={{ backgroundColor: 'var(--white)', borderRadius: '14px', border: '1px solid var(--border-color)' }}
+              >
+                <div className="p-2">
+                  {/* Header */}
+                  <div className="d-flex align-items-center justify-content-between mb-1">
+                    <h6 className="mb-0 fw-semibold" style={{ fontSize: '15px', color: 'var(--text-primary-light)' }}>{testimonial.memberName}</h6>
                     <div className="d-flex gap-0">
-                      {renderStars(item.rating)}
+                      {renderStars(testimonial.rating)}
                     </div>
-                  </td>
-                  <td>{new Date(item.date).toLocaleDateString()}</td>
-                  <td className="text-center">
+                  </div>
+
+                  {/* Company */}
+                  <div style={{ fontSize: '11px', color: 'var(--text-secondary-light)' }} className="mb-2">
+                    {testimonial.company}
+                  </div>
+
+                  {/* Testimonial */}
+                  <div
+                    className="rounded-3 p-2 mb-2"
+                    style={{ background: 'var(--neutral-50)', border: '1px solid var(--border-color)', minHeight: '100px' }}
+                  >
+                    <p className="mb-0" style={{ fontSize: '12px', lineHeight: '1.6', color: 'var(--text-primary-light)' }}>
+                      {testimonial.testimonial.substring(0, 120)}
+                      {testimonial.testimonial.length > 120 ? '...' : ''}
+                    </p>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="d-flex align-items-center justify-content-between">
+                    <small style={{ fontSize: '10px', color: 'var(--text-secondary-light)' }}>
+                      <Icon icon="mdi:calendar" className="me-1" />
+                      {new Date(testimonial.date).toLocaleDateString()}
+                    </small>
                     <button
                       type="button"
-                      onClick={() => handleView(item)}
-                      className="bg-info-focus text-info-600 bg-hover-info-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                      onClick={() => handleView(testimonial)}
+                      className="btn btn-sm"
+                      style={{
+                        background: 'var(--primary-600)',
+                        color: '#fff',
+                        padding: '4px 12px',
+                        fontSize: '11px',
+                        borderRadius: '6px'
+                      }}
                       title="View Full Testimonial"
                     >
-                      <Icon icon="mdi:eye-outline" className="menu-icon" />
+                      <Icon icon="mdi:eye-outline" className="me-1" />
+                      View
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

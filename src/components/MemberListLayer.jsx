@@ -1,32 +1,22 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
+import TablePagination from "./TablePagination";
 
 const MemberListLayer = () => {
-  const [members, setMembers] = useState([
-    {
-      id: 1,
-      name: "Darlene Robertson",
-      image: "assets/images/users/user1.png",
-      chapter: "Star Chapter",
-      region: "North Region",
-      membershipId: "MEM-001",
-      status: "Active",
-      email: "darlene@example.com",
-    },
-    {
-      id: 2,
-      name: "Cody Fisher",
-      image: "assets/images/users/user2.png",
-      chapter: "Galaxy Chapter",
-      region: "South Region",
-      membershipId: "MEM-002",
-      status: "Inactive",
-      email: "cody@example.com",
-    },
-  ]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [members, setMembers] = useState(Array.from({ length: 20 }).map((_, i) => ({
+    id: i + 1,
+    name: ['Rajesh Kumar', 'Priya Sharma', 'Amit Patel', 'Sneha Reddy', 'Vikram Singh', 'Ananya Iyer', 'Suresh Nair', 'Megha Gupta', 'Arjun Verma', 'Kavita Joshi', 'Rahul Deshmukh', 'Pooja Malhotra', 'Sandeep Bansal', 'Neha Choudhury', 'Vijay Ranganathan', 'Shilpa Kulkarni', 'Manish Tiwari', 'Divya Saxena', 'Pankaj अग्रवाल', 'Swati Bhattacharya'][i],
+    image: `assets/images/users/user${(i % 5) + 1}.png`,
+    chapter: ['Chennai Central', 'Mumbai South', 'Delhi West', 'Bangalore East', 'Hyderabad North', 'Kolkata Metro', 'Pune City', 'Ahmedabad GIDC', 'Jaipur Pink', 'Lucknow Nawabs', 'Chandigarh Royal', 'Coimbatore Elite', 'Madurai Star', 'Trichy Titans', 'Salem Warriors', 'Erode Kings', 'Vellore Fort', 'Nellore Coast', 'Vizag Port', 'Kochi Spice'][i],
+    region: ['North Region', 'South Region', 'East Region', 'West Region', 'Central Region'][i % 5],
+    membershipId: `MEM-0${i + 100}`,
+    status: i % 2 === 0 ? "Active" : "Inactive",
+    email: `member${i + 1}@example.com`,
+  })));
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Filter Data
   const filteredMembers = members.filter(
@@ -34,6 +24,23 @@ const MemberListLayer = () => {
       member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.membershipId.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalRecords = filteredMembers.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredMembers.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
 
   const handleDeleteClick = (id) => {
     if (window.confirm("Are you sure you want to delete this member?")) {
@@ -45,18 +52,9 @@ const MemberListLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
-          <span className="text-md fw-medium text-secondary-light mb-0">
-            Show
-          </span>
-          <select
-            className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-          >
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <h4 className="mb-0"  >Member List</h4>
+        </div>
+        <div className="d-flex align-items-center flex-wrap gap-3">
           <form className="navbar-search">
             <input
               type="text"
@@ -64,44 +62,47 @@ const MemberListLayer = () => {
               name="search"
               placeholder="Search by Name or ID"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
+          <Link
+            to="/members-registration/add"
+            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+          >
+            <Icon
+              icon="ic:baseline-plus"
+              className="icon text-xl line-height-1"
+            />
+            Add New Member
+          </Link>
         </div>
-        <Link
-          to="/members-registration/add"
-          className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-          style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-        >
-          <Icon
-            icon="ic:baseline-plus"
-            className="icon text-xl line-height-1"
-          />
-          Add New Member
-        </Link>
       </div>
       <div className="card-body p-24">
         <div className="table-responsive scroll-sm">
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">Member Profile</th>
-                <th scope="col">Chapter</th>
-                <th scope="col">Region</th>
-                <th scope="col">Membership ID</th>
-                <th scope="col">Status</th>
-                <th scope="col" className="text-center">
+                <th scope="col" style={{ color: "black" }}>S.No</th>
+                <th scope="col" style={{ color: "black" }}>Member Profile</th>
+                <th scope="col" style={{ color: "black" }}>Chapter</th>
+                <th scope="col" style={{ color: "black" }}>Region</th>
+                <th scope="col" style={{ color: "black" }}>Membership ID</th>
+                <th scope="col" style={{ color: "black" }}>Status</th>
+                <th scope="col" className="text-center" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
             </thead>
             <tbody>
-              {filteredMembers.length > 0 ? (
-                filteredMembers.map((member, index) => (
+              {currentData.length > 0 ? (
+                currentData.map((member, index) => (
                   <tr key={member.id}>
-                    <td>{index + 1}</td>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <img
@@ -127,11 +128,10 @@ const MemberListLayer = () => {
                     <td>{member.membershipId}</td>
                     <td>
                       <span
-                        className={`badge ${
-                          member.status === "Active"
-                            ? "bg-success-focus text-success-main"
-                            : "bg-danger-focus text-danger-main"
-                        } px-24 py-4 rounded-pill fw-medium text-sm`}
+                        className={`badge ${member.status === "Active"
+                          ? "bg-success-focus text-success-main"
+                          : "bg-danger-focus text-danger-main"
+                          } px-24 py-4 rounded-pill fw-medium text-sm`}
                       >
                         {member.status}
                       </span>
@@ -177,6 +177,15 @@ const MemberListLayer = () => {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
       </div>
     </div>
   );

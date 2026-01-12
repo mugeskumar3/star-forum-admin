@@ -48,64 +48,130 @@ const ThankYouSlipLayer = () => {
     const pageTitle = activeTab === 'given' ? 'Thank You Slip - Given' : 'Thank You Slip - Received';
 
     return (
-        <div className="card h-100 p-0 radius-12">
-            <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-                <h6 className="text-lg fw-semibold mb-0">{pageTitle}</h6>
+        <div
+            style={{
+                background: 'var(--bg-color)',
+                minHeight: '100vh',
+                padding: '1.25rem'
+            }}
+        >
+            {/* Header */}
+            <div className="container-fluid mb-2">
+                <div className="d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center">
+                        <div
+                            style={{
+                                width: '4px',
+                                height: '32px',
+                                background: 'var(--primary-600)',
+                                borderRadius: '2px',
+                                marginRight: '0.75rem'
+                            }}
+                        />
+                        <div>
+                            <p className="fw-bold mb-0" style={{ fontSize: '24px', color: 'var(--text-primary-light)' }}>
+                                {pageTitle}
+                            </p>
+                            <p className="mb-0 small" style={{ color: 'var(--text-secondary-light)' }}>Chapter-wise thank you slip details</p>
+                        </div>
+                    </div>
 
-                {/* Tab Buttons */}
-                <div className="btn-group" role="group">
-                    <button
-                        type="button"
-                        className={`btn ${activeTab === 'given' ? 'btn-primary' : 'btn-outline-primary'}`}
-                        style={activeTab === 'given' ? { backgroundColor: "#C4161C", borderColor: "#C4161C" } : {}}
-                        onClick={() => setActiveTab('given')}
-                    >
-                        <Icon icon="mdi:hand-coin-outline" className="me-1" />
-                        Given
-                    </button>
-                    <button
-                        type="button"
-                        className={`btn ${activeTab === 'received' ? 'btn-primary' : 'btn-outline-primary'}`}
-                        style={activeTab === 'received' ? { backgroundColor: "#C4161C", borderColor: "#C4161C" } : {}}
-                        onClick={() => setActiveTab('received')}
-                    >
-                        <Icon icon="mdi:hand-heart-outline" className="me-1" />
-                        Received
-                    </button>
+                    {/* Tab Buttons */}
+                    <div className="btn-group" role="group">
+                        <button
+                            type="button"
+                            className={`btn ${activeTab === 'given' ? 'btn-primary' : 'btn-outline-primary'}`}
+                            style={activeTab === 'given' ? { backgroundColor: "var(--primary-600)", borderColor: "var(--primary-600)", color: "#fff" } : { color: "var(--primary-600)", borderColor: "var(--primary-600)" }}
+                            onClick={() => setActiveTab('given')}
+                        >
+                            <Icon icon="mdi:hand-coin-outline" className="me-1" />
+                            Given
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn ${activeTab === 'received' ? 'btn-primary' : 'btn-outline-primary'}`}
+                            style={activeTab === 'received' ? { backgroundColor: "var(--primary-600)", borderColor: "var(--primary-600)", color: "#fff" } : { color: "var(--primary-600)", borderColor: "var(--primary-600)" }}
+                            onClick={() => setActiveTab('received')}
+                        >
+                            <Icon icon="mdi:hand-heart-outline" className="me-1" />
+                            Received
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div className="card-body p-24">
-                <div className="row g-4">
-                    {currentData.chapters.map((chapter) => (
-                        <div key={chapter.id} className="col-lg-6 col-md-12">
-                            <div className="card border shadow-sm h-100">
-                                {/* Chapter Header */}
-                                <div className="card-header text-white p-3 d-flex justify-content-between align-items-center" style={{
-                                    background: 'linear-gradient(135deg, #B91C1C 0%, #7F1D1D 100%)'
-                                }}>
-                                    <h5 className="mb-0 fw-bold">{chapter.name}</h5>
-                                    <div className="bg-white text-success px-3 py-1 rounded">
-                                        <span className="fw-bold">{chapter.amount}</span>
+            {/* Cards */}
+            <div className="container-fluid">
+                <div className="row g-2">
+                    {currentData.chapters.map(chapter => (
+                        <div key={chapter.id} className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                            <div
+                                className="h-100 shadow-sm"
+                                style={{ backgroundColor: 'var(--white)', borderRadius: '14px', border: '1px solid var(--border-color)' }}
+                            >
+                                <div className="p-2">
+                                    {/* Chapter Header */}
+                                    <div className="d-flex align-items-center justify-content-between mb-1">
+                                        <h6 className="mb-0 fw-semibold" style={{ color: 'var(--text-primary-light)' }}>{chapter.name}</h6>
+                                        <span className="fw-bold" style={{ color: 'var(--success-600)', fontSize: '14px' }}>
+                                            {chapter.amount}
+                                        </span>
                                     </div>
-                                </div>
 
-                                {/* Members List */}
-                                <div className="card-body p-3">
-                                    <div className="d-flex flex-column gap-3">
-                                        {chapter.members.map((member) => (
-                                            <div key={member.id} className="d-flex align-items-center justify-content-between p-2 border-bottom">
-                                                <div className="d-flex align-items-center gap-3 flex-grow-1">
-                                                    <div className="avatar-circle bg-neutral-200 rounded-circle d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px', flexShrink: 0 }}>
-                                                        <Icon icon="mdi:account" className="text-neutral-600" style={{ fontSize: '24px' }} />
+                                    {/* Total Amount */}
+                                    <div
+                                        className="rounded-3 p-2 mb-2"
+                                        style={{ background: 'var(--success-600)', color: '#fff' }}
+                                    >
+                                        <div className="d-flex align-items-center justify-content-between" style={{ padding: '0px 5px' }}>
+                                            <span
+                                                style={{
+                                                    fontSize: '11px',
+                                                    fontWeight: 500,
+                                                    textTransform: 'uppercase',
+                                                    opacity: 0.85,
+                                                }}
+                                            >
+                                                Total Amount
+                                            </span>
+                                            <span style={{ fontSize: '18px', fontWeight: 700 }}>
+                                                {chapter.amount}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Members */}
+                                    <div className="d-flex flex-column gap-1">
+                                        {chapter.members.map(member => (
+                                            <div
+                                                key={member.id}
+                                                className="d-flex align-items-center justify-content-between border rounded-3 p-2"
+                                                style={{ background: 'var(--neutral-50)', borderColor: 'var(--border-color)', padding: '0px 5px' }}
+                                            >
+                                                {/* Left */}
+                                                <div className="flex-grow-1">
+                                                    <div className="fw-semibold" style={{ fontSize: '13px', padding: '0px 5px', color: 'var(--text-primary-light)' }}>
+                                                        {member.name}
                                                     </div>
-                                                    <div className="flex-grow-1">
-                                                        <h6 className="mb-0 fw-semibold">{member.name}</h6>
-                                                        <p className="mb-0 text-sm text-secondary-light fw-medium">{member.company}</p>
-                                                        <p className="mb-0 text-xs text-secondary-light">{member.category}</p>
+                                                    <div style={{ fontSize: '11px', padding: '0px 5px', color: 'var(--text-secondary-light)' }}>
+                                                        {member.company}
+                                                    </div>
+                                                    <div style={{ fontSize: '10px', padding: '0px 5px', color: 'var(--text-secondary-light)', opacity: 0.8 }}>
+                                                        {member.category}
                                                     </div>
                                                 </div>
-                                                <div className="fw-bold text-success" style={{ minWidth: '100px', textAlign: 'right' }}>
+
+                                                {/* Right */}
+                                                <div
+                                                    className="fw-bold"
+                                                    style={{
+                                                        fontSize: '15px',
+                                                        color: 'var(--success-600)',
+                                                        minWidth: '80px',
+                                                        textAlign: 'right',
+                                                        padding: '0px 5px'
+                                                    }}
+                                                >
                                                     {member.amount}
                                                 </div>
                                             </div>
