@@ -80,6 +80,8 @@ import WalletPage from "./pages/WalletPage";
 import WidgetsPage from "./pages/WidgetsPage";
 import WizardPage from "./pages/WizardPage";
 import RouteScrollToTop from "./helper/RouteScrollToTop";
+import { ToastContainer } from "react-toastify";
+
 import TextGeneratorNewPage from "./pages/TextGeneratorNewPage";
 import HomePageEight from "./pages/HomePageEight";
 import HomePageNine from "./pages/HomePageNine";
@@ -126,11 +128,21 @@ import ReferralNotePage from "./pages/ReferralNotePage";
 import ThankYouSlipPage from "./pages/ThankYouSlipPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import VisitorsReportPage from "./pages/VisitorsReportPage";
+import ShopListPage from "./pages/ShopListPage";
+import ShopCreatePage from "./pages/ShopCreatePage";
+import ShopFormPage from "./pages/ShopFormPage";
+import OrdersPage from "./pages/OrdersPage";
+import TrainingListPage from "./pages/TrainingListPage";
+import TrainingFormPage from "./pages/TrainingFormPage";
+import UserRoleListPage from "./pages/UserRoleListPage";
+import UserRoleFormPage from "./pages/UserRoleFormPage";
+import ChiefGuestListPage from "./pages/ChiefGuestListPage";
 
 function App() {
   return (
     <BrowserRouter>
       <RouteScrollToTop />
+      <ToastContainer />
       <Routes>
         <Route exact path="/" element={<HomePageEight />} />
 
@@ -169,33 +181,33 @@ function App() {
         />
         <Route
           exact
-          path="/master-creation/organisation"
+          path="/organisation"
           element={<OrganisationListPage />}
         />
         <Route
           exact
-          path="/master-creation/organisation/add"
+          path="/organisation/add"
           element={<OrganisationFormPage />}
         />
         <Route
           exact
-          path="/master-creation/organisation/edit/:id"
+          path="/organisation/edit/:id"
           element={<OrganisationFormPage />}
         />
         <Route
           exact
-          path="/master-creation/badge"
+          path="/badge"
           element={<BadgeCreationPage />}
         />
 
         <Route
           exact
-          path="/master-creation/badge/create"
+          path="/badge/create"
           element={<BadgeCreateFormPage />}
         />
         <Route
           exact
-          path="/master-creation/badge/assign"
+          path="/badge/assign"
           element={<BadgeAssignFormPage />}
         />
 
@@ -241,28 +253,62 @@ function App() {
           element={<FormPage title="Meeting Creation" />}
         />
         <Route exact path="/meeting-creation" element={<MeetingListPage />} />
-        <Route exact path="/meeting-creation/add" element={<MeetingFormPage />} />
-        <Route exact path="/meeting-creation/edit/:id" element={<MeetingFormPage />} />
+        <Route
+          exact
+          path="/meeting-creation/add"
+          element={<MeetingFormPage />}
+        />
+        <Route
+          exact
+          path="/meeting-creation/edit/:id"
+          element={<MeetingFormPage />}
+        />
         <Route
           exact
           path="/attendance-report"
           element={<AttendanceListPage />}
         />
         <Route exact path="/general-update" element={<GeneralUpdatePage />} />
-        <Route exact path="/community-update" element={<CommunityUpdatePage />} />
+        <Route
+          exact
+          path="/community-update"
+          element={<CommunityUpdatePage />}
+        />
         <Route exact path="/star-update" element={<StarUpdatePage />} />
-        <Route exact path="/training" element={<FormPage title="Training" />} />
+
+        {/* Training Module Routes */}
+        <Route exact path="/training-list" element={<TrainingListPage />} />
+        <Route exact path="/training-create" element={<TrainingFormPage />} />
+        <Route exact path="/training-edit/:id" element={<TrainingFormPage />} />
+        <Route exact path="/training-view/:id" element={<TrainingFormPage />} />
+
+        {/* User Roles Module Routes */}
+        <Route exact path="/user-roles" element={<UserRoleListPage />} />
+        <Route exact path="/user-roles/create" element={<UserRoleFormPage />} />
         <Route
           exact
-          path="/shop-list"
-          element={<FormPage title="Shop List" />}
+          path="/user-roles/edit/:id"
+          element={<UserRoleFormPage />}
         />
         <Route
           exact
-          path="/shop-create"
-          element={<FormPage title="Shop Create" />}
+          path="/user-roles/view/:id"
+          element={<UserRoleFormPage />}
         />
-        <Route exact path="/orders" element={<FormPage title="Orders" />} />
+
+        {/* Chief Guest Module Routes */}
+        <Route
+          exact
+          path="/chief-guest-list"
+          element={<ChiefGuestListPage />}
+        />
+
+        {/* Keeping old training route for safety if needed, or replace if strict */}
+        <Route exact path="/training" element={<TrainingListPage />} />
+
+        <Route exact path="/shop-list" element={<ShopListPage />} />
+        <Route exact path="/shop-create" element={<ShopCreatePage />} />
+        <Route exact path="/orders" element={<OrdersPage />} />
         <Route
           exact
           path="/log-mobile"
@@ -326,6 +372,9 @@ function App() {
         <Route exact path="/chat-message" element={<ChatMessagePage />} />
         <Route exact path="/chat-profile" element={<ChatProfilePage />} />
         <Route exact path="/code-generator" element={<CodeGeneratorPage />} />
+        <Route exact path="/shop-create" element={<ShopCreatePage />} />
+        <Route exact path="/shop-add" element={<ShopFormPage />} />
+        <Route exact path="/orders" element={<OrdersPage />} />
         <Route
           exact
           path="/code-generator-new"

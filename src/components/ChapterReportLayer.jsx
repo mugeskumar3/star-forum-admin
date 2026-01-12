@@ -1,8 +1,7 @@
 import React from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
-const ChapterReportLayer = () => {
-    // Mock data for chapters
+const ChapterReportDesign5 = () => {
     const chapters = [
         {
             id: 1,
@@ -51,99 +50,166 @@ const ChapterReportLayer = () => {
         }
     ];
 
+    const calculateTotal = (stats) => {
+        return stats.referrals + stats.visitors + stats.events +
+            stats.trainings + stats.absents + stats.oneToOne + stats.testimonials;
+    };
+
+    const statItems = [
+        { key: 'referrals', label: 'Referrals', icon: 'mdi:handshake', gradient: 'linear-gradient(135deg, #c4161c, #dc2626)' },
+        { key: 'visitors', label: 'Visitors', icon: 'mdi:account-check', gradient: 'linear-gradient(135deg, #dc2626, #ef4444)' },
+        { key: 'events', label: 'Events', icon: 'mdi:calendar-star', gradient: 'linear-gradient(135deg, #b91c1c, #c4161c)' },
+        { key: 'trainings', label: 'Trainings', icon: 'mdi:school', gradient: 'linear-gradient(135deg, #991b1b, #b91c1c)' },
+        { key: 'absents', label: 'Absents', icon: 'mdi:account-remove', gradient: 'linear-gradient(135deg, #7f1d1d, #991b1b)' },
+        { key: 'oneToOne', label: 'One to One', icon: 'mdi:account-multiple', gradient: 'linear-gradient(135deg, #c4161c, #e53e3e)' },
+        { key: 'testimonials', label: 'Testimonials', icon: 'mdi:star-circle', gradient: 'linear-gradient(135deg, #dc2626, #f87171)' }
+    ];
+
     return (
-        <div className="card border-0 shadow-sm rounded-3">
-            <div className="card-header bg-white border-bottom py-3 px-4">
-                <h6 className="mb-0 fw-bold text-dark">Chapter Performance</h6>
-                <p className="text-muted small mb-0 mt-1">Activity summary of all chapters</p>
+        <div
+            style={{
+                background: 'var(--bg-color)',
+                minHeight: '100vh',
+                padding: '1.5rem'
+            }}
+        >
+            {/* Header */}
+            <div className="container-fluid mb-3">
+                <div className="row align-items-center">
+                    <div className="col-md-8">
+                        <div className="d-flex align-items-center">
+                            <div
+                                style={{
+                                    width: '4px',
+                                    height: '36px',
+                                    background: 'var(--primary-600)',
+                                    borderRadius: '2px',
+                                    marginRight: '0.75rem'
+                                }}
+                            />
+                            <div>
+                                <p className="fw-bold mb-0" style={{ fontSize: '28px', color: 'var(--text-primary-light)' }}>
+                                    Chapter Performance
+                                </p>
+                                <p className="mb-0 small" style={{ color: 'var(--text-secondary-light)' }}>Live analytics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="card-body p-4 bg-light">
+            {/* Cards */}
+            <div className="container-fluid">
                 <div className="row g-3">
-                    {chapters.map((chapter, index) => (
-                        <div key={chapter.id} className="col-xl-4 col-lg-6 col-md-12">
-                            <div className="card border-0 h-100 hover-lift"
+                    {chapters.map(chapter => (
+                        <div key={chapter.id} className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                            <div
+                                className="h-100 shadow-sm"
                                 style={{
-                                    borderRadius: '12px',
-                                    backgroundColor: 'white',
-                                    border: '1px solid rgba(196, 22, 28, 0.1)'
-                                }}>
-
-                                {/* Color accent top */}
-                                <div style={{
-                                    height: '4px',
-                                    background: 'linear-gradient(90deg, #c4161c 0%, #e53e3e 100%)',
-                                    borderTopLeftRadius: '12px',
-                                    borderTopRightRadius: '12px'
-                                }}></div>
-
-                                {/* Card content */}
+                                    backgroundColor: 'var(--white)',
+                                    borderRadius: '16px',
+                                    border: '1px solid var(--border-color)',
+                                    transition: '0.3s ease'
+                                }}
+                            >
                                 <div className="p-3">
                                     {/* Header */}
-                                    <div className="d-flex align-items-center mb-3">
-                                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    <div
+                                        className="d-flex align-items-center justify-content-between mb-2"
+                                    >
+                                        {/* LEFT – Chapter Name */}
+                                        <h6 className="mb-0 fw-semibold" style={{ color: 'var(--text-primary-light)' }}>
+                                            {chapter.name}
+                                        </h6>
+
+                                        {/* RIGHT – Members Count */}
+                                        <span
                                             style={{
-                                                width: '40px',
-                                                height: '40px',
-                                                background: 'linear-gradient(135deg, #c4161c 0%, #e53e3e 100%)',
-                                                color: 'white',
-                                                fontWeight: '600',
-                                                fontSize: '14px'
-                                            }}>
-                                            {chapter.name.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <h6 className="mb-0 fw-bold text-dark">{chapter.name}</h6>
-                                            <div className="d-flex align-items-center gap-2 mt-1">
-                                                <span className="badge rounded-pill px-2 py-1"
-                                                    style={{
-                                                        backgroundColor: '#fee2e2',
-                                                        color: '#c4161c',
-                                                        fontSize: '11px'
-                                                    }}>
-                                                    {chapter.members} Members
-                                                </span>
-                                                <span className="text-muted small">• {chapter.region}</span>
-                                            </div>
+                                                fontSize: '12px',
+                                                fontWeight: 500,
+                                                color: 'var(--text-secondary-light)'
+                                            }}
+                                        >
+                                            {chapter.members} Members
+                                        </span>
+                                    </div>
+
+
+                                    {/* Total */}
+                                    <div
+                                        className="rounded-3 p-3 mb-3"
+                                        style={{
+                                            background: 'var(--primary-600)',
+                                            color: '#fff'
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <span
+                                                style={{
+                                                    fontSize: '11px',
+                                                    fontWeight: 500,
+                                                    textTransform: 'uppercase',
+                                                    opacity: 0.8
+                                                }}
+                                            >
+                                                Total Activities
+                                            </span>
+
+                                            <span
+                                                style={{
+                                                    fontSize: '20px',
+                                                    fontWeight: 700,
+                                                    lineHeight: 1
+                                                }}
+                                            >
+                                                {calculateTotal(chapter.stats)}
+                                            </span>
                                         </div>
                                     </div>
 
-                                    {/* Stats in compact grid */}
+
+                                    {/* Stats */}
                                     <div className="row g-2 mb-3">
-                                        {[
-                                            { label: 'Referrals', value: chapter.stats.referrals, color: '#c4161c' },
-                                            { label: 'Visitors', value: chapter.stats.visitors, color: '#e53e3e' },
-                                            { label: 'Events', value: chapter.stats.events, color: '#f56565' },
-                                            { label: 'Trainings', value: chapter.stats.trainings, color: '#c4161c' },
-                                            { label: 'Absents', value: chapter.stats.absents, color: '#e53e3e' },
-                                            { label: 'Thank Slips', value: chapter.stats.thankYouSlip, color: '#48bb78' },
-                                            { label: 'One to One', value: chapter.stats.oneToOne, color: '#f56565' },
-                                            { label: 'Testimonials', value: chapter.stats.testimonials, color: '#c4161c' }
-                                        ].map((stat, idx) => (
-                                            <div key={idx} className="col-6">
-                                                <div className="d-flex justify-content-between align-items-center p-2 rounded"
-                                                    style={{
-                                                        backgroundColor: idx % 2 === 0 ? 'rgba(196, 22, 28, 0.02)' : 'transparent'
-                                                    }}>
-                                                    <span className="small text-muted">{stat.label}</span>
-                                                    <span className="fw-bold" style={{
-                                                        color: stat.color,
-                                                        fontSize: '14px'
-                                                    }}>
-                                                        {stat.value}
-                                                    </span>
+                                        {statItems.map(item => (
+                                            <div key={item.key} className="col-6">
+                                                <div
+                                                    className="p-2 rounded-3 border"
+                                                    style={{ backgroundColor: 'var(--neutral-50)', borderColor: 'var(--border-color)' }}
+                                                >
+                                                    <div className="d-flex justify-content-between align-items-center">
+                                                        <Icon icon={item.icon} width="16" color="var(--primary-600)" />
+                                                        <span className="fw-bold" style={{ fontSize: '18px', color: 'var(--text-primary-light)' }}>
+                                                            {chapter.stats[item.key]}
+                                                        </span>
+                                                    </div>
+                                                    <div className="small" style={{ color: 'var(--text-secondary-light)' }}>{item.label}</div>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
 
-                                    {/* Mini summary */}
-                                    <div className="border-top pt-2">
-                                        <div className="d-flex justify-content-between align-items-center">
-                                            <span className="small text-muted">Total Activity</span>
-                                            <span className="fw-bold" style={{ color: '#c4161c' }}>
-                                                {Object.values(chapter.stats).reduce((a, b) => a + b, 0)}
-                                            </span>
+                                    {/* Thank You Slip */}
+                                    <div
+                                        className="p-3 rounded-3"
+                                        style={{
+                                            background: 'var(--success-50)',
+                                            border: '1px solid var(--success-100)'
+                                        }}
+                                    >
+                                        <div className="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <small className="fw-semibold text-success">Thank You Slips</small>
+                                                <div className="fw-bold" style={{ fontSize: '16px', color: 'var(--text-primary-light)' }}>
+                                                    {chapter.stats.thankYouSlip}
+                                                </div>
+                                            </div>
+                                            <Icon icon="mdi:cash-multiple" width="24" color="var(--success-600)" />
                                         </div>
                                     </div>
                                 </div>
@@ -153,7 +219,8 @@ const ChapterReportLayer = () => {
                 </div>
             </div>
         </div>
-    );
+    )
+
 };
 
-export default ChapterReportLayer;
+export default ChapterReportDesign5;

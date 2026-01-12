@@ -14,10 +14,16 @@ const OrganisationFormLayer = () => {
         zone: '',
         region: '',
         ed: '',
-        rds: [] // Array to store multiple RD names
+        rd: '' // Single RD name
     });
 
+    // const [rds, setRds] = useState([]); // Commented out multi-select state
+
     const [rdInput, setRdInput] = useState('');
+
+    // Mock ED and RD options
+    const edOptions = ['ED John Doe', 'ED Jane Smith', 'ED Alex Wilson'];
+    const rdOptions = ['RD Michael Brown', 'RD Sarah Connor', 'RD David Miller', 'RD Chris Evans', 'RD Natasha Romanoff'];
 
     useEffect(() => {
         if (id) {
@@ -33,7 +39,7 @@ const OrganisationFormLayer = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    // Handle RD Tag Input (Enter key to add)
+    /* Commented out multi-select handlers
     const handleRdKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -53,6 +59,7 @@ const OrganisationFormLayer = () => {
             rds: formData.rds.filter((_, index) => index !== indexToRemove)
         });
     };
+    */
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -66,7 +73,7 @@ const OrganisationFormLayer = () => {
         MockDataService.saveOrganisation(formData);
 
         // Redirect back to list
-        navigate('/master-creation/organisation');
+        navigate('/organisation');
     };
 
     return (
@@ -74,7 +81,7 @@ const OrganisationFormLayer = () => {
             {/* Card Header with Title and optional back button */}
             <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
                 <h5 className="text-lg fw-semibold mb-0">Create Organisation</h5>
-                <Link to="/master-creation/organisation" className="btn btn-outline-secondary btn-sm">
+                <Link to="/organisation" className="btn btn-outline-secondary btn-sm">
                     Back to List
                 </Link>
             </div>
@@ -105,15 +112,18 @@ const OrganisationFormLayer = () => {
 
                             <div className="mb-4">
                                 <label className="form-label fw-medium">ED (Executive Director) <span className="text-danger-600">*</span></label>
-                                <input
-                                    type="text"
+                                <select
                                     name="ed"
-                                    className="form-control"
-                                    placeholder="Enter ED Name"
+                                    className="form-select"
                                     value={formData.ed}
                                     onChange={handleInputChange}
                                     required
-                                />
+                                >
+                                    <option value="" disabled>Select ED Name</option>
+                                    {edOptions.map((ed, i) => (
+                                        <option key={i} value={ed}>{ed}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
@@ -132,10 +142,48 @@ const OrganisationFormLayer = () => {
                                 />
                             </div>
 
-                            {/* RD Multi-Select - Placed in second column */}
+                            {/* RD Single Selection */}
                             <div className="mb-4" style={{ marginTop: "30px" }}>
                                 <label className="form-label fw-medium">RD (Regional Director) <span className="text-danger-600">*</span></label>
+                                <select
+                                    name="rd"
+                                    className="form-select"
+                                    value={formData.rd}
+                                    onChange={handleInputChange}
+                                    required
+                                >
+                                    <option value="" disabled>Select RD Name</option>
+                                    {rdOptions.map((rd, i) => (
+                                        <option key={i} value={rd}>{rd}</option>
+                                    ))}
+                                </select>
+                                <div className="form-text">Select RD from the dropdown</div>
+                            </div>
+
+                            {/* Commented out multi-select UI
+                            <div className="mb-4" style={{ marginTop: "30px" }}>
+                                <label className="form-label fw-medium">RD (Regional Director) <span className="text-danger-600">*</span></label>
+                                <div className="mb-2">
+                                    <select 
+                                        className="form-select mb-2"
+                                        value=""
+                                        onChange={(e) => {
+                                            if (e.target.value && !formData.rds.includes(e.target.value)) {
+                                                setFormData({
+                                                    ...formData,
+                                                    rds: [...formData.rds, e.target.value]
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        <option value="" disabled>Select RD to add</option>
+                                        {rdOptions.map((rd, i) => (
+                                            <option key={i} value={rd}>{rd}</option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <div className="form-control d-flex flex-wrap gap-2 align-items-center min-height-48">
+                                    {formData.rds.length === 0 && <span className="text-secondary-light">No RDs selected</span>}
                                     {formData.rds.map((rd, index) => (
                                         <span key={index} className="badge bg-primary-100 text-primary-600 radius-4 text-sm d-flex align-items-center gap-1">
                                             {rd}
@@ -146,24 +194,16 @@ const OrganisationFormLayer = () => {
                                             />
                                         </span>
                                     ))}
-                                    <input
-                                        type="text"
-                                        className="border-0 bg-transparent flex-grow-1"
-                                        style={{ outline: "none", minWidth: "100px" }}
-                                        placeholder={formData.rds.length === 0 ? "Type RD Name and Press Enter" : ""}
-                                        value={rdInput}
-                                        onChange={(e) => setRdInput(e.target.value)}
-                                        onKeyDown={handleRdKeyDown}
-                                    />
                                 </div>
-                                <div className="form-text">Type a name and press <strong>Enter</strong> to add multiple RDs</div>
+                                <div className="form-text">Select RDs from the dropdown to add them to the list</div>
                             </div>
+                            */}
                         </div>
 
                         {/* Full Width Buttons */}
                         <div className="col-12 mt-4 pt-4 border-top">
                             <div className="d-flex justify-content-end gap-3">
-                                <Link to="/master-creation/organisation" className="btn btn-outline-secondary px-32">Cancel</Link>
+                                <Link to="/organisation" className="btn btn-outline-secondary px-32">Cancel</Link>
                                 <button type="submit" className="btn btn-primary px-32">
                                     <i className="fas fa-save me-2"></i>Save Organisation
                                 </button>

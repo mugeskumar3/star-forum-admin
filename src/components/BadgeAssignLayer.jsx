@@ -9,7 +9,7 @@ const BadgeAssignLayer = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Submit logic
-        navigate('/master-creation/badge');
+        navigate('/badge');
     };
 
     return (
@@ -75,7 +75,7 @@ const BadgeAssignLayer = () => {
                         </div>
 
                         <div className="col-12 d-flex justify-content-start gap-3 mt-4">
-                            <Link to="/master-creation/badge" className="btn btn-outline-danger-600 px-32">Cancel</Link>
+                            <Link to="/badge" className="btn btn-outline-danger-600 px-32">Cancel</Link>
                             <button type="submit" className="btn btn-primary-600 px-32">Submit</button>
                         </div>
                     </div>

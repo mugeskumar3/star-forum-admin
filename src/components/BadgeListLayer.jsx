@@ -3,9 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import { MockDataService } from '../helper/MockDataService';
+import TablePagination from './TablePagination';
 
 const BadgeListLayer = () => {
     const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
 
@@ -31,13 +34,41 @@ const BadgeListLayer = () => {
         }
     };
 
+    const totalRecords = data.length;
+    const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+    const currentData = data.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+    );
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    const handleRowsPerPageChange = (e) => {
+        setRowsPerPage(parseInt(e.target.value));
+        setCurrentPage(1);
+    };
+
     return (
         <div className="card h-100 p-0 radius-12">
             <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-                <h6 className="text-lg fw-semibold mb-0">Badge List</h6>
+                <div className="d-flex align-items-center flex-wrap gap-3">
+                    <h6 className="text-lg fw-semibold mb-0">Badge List</h6>
+                    <select
+                        className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px ms-3"
+                        value={rowsPerPage}
+                        onChange={handleRowsPerPageChange}
+                    >
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
                 <div className="d-flex gap-2">
                     <Link
-                        to="/master-creation/badge/create"
+                        to="/badge/create"
                         className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
                         style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
                     >
@@ -45,7 +76,7 @@ const BadgeListLayer = () => {
                         Create Badge
                     </Link>
                     <Link
-                        to="/master-creation/badge/assign"
+                        to="/badge/assign"
                         className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
                     >
                         <Icon icon="lucide:user-check" className="icon text-xl line-height-1" />
@@ -66,13 +97,13 @@ const BadgeListLayer = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.length === 0 ? (
+                            {currentData.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="text-center">No badges found.</td>
                                 </tr>
-                            ) : data.map((item, index) => (
+                            ) : currentData.map((item, index) => (
                                 <tr key={item.id}>
-                                    <td>{index + 1}.</td>
+                                    <td>{(currentPage - 1) * rowsPerPage + index + 1}.</td>
                                     <td>{item.type}</td>
                                     <td>{item.name}</td>
                                     <td>
@@ -102,6 +133,15 @@ const BadgeListLayer = () => {
                         </tbody>
                     </table>
                 </div>
+
+                <TablePagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                    totalRecords={totalRecords}
+                />
             </div>
 
             {/* Delete Confirmation Modal */}
