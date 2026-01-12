@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
+import TablePagination from "./TablePagination";
 
 const MemberListLayer = () => {
   const [members, setMembers] = useState([
@@ -25,8 +26,9 @@ const MemberListLayer = () => {
       email: "cody@example.com",
     },
   ]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Filter Data
   const filteredMembers = members.filter(
@@ -34,6 +36,23 @@ const MemberListLayer = () => {
       member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.membershipId.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalRecords = filteredMembers.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredMembers.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
 
   const handleDeleteClick = (id) => {
     if (window.confirm("Are you sure you want to delete this member?")) {
@@ -64,7 +83,10 @@ const MemberListLayer = () => {
               name="search"
               placeholder="Search by Name or ID"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
@@ -98,10 +120,10 @@ const MemberListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredMembers.length > 0 ? (
-                filteredMembers.map((member, index) => (
+              {currentData.length > 0 ? (
+                currentData.map((member, index) => (
                   <tr key={member.id}>
-                    <td>{index + 1}</td>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <img
@@ -127,11 +149,10 @@ const MemberListLayer = () => {
                     <td>{member.membershipId}</td>
                     <td>
                       <span
-                        className={`badge ${
-                          member.status === "Active"
-                            ? "bg-success-focus text-success-main"
-                            : "bg-danger-focus text-danger-main"
-                        } px-24 py-4 rounded-pill fw-medium text-sm`}
+                        className={`badge ${member.status === "Active"
+                          ? "bg-success-focus text-success-main"
+                          : "bg-danger-focus text-danger-main"
+                          } px-24 py-4 rounded-pill fw-medium text-sm`}
                       >
                         {member.status}
                       </span>
@@ -177,6 +198,15 @@ const MemberListLayer = () => {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
@@ -7,6 +7,7 @@ const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const handleDropdownClick = (event) => {
@@ -66,6 +67,14 @@ const MasterLayout = ({ children }) => {
           }
         });
       });
+
+      // Scroll active link into view
+      setTimeout(() => {
+        const activeLink = document.querySelector(".sidebar-menu .active-page");
+        if (activeLink && sidebarRef.current) {
+          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 300);
     };
 
     // Open the submenu that contains the active route
@@ -78,6 +87,31 @@ const MasterLayout = ({ children }) => {
       });
     };
   }, [location.pathname]);
+
+  useEffect(() => {
+    // Restore scroll position
+    const savedScrollPos = sessionStorage.getItem('sidebarScroll');
+    if (savedScrollPos && sidebarRef.current) {
+      sidebarRef.current.scrollTop = parseInt(savedScrollPos, 10);
+    }
+
+    const handleScroll = () => {
+      if (sidebarRef.current) {
+        sessionStorage.setItem('sidebarScroll', sidebarRef.current.scrollTop);
+      }
+    };
+
+    const sidebar = sidebarRef.current;
+    if (sidebar) {
+      sidebar.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (sidebar) {
+        sidebar.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, []);
 
   let sidebarControl = () => {
     seSidebarActive(!sidebarActive);
@@ -109,24 +143,24 @@ const MasterLayout = ({ children }) => {
         <div>
           <Link to="/" className="sidebar-logo">
             <img
-              src="assets/images/logo.png"
+              src="/assets/images/logo.png"
               alt="site logo"
               className="light-logo"
             />
             <img
-              src="assets/images/logo.png"
+              src="/assets/images/logo.png"
               alt="site logo"
               className="dark-logo"
             />
             <img
-              src="assets/images/logo-icon.png"
+              src="/assets/images/logo-icon.png"
               alt="site logo"
               className="logo-icon"
             />
           </Link>
         </div>
-        <div className="sidebar-menu-area">
-          <ul className="sidebar-menu" id="sidebar-menu">
+        <div className='sidebar-menu-area' ref={sidebarRef}>
+          <ul className='sidebar-menu' id='sidebar-menu'>
             {/* Dashboard */}
             <li>
               <NavLink
@@ -179,6 +213,13 @@ const MasterLayout = ({ children }) => {
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
                     Badge Creation
+                  <NavLink to='/organisation' className={(navData) => navData.isActive ? "active-page" : ""}>
+                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Organisation
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to='/badge' className={(navData) => navData.isActive ? "active-page" : ""}>
+                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Badge Creation
                   </NavLink>
                 </li>
               </ul>
@@ -634,7 +675,7 @@ const MasterLayout = ({ children }) => {
                         <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
                           <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
                             <img
-                              src="assets/images/notification/profile-1.png"
+                              src="/assets/images/notification/profile-1.png"
                               alt=""
                             />
                           </span>
@@ -679,7 +720,7 @@ const MasterLayout = ({ children }) => {
                         <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
                           <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
                             <img
-                              src="assets/images/notification/profile-2.png"
+                              src="/assets/images/notification/profile-2.png"
                               alt=""
                             />
                           </span>
@@ -737,7 +778,7 @@ const MasterLayout = ({ children }) => {
                     data-bs-toggle="dropdown"
                   >
                     <img
-                      src="assets/images/user.png"
+                      src="/assets/images/user.png"
                       alt="image_user"
                       className="w-40-px h-40-px object-fit-cover rounded-circle"
                     />
@@ -818,11 +859,13 @@ const MasterLayout = ({ children }) => {
         <div className="dashboard-main-body">{children}</div>
 
         {/* Footer section */}
-        <footer className="d-footer">
-          <div className="row align-items-center justify-content-between">
-            <div className="col-auto">
-              <p className="mb-0">© 2026 Star Business Solution. All Rights Reserved.</p>
-            </div>
+        <footer className='d-footer'>
+          <div className='row align-items-center justify-content-between'>
+            <p className="mb-0 text-end">
+              © {new Date().getFullYear()}{' '}
+              <span className="text-primary-600">Star Business.</span> All Rights Reserved.
+            </p>
+
           </div>
         </footer>
       </main>

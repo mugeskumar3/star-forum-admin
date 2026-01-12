@@ -2,9 +2,31 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
+import TablePagination from './TablePagination';
 
 const AdminRegistrationListLayer = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    // Mock data for demonstration
+    const allData = Array.from({ length: 45 }, (_, i) => i + 1);
+    const totalRecords = allData.length;
+    const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+    const currentData = allData.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+    );
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    const handleRowsPerPageChange = (e) => {
+        setRowsPerPage(parseInt(e.target.value));
+        setCurrentPage(1);
+    };
 
     const handleDelete = () => setShowDeleteModal(true);
     const handleClose = () => setShowDeleteModal(false);
@@ -14,8 +36,11 @@ const AdminRegistrationListLayer = () => {
             <div className="card h-100 p-0 radius-12">
                 <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                     <div className="d-flex align-items-center flex-wrap gap-3">
-                        <span className="text-md fw-medium text-secondary-light mb-0">Show</span>
-                        <select className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" defaultValue="10">
+                        <select
+                            className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
+                            value={rowsPerPage}
+                            onChange={handleRowsPerPageChange}
+                        >
                             <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="50">50</option>
@@ -56,9 +81,9 @@ const AdminRegistrationListLayer = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {[1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
+                                {currentData.map((item, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1}.</td>
+                                        <td>{(currentPage - 1) * rowsPerPage + index + 1}.</td>
                                         <td>
                                             <div className="d-flex align-items-center">
                                                 <span className="text-md mb-0 fw-normal text-secondary-light">
@@ -107,6 +132,15 @@ const AdminRegistrationListLayer = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    <TablePagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={handleRowsPerPageChange}
+                        totalRecords={totalRecords}
+                    />
                 </div>
             </div>
 

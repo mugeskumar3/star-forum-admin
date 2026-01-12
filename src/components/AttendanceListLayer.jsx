@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
+import TablePagination from "./TablePagination";
 
 const AttendanceListLayer = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -125,7 +126,10 @@ const AttendanceListLayer = () => {
           <select
             className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
             value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
+            onChange={(e) => {
+              setRowsPerPage(Number(e.target.value));
+              setCurrentPage(1);
+            }}
           >
             <option value="10">10</option>
             <option value="25">25</option>
@@ -138,7 +142,10 @@ const AttendanceListLayer = () => {
               name="search"
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
@@ -208,48 +215,17 @@ const AttendanceListLayer = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
-          <span className="text-secondary-light">
-            Showing {indexOfFirstRow + 1} to{" "}
-            {Math.min(indexOfLastRow, filteredData.length)} of{" "}
-            {filteredData.length} entries
-          </span>
-          <ul className="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-            <li className="page-item">
-              <button
-                className="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <Icon icon="ep:arrow-left-bold" className="" />
-              </button>
-            </li>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <li key={i} className="page-item">
-                <button
-                  className={`page-link ${
-                    currentPage === i + 1
-                      ? "bg-primary-600 text-white"
-                      : "bg-neutral-200 text-secondary-light"
-                  } fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md`}
-                  onClick={() => handlePageChange(i + 1)}
-                >
-                  {i + 1}
-                </button>
-              </li>
-            ))}
-            <li className="page-item">
-              <button
-                className="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <Icon icon="ep:arrow-right-bold" className="" />
-              </button>
-            </li>
-          </ul>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          totalRecords={filteredData.length}
+        />
       </div>
     </div>
   );

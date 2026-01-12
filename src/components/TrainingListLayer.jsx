@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import TablePagination from "./TablePagination";
 
 const TrainingListLayer = () => {
   // Static Dummy Data for Trainings
@@ -47,14 +48,32 @@ const TrainingListLayer = () => {
     },
   ]);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredTrainings = trainings.filter(
     (item) =>
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.module.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalRecords = filteredTrainings.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredTrainings.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
@@ -92,7 +111,10 @@ const TrainingListLayer = () => {
               name="search"
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
@@ -210,6 +232,15 @@ const TrainingListLayer = () => {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
       </div>
     </div>
   );

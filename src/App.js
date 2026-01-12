@@ -80,6 +80,8 @@ import WalletPage from "./pages/WalletPage";
 import WidgetsPage from "./pages/WidgetsPage";
 import WizardPage from "./pages/WizardPage";
 import RouteScrollToTop from "./helper/RouteScrollToTop";
+import { ToastContainer } from "react-toastify";
+
 import TextGeneratorNewPage from "./pages/TextGeneratorNewPage";
 import HomePageEight from "./pages/HomePageEight";
 import HomePageNine from "./pages/HomePageNine";
@@ -140,6 +142,7 @@ function App() {
   return (
     <BrowserRouter>
       <RouteScrollToTop />
+      <ToastContainer />
       <Routes>
         <Route exact path="/" element={<HomePageEight />} />
 
@@ -178,33 +181,33 @@ function App() {
         />
         <Route
           exact
-          path="/master-creation/organisation"
+          path="/organisation"
           element={<OrganisationListPage />}
         />
         <Route
           exact
-          path="/master-creation/organisation/add"
+          path="/organisation/add"
           element={<OrganisationFormPage />}
         />
         <Route
           exact
-          path="/master-creation/organisation/edit/:id"
+          path="/organisation/edit/:id"
           element={<OrganisationFormPage />}
         />
         <Route
           exact
-          path="/master-creation/badge"
+          path="/badge"
           element={<BadgeCreationPage />}
         />
 
         <Route
           exact
-          path="/master-creation/badge/create"
+          path="/badge/create"
           element={<BadgeCreateFormPage />}
         />
         <Route
           exact
-          path="/master-creation/badge/assign"
+          path="/badge/assign"
           element={<BadgeAssignFormPage />}
         />
 

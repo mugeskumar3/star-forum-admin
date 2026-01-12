@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import TablePagination from "./TablePagination";
 
 const ChiefGuestListLayer = () => {
   // Static Dummy Data for Chief Guests
@@ -35,6 +36,7 @@ const ChiefGuestListLayer = () => {
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const filteredGuests = guests.filter(
@@ -72,7 +74,10 @@ const ChiefGuestListLayer = () => {
               name="search"
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
@@ -96,10 +101,10 @@ const ChiefGuestListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredGuests.length > 0 ? (
-                filteredGuests.map((guest, index) => (
+              {currentData.length > 0 ? (
+                currentData.map((guest, index) => (
                   <tr key={guest.id}>
-                    <td>{index + 1}</td>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>
                       <span className="text-md mb-0 fw-medium text-secondary-light">
                         {guest.name}
@@ -155,6 +160,15 @@ const ChiefGuestListLayer = () => {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
       </div>
     </div>
   );

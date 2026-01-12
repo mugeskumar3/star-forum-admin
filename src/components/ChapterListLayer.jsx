@@ -1,6 +1,7 @@
-import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import TablePagination from "./TablePagination";
 
 const ChapterListLayer = () => {
   const [chapters, setChapters] = useState([
@@ -24,6 +25,7 @@ const ChapterListLayer = () => {
     },
   ]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // Initial Data for Filter/Search
@@ -32,6 +34,23 @@ const ChapterListLayer = () => {
       chapter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       chapter.country.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalRecords = filteredChapters.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredChapters.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
 
   const handleDeleteClick = (id) => {
     if (window.confirm("Are you sure you want to delete this chapter?")) {
@@ -62,7 +81,10 @@ const ChapterListLayer = () => {
               name="search"
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
@@ -97,10 +119,10 @@ const ChapterListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredChapters.length > 0 ? (
-                filteredChapters.map((chapter, index) => (
+              {currentData.length > 0 ? (
+                currentData.map((chapter, index) => (
                   <tr key={index}>
-                    <td>{index + 1}</td>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <span className="text-md mb-0 fw-normal text-secondary-light">
@@ -117,11 +139,10 @@ const ChapterListLayer = () => {
                     <td>{chapter.zone}</td>
                     <td>
                       <span
-                        className={`badge ${
-                          chapter.type === "Online"
-                            ? "bg-success-focus text-success-main"
-                            : "bg-primary-focus text-primary-main"
-                        } px-24 py-4 rounded-pill fw-medium text-sm`}
+                        className={`badge ${chapter.type === "Online"
+                          ? "bg-success-focus text-success-main"
+                          : "bg-primary-focus text-primary-main"
+                          } px-24 py-4 rounded-pill fw-medium text-sm`}
                       >
                         {chapter.type || chapter.meetingType}
                       </span>
@@ -168,6 +189,15 @@ const ChapterListLayer = () => {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
       </div>
     </div>
   );

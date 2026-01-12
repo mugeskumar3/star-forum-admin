@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import TablePagination from "./TablePagination";
 
 const ShopAdminListLayer = () => {
   const [products, setProducts] = useState([
@@ -50,14 +51,32 @@ const ShopAdminListLayer = () => {
     },
   ]);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalRecords = filteredProducts.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredProducts.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
 
   const handleDeleteClick = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
@@ -88,7 +107,10 @@ const ShopAdminListLayer = () => {
               name="search"
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
@@ -121,10 +143,10 @@ const ShopAdminListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((product, index) => (
+              {currentData.length > 0 ? (
+                currentData.map((product, index) => (
                   <tr key={index}>
-                    <td>{index + 1}</td>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <img
@@ -188,6 +210,15 @@ const ShopAdminListLayer = () => {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
       </div>
     </div>
   );
