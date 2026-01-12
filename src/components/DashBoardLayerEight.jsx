@@ -6,27 +6,87 @@ import RecentlyMembersJoined from "./child/RecentlyMembersJoined";
 
 const DashBoardLayerEight = () => {
   const top121Members = [
-    { name: "Wade Warren", value: 12 },
-    { name: "Jenny Wilson", value: 12 },
-    { name: "Guy Hawkins", value: 12 },
-    { name: "Cody Fisher", value: 12 },
-    { name: "Esther Howard", value: 12 },
+    {
+      name: "Karthikeyan P",
+      value: 25,
+      image: "assets/images/tamil_users/man1.png",
+    },
+    {
+      name: "Saravanan K",
+      value: 22,
+      image: "assets/images/tamil_users/man2.png",
+    },
+    {
+      name: "Muthu Kumar",
+      value: 20,
+      image: "assets/images/tamil_users/man1.png",
+    },
+    {
+      name: "Senthil Balaji",
+      value: 18,
+      image: "assets/images/tamil_users/man2.png",
+    },
+    {
+      name: "Vijay Sethupathi",
+      value: 15,
+      image: "assets/images/tamil_users/man1.png",
+    },
   ];
 
   const topReferralMembers = [
-    { name: "Floyd Miles", value: 12 },
-    { name: "Arlene McCoy", value: 12 },
-    { name: "Bessie Cooper", value: 12 },
-    { name: "Ralph Edwards", value: 12 },
-    { name: "Jerome Bell", value: 12 },
+    {
+      name: "Meenakshi S",
+      value: 45,
+      image: "assets/images/tamil_users/woman1.png",
+    },
+    {
+      name: "Lakshmi Priya",
+      value: 42,
+      image: "assets/images/tamil_users/woman2.png",
+    },
+    {
+      name: "Anitha Raj",
+      value: 40,
+      image: "assets/images/tamil_users/woman1.png",
+    },
+    {
+      name: "Revathi M",
+      value: 38,
+      image: "assets/images/tamil_users/woman2.png",
+    },
+    {
+      name: "Kanchana Devi",
+      value: 35,
+      image: "assets/images/tamil_users/woman1.png",
+    },
   ];
 
   const topBusinessGivers = [
-    { name: "Courtney Henry", value: 1200000 },
-    { name: "Theresa Webb", value: 1200000 },
-    { name: "Kathryn Murphy", value: 1200000 },
-    { name: "Darlene Robertson", value: 1200000 },
-    { name: "Jane Cooper", value: 1200000 },
+    {
+      name: "Ramesh Babu",
+      value: 1500000,
+      image: "assets/images/tamil_users/man2.png",
+    },
+    {
+      name: "Suresh Krishnan",
+      value: 1450000,
+      image: "assets/images/tamil_users/man1.png",
+    },
+    {
+      name: "Geetha Govindam",
+      value: 1400000,
+      image: "assets/images/tamil_users/woman1.png",
+    },
+    {
+      name: "Divya Bharathi",
+      value: 1350000,
+      image: "assets/images/tamil_users/woman2.png",
+    },
+    {
+      name: "Bala Murugan",
+      value: 1300000,
+      image: "assets/images/tamil_users/man2.png",
+    },
   ];
 
   return (

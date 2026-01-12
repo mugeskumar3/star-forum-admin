@@ -1,81 +1,103 @@
-import React, { useState, useEffect } from "react";
-import useReactApexChart from "../../hook/useReactApexChart";
-import ReactApexChart from "react-apexcharts";
+import React from "react";
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
+import highcharts3d from "highcharts/highcharts-3d";
+
+// Initialize the 3D module with fallback for different export structures
+if (typeof highcharts3d === "function") {
+  highcharts3d(Highcharts);
+} else if (typeof highcharts3d === "object" && highcharts3d.default) {
+  highcharts3d.default(Highcharts);
+}
 
 const PatientVisitByGender = () => {
-  let { patientVisitChartOptions } = useReactApexChart();
-  const [series, setSeries] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const fetchChartData = async () => {
-      return {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
-        data: [
-          2500000, 1800000, 8500000, 12000000, 2800000, 15000000, 2900000,
-          3200000, 900000, 10500000, 3500000, 4200000,
-        ],
-      };
-    };
-
-    fetchChartData().then((response) => {
-      setCategories(response.categories);
-      setSeries([{ name: "Visits", data: response.data }]);
-    });
-  }, []);
-
-  const formatValue = (value) => {
-    if (value >= 10000000) {
-      return (value / 10000000).toFixed(2) + "Cr";
-    } else if (value >= 100000) {
-      return (value / 100000).toFixed(2) + "L";
-    }
-    return value;
-  };
-
-  const chartOptions = {
-    ...patientVisitChartOptions,
-    xaxis: {
-      ...patientVisitChartOptions.xaxis,
-      categories: categories,
+  const options = {
+    chart: {
+      type: "column",
+      height: 350,
+      options3d: {
+        enabled: true,
+        alpha: 0,
+        beta: 25,
+        depth: 100,
+        viewDistance: 0,
+      },
+      backgroundColor: "transparent",
     },
-    yaxis: {
+    title: {
+      text: "",
+    },
+    xAxis: {
+      categories: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
       labels: {
-        formatter: (value) => formatValue(value),
+        skew3d: true,
         style: {
-          fontSize: "14px",
-          colors: "#666",  // visual fix
+          fontSize: "12px",
+          color: "#333",
+        },
+      },
+      gridLineWidth: 0,
+    },
+    yAxis: {
+      allowDecimals: false,
+      min: 0,
+      max: 80,
+      title: {
+        text: "",
+      },
+      gridLineWidth: 1,
+      gridLineColor: "#e0e0e0",
+      labels: {
+        style: {
+          fontSize: "12px",
+          color: "#333",
         },
       },
     },
-    grid: {
-      show: true,
-      padding: {
-        left: 20,
-        right: 0,
+    plotOptions: {
+      column: {
+        depth: 25,
+        colorByPoint: true, // Distributed colors
+        edgeWidth: 1,
+        edgeColor: "rgba(0,0,0,0.1)",
+        groupZPadding: 10,
       },
+    },
+    colors: [
+      {
+        linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+        stops: [
+          [0, "#C4161C"], // Start with Red
+          [1, "#1F1E46"], // End with Blue
+        ],
+      },
+    ],
+    series: [
+      {
+        name: "Visits",
+        data: [15, 25, 42, 38, 30, 75, 52, 62, 5, 2, 2, 2],
+        showInLegend: false,
+      },
+    ],
+    credits: {
+      enabled: false,
     },
     tooltip: {
-      enabled: true,
-      y: {
-        formatter: (val) => formatValue(val),
-      },
-    },
-    dataLabels: {
-      enabled: false, // cleaner look
+      headerFormat: "<b>{point.key}</b><br>",
+      pointFormat: "Visits: {point.y}",
     },
   };
 
@@ -89,13 +111,7 @@ const PatientVisitByGender = () => {
         </div>
         <div className="card-body p-24">
           <div id="patientVisitChart" className="y-value-left">
-            <ReactApexChart
-              options={chartOptions}
-              series={series}
-              type="bar"
-              height={260}
-              width={"100%"}
-            />
+            <HighchartsReact highcharts={Highcharts} options={options} />
           </div>
         </div>
       </div>

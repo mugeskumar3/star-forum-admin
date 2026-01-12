@@ -12025,8 +12025,8 @@ h6,
 .bordered-table thead tr th {
   background-color: var(--neutral-50) !important;
   border-bottom: 1px solid var(--neutral-200) !important;
-  color: var(--text-primary-light) !important;
-  padding: 16px !important;
+  color: white !important;
+  padding: 10px !important;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -12065,7 +12065,7 @@ h6,
 
 .bordered-table tbody tr td {
   color: var(--text-secondary-light);
-  padding: 16px !important;
+  padding: 10px !important;
   border-bottom: 1px solid var(--neutral-200);
   background-color: var(--white);
   vertical-align: middle;
@@ -15712,7 +15712,7 @@ td.fc-header-center {
 /* === dashboard body css end === */
 /* === footer css start === */
 .d-footer {
-  padding: 1.375rem 1.5rem;
+  padding: 7px 10px;
   background-color: var(--white);
   margin-block-start: auto;
 }

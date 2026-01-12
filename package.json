@@ -28,6 +28,8 @@
     "datatables.net": "^2.3.6",
     "datatables.net-dt": "^2.3.6",
     "flatpickr": "^4.6.13",
+    "highcharts": "^12.5.0",
+    "highcharts-react-official": "^3.2.3",
     "highlight.js": "^11.11.1",
     "isotope-layout": "^3.0.6",
     "jquery": "^3.7.1",

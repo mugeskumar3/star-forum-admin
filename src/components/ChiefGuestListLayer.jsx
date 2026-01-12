@@ -45,6 +45,22 @@ const ChiefGuestListLayer = () => {
       guest.organization.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Pagination Logic
+  const totalRecords = filteredGuests.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentData = filteredGuests.slice(indexOfFirstRow, indexOfLastRow);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+ 
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
+
   const handleDeleteClick = (id) => {
     if (window.confirm("Are you sure you want to delete this chief guest?")) {
       setGuests((prev) => prev.filter((guest) => guest.id !== id));

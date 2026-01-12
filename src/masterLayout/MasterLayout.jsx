@@ -72,7 +72,7 @@ const MasterLayout = ({ children }) => {
       setTimeout(() => {
         const activeLink = document.querySelector(".sidebar-menu .active-page");
         if (activeLink && sidebarRef.current) {
-          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       }, 300);
     };
@@ -90,25 +90,25 @@ const MasterLayout = ({ children }) => {
 
   useEffect(() => {
     // Restore scroll position
-    const savedScrollPos = sessionStorage.getItem('sidebarScroll');
+    const savedScrollPos = sessionStorage.getItem("sidebarScroll");
     if (savedScrollPos && sidebarRef.current) {
       sidebarRef.current.scrollTop = parseInt(savedScrollPos, 10);
     }
 
     const handleScroll = () => {
       if (sidebarRef.current) {
-        sessionStorage.setItem('sidebarScroll', sidebarRef.current.scrollTop);
+        sessionStorage.setItem("sidebarScroll", sidebarRef.current.scrollTop);
       }
     };
 
     const sidebar = sidebarRef.current;
     if (sidebar) {
-      sidebar.addEventListener('scroll', handleScroll);
+      sidebar.addEventListener("scroll", handleScroll);
     }
 
     return () => {
       if (sidebar) {
-        sidebar.removeEventListener('scroll', handleScroll);
+        sidebar.removeEventListener("scroll", handleScroll);
       }
     };
   }, []);
@@ -120,6 +120,23 @@ const MasterLayout = ({ children }) => {
   let mobileMenuControl = () => {
     setMobileMenu(!mobileMenu);
   };
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedTime = new Intl.DateTimeFormat("en-IN", {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  }).format(currentTime);
 
   return (
     <section className={mobileMenu ? "overlay active" : "overlay "}>
@@ -159,8 +176,8 @@ const MasterLayout = ({ children }) => {
             />
           </Link>
         </div>
-        <div className='sidebar-menu-area' ref={sidebarRef}>
-          <ul className='sidebar-menu' id='sidebar-menu'>
+        <div className="sidebar-menu-area" ref={sidebarRef}>
+          <ul className="sidebar-menu" id="sidebar-menu">
             {/* Dashboard */}
             <li>
               <NavLink
@@ -213,13 +230,6 @@ const MasterLayout = ({ children }) => {
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
                     Badge Creation
-                  <NavLink to='/organisation' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Organisation
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to='/badge' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Badge Creation
                   </NavLink>
                 </li>
               </ul>
@@ -619,6 +629,15 @@ const MasterLayout = ({ children }) => {
             </div>
             <div className="col-auto">
               <div className="d-flex flex-wrap align-items-center gap-3">
+                <span
+                  style={{
+                    color: "#C4161C",
+                    fontWeight: "600",
+                    fontSize: "16px",
+                  }}
+                >
+                  {formattedTime}
+                </span>
                 <ThemeToggleButton />
                 <div className="dropdown d-none d-sm-inline-block">
                   <button
@@ -859,13 +878,13 @@ const MasterLayout = ({ children }) => {
         <div className="dashboard-main-body">{children}</div>
 
         {/* Footer section */}
-        <footer className='d-footer'>
-          <div className='row align-items-center justify-content-between'>
+        <footer className="d-footer">
+          <div className="row align-items-center justify-content-between py-1">
             <p className="mb-0 text-end">
-              © {new Date().getFullYear()}{' '}
-              <span className="text-primary-600">Star Business.</span> All Rights Reserved.
+              © {new Date().getFullYear()}{" "}
+              <span className="text-primary-600">Star Business.</span> All
+              Rights Reserved.
             </p>
-
           </div>
         </footer>
       </main>
