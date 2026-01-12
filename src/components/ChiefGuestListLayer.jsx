@@ -45,23 +45,6 @@ const ChiefGuestListLayer = () => {
       guest.organization.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalRecords = filteredGuests.length;
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = filteredGuests.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handleRowsPerPageChange = (e) => {
-    setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
-  };
-
   const handleDeleteClick = (id) => {
     if (window.confirm("Are you sure you want to delete this chief guest?")) {
       setGuests((prev) => prev.filter((guest) => guest.id !== id));
@@ -133,10 +116,11 @@ const ChiefGuestListLayer = () => {
                     <td>{guest.email}</td>
                     <td>
                       <span
-                        className={`badge radius-4 px-10 py-4 text-sm ${guest.status === "Active"
-                          ? "bg-success-focus text-success-main"
-                          : "bg-danger-focus text-danger-main"
-                          }`}
+                        className={`badge radius-4 px-10 py-4 text-sm ${
+                          guest.status === "Active"
+                            ? "bg-success-focus text-success-main"
+                            : "bg-danger-focus text-danger-main"
+                        }`}
                       >
                         {guest.status}
                       </span>

@@ -129,8 +129,8 @@ const MasterLayout = ({ children }) => {
           sidebarActive
             ? "sidebar active "
             : mobileMenu
-              ? "sidebar sidebar-open"
-              : "sidebar"
+            ? "sidebar sidebar-open"
+            : "sidebar"
         }
       >
         <button
@@ -194,6 +194,25 @@ const MasterLayout = ({ children }) => {
               </Link>
               <ul className="sidebar-submenu">
                 <li>
+                  <NavLink
+                    to="/master-creation/organisation"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Organisation
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/master-creation/badge"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Badge Creation
                   <NavLink to='/organisation' className={(navData) => navData.isActive ? "active-page" : ""}>
                     <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Organisation
                   </NavLink>

@@ -145,8 +145,8 @@ const UserRoleListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((role) => (
+              {filteredRoles.length > 0 ? (
+                filteredRoles.map((role) => (
                   <tr key={role.id}>
                     <td>
                       <span className="text-md mb-0 fw-medium text-primary-600">

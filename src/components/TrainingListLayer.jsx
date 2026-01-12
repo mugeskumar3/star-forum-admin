@@ -148,8 +148,8 @@ const TrainingListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((item, index) => (
+              {filteredTrainings.length > 0 ? (
+                filteredTrainings.map((item) => (
                   <tr key={item.id}>
                     <td>
                       <span className="text-md mb-0 fw-medium text-primary-600">
