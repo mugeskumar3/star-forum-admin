@@ -121,6 +121,23 @@ const MasterLayout = ({ children }) => {
     setMobileMenu(!mobileMenu);
   };
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedTime = new Intl.DateTimeFormat("en-IN", {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  }).format(currentTime);
+
   return (
     <section className={mobileMenu ? "overlay active" : "overlay "}>
       {/* sidebar */}
@@ -612,6 +629,15 @@ const MasterLayout = ({ children }) => {
             </div>
             <div className="col-auto">
               <div className="d-flex flex-wrap align-items-center gap-3">
+                <span
+                  style={{
+                    color: "#C4161C",
+                    fontWeight: "600",
+                    fontSize: "16px",
+                  }}
+                >
+                  {formattedTime}
+                </span>
                 <ThemeToggleButton />
                 <div className="dropdown d-none d-sm-inline-block">
                   <button
@@ -853,7 +879,7 @@ const MasterLayout = ({ children }) => {
 
         {/* Footer section */}
         <footer className="d-footer">
-          <div className="row align-items-center justify-content-between">
+          <div className="row align-items-center justify-content-between py-1">
             <p className="mb-0 text-end">
               © {new Date().getFullYear()}{" "}
               <span className="text-primary-600">Star Business.</span> All
