@@ -119,6 +119,7 @@ import MeetingListPage from "./pages/MeetingListPage";
 import MeetingFormPage from "./pages/MeetingFormPage";
 
 import CommunityUpdatePage from "./pages/CommunityUpdatePage";
+import CommunityUpdateFormPage from "./pages/CommunityUpdateFormPage";
 import StarUpdatePage from "./pages/StarUpdatePage";
 
 import GeneralUpdatePage from "./pages/GeneralUpdatePage";
@@ -128,6 +129,7 @@ import ReferralNotePage from "./pages/ReferralNotePage";
 import ThankYouSlipPage from "./pages/ThankYouSlipPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import VisitorsReportPage from "./pages/VisitorsReportPage";
+import LogReportPage from "./pages/LogReportPage";
 import ShopListPage from "./pages/ShopListPage";
 import ShopCreatePage from "./pages/ShopCreatePage";
 import ShopFormPage from "./pages/ShopFormPage";
@@ -137,6 +139,7 @@ import TrainingFormPage from "./pages/TrainingFormPage";
 import UserRoleListPage from "./pages/UserRoleListPage";
 import UserRoleFormPage from "./pages/UserRoleFormPage";
 import ChiefGuestListPage from "./pages/ChiefGuestListPage";
+import GeneralUpdateListPage from "./pages/GeneralUpdateListPage";
 
 function App() {
   return (
@@ -269,10 +272,16 @@ function App() {
           element={<AttendanceListPage />}
         />
         <Route exact path="/general-update" element={<GeneralUpdatePage />} />
+        <Route exact path="/general-update-list" element={<GeneralUpdateListPage />} />
         <Route
           exact
           path="/community-update"
           element={<CommunityUpdatePage />}
+        />
+        <Route
+          exact
+          path="/community-update/add"
+          element={<CommunityUpdateFormPage />}
         />
         <Route exact path="/star-update" element={<StarUpdatePage />} />
 
@@ -309,12 +318,7 @@ function App() {
         <Route exact path="/shop-list" element={<ShopListPage />} />
         <Route exact path="/shop-create" element={<ShopCreatePage />} />
         <Route exact path="/orders" element={<OrdersPage />} />
-        <Route
-          exact
-          path="/log-mobile"
-          element={<FormPage title="Log Mobile" />}
-        />
-        <Route exact path="/log-web" element={<FormPage title="Log Web" />} />
+        <Route exact path="/log-report" element={<LogReportPage />} />
         <Route
           exact
           path="/renewal-report"

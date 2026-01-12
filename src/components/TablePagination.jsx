@@ -31,7 +31,21 @@ const TablePagination = ({
     };
 
     return (
-        <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mt-24">
+        <div className="d-flex align-items-center justify-content-end flex-wrap gap-3 mt-24">
+            <div className="d-flex align-items-center gap-2 me-8">
+                <span className="text-secondary-light fw-medium">Show</span>
+                <select
+                    className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
+                    value={rowsPerPage}
+                    onChange={onRowsPerPageChange}
+                >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="70">70</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
             <span className="text-secondary-light">
                 Showing {Math.min((currentPage - 1) * rowsPerPage + 1, totalRecords)} to {Math.min(currentPage * rowsPerPage, totalRecords)} of {totalRecords} entries
             </span>

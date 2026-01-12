@@ -176,65 +176,8 @@ const AdminUserFormLayer = () => {
                                     <option value="Admin">Admin</option>
                                     <option value="Executive">Executive</option>
                                     <option value="Director">Director</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* Section 2: Organisation Details */}
-                        <div className="col-12 mt-4">
-                            <h6 className="mb-3 text-primary-600 border-bottom pb-2">Create Organisation</h6>
-                        </div>
-
-                        <div className="col-lg-6">
-                            <div className="mb-3">
-                                <label className="form-label">Zone</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="zone"
-                                    value={formData.zone}
-                                    onChange={handleChange}
-                                    placeholder="Enter zone"
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Region</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="region"
-                                    value={formData.region}
-                                    onChange={handleChange}
-                                    placeholder="Enter region"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="col-lg-6">
-                            <div className="mb-3">
-                                <label className="form-label">ED (Executive Director)</label>
-                                <select
-                                    className="form-select"
-                                    name="ed"
-                                    value={formData.ed}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select ED</option>
-                                    {edOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">RD (Regional Director)</label>
-                                <select
-                                    className="form-select"
-                                    name="rd"
-                                    value={formData.rd}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select RD</option>
-                                    {rdOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                    <option value="ED">ED</option>
+                                    <option value="RD">RD</option>
                                 </select>
                             </div>
                         </div>
@@ -248,7 +191,7 @@ const AdminUserFormLayer = () => {
                             <div className="mb-3">
                                 <label className="form-label">Status</label>
                                 <div className="d-flex gap-3 mt-2">
-                                    <div className="form-check">
+                                    <div className="form-check" style={{ display: 'flex', alignItems: 'center' }}>
                                         <input
                                             className="form-check-input"
                                             type="radio"
@@ -260,7 +203,7 @@ const AdminUserFormLayer = () => {
                                         />
                                         <label className="form-check-label" htmlFor="active">Active</label>
                                     </div>
-                                    <div className="form-check">
+                                    <div className="form-check" style={{ display: 'flex', alignItems: 'center' }}>
                                         <input
                                             className="form-check-input"
                                             type="radio"

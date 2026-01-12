@@ -12023,7 +12023,7 @@ h6,
 }
 
 .bordered-table thead tr th {
-  background-color: var(--neutral-50) !important;
+  background-color: #c4161c !important;
   border-bottom: 1px solid var(--neutral-200) !important;
   color: white !important;
   padding: 10px !important;
