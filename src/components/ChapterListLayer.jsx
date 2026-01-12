@@ -4,26 +4,15 @@ import { Link } from "react-router-dom";
 import TablePagination from "./TablePagination";
 
 const ChapterListLayer = () => {
-  const [chapters, setChapters] = useState([
-    {
-      id: 1,
-      name: "Star Chapter",
-      country: "India",
-      state: "Tamil Nadu",
-      zone: "Zone 1",
-      type: "In Person",
-      createdDate: "2025-01-01",
-    },
-    {
-      id: 2,
-      name: "Galaxy Chapter",
-      country: "USA",
-      state: "California",
-      zone: "Zone 2",
-      type: "Online",
-      createdDate: "2025-01-05",
-    },
-  ]);
+  const [chapters, setChapters] = useState(Array.from({ length: 20 }).map((_, i) => ({
+    id: i + 1,
+    name: ['Chennai Central', 'Mumbai South', 'Delhi West', 'Bangalore East', 'Hyderabad North', 'Kolkata Metro', 'Pune City', 'Ahmedabad GIDC', 'Jaipur Pink', 'Lucknow Nawabs', 'Chandigarh Royal', 'Coimbatore Elite', 'Madurai Star', 'Trichy Titans', 'Salem Warriors', 'Erode Kings', 'Vellore Fort', 'Nellore Coast', 'Vizag Port', 'Kochi Spice'][i],
+    country: "India",
+    state: ['Tamil Nadu', 'Maharashtra', 'Delhi', 'Karnataka', 'Telangana', 'West Bengal', 'Maharashtra', 'Gujarat', 'Rajasthan', 'Uttar Pradesh', 'Punjab', 'Tamil Nadu', 'Tamil Nadu', 'Tamil Nadu', 'Tamil Nadu', 'Tamil Nadu', 'Tamil Nadu', 'Andhra Pradesh', 'Andhra Pradesh', 'Kerala'][i],
+    zone: `Zone ${i + 1}`,
+    type: i % 2 === 0 ? "In Person" : "Online",
+    createdDate: "2025-01-01",
+  })));
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -62,18 +51,9 @@ const ChapterListLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
-          <span className="text-md fw-medium text-secondary-light mb-0">
-            Show
-          </span>
-          <select
-            className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-          >
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <h4 className="mb-0"  >Chapter List</h4>
+        </div>
+        <div className="d-flex align-items-center flex-wrap gap-3">
           <form className="navbar-search">
             <input
               type="text"
@@ -88,32 +68,32 @@ const ChapterListLayer = () => {
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
+          <Link
+            to="/chapter-creation/add"
+            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+          >
+            <Icon
+              icon="ic:baseline-plus"
+              className="icon text-xl line-height-1"
+            />
+            Add New Chapter
+          </Link>
         </div>
-        <Link
-          to="/chapter-creation/add"
-          className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-          style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-        >
-          <Icon
-            icon="ic:baseline-plus"
-            className="icon text-xl line-height-1"
-          />
-          Add New Chapter
-        </Link>
       </div>
       <div className="card-body p-24">
         <div className="table-responsive scroll-sm">
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">Chapter Name</th>
-                <th scope="col">Country</th>
-                <th scope="col">State</th>
-                <th scope="col">Zone</th>
-                <th scope="col">Meeting Type</th>
-                <th scope="col">Created Date</th>
-                <th scope="col" className="text-center">
+                <th scope="col" style={{ color: "black" }}>S.No</th>
+                <th scope="col" style={{ color: "black" }}>Chapter Name</th>
+                <th scope="col" style={{ color: "black" }}>Country</th>
+                <th scope="col" style={{ color: "black" }}>State</th>
+                <th scope="col" style={{ color: "black" }}>Zone</th>
+                <th scope="col" style={{ color: "black" }}>Meeting Type</th>
+                <th scope="col" style={{ color: "black" }}>Created Date</th>
+                <th scope="col" className="text-center" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>

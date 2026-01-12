@@ -5,35 +5,15 @@ import TablePagination from "./TablePagination";
 
 const ChiefGuestListLayer = () => {
   // Static Dummy Data for Chief Guests
-  const [guests, setGuests] = useState([
-    {
-      id: 1,
-      name: "Dr. A.P.J. Abdul Kalam",
-      designation: "Scientist & Former President",
-      organization: "DRDO / ISRO",
-      contact: "9876543210",
-      email: "contact@abdulkalam.com",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Sundar Pichai",
-      designation: "CEO",
-      organization: "Google Alphabet",
-      contact: "9876543211",
-      email: "sundar@google.com",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Indra Nooyi",
-      designation: "Former CEO",
-      organization: "PepsiCo",
-      contact: "9876543212",
-      email: "indra.nooyi@pepsico.com",
-      status: "Inactive",
-    },
-  ]);
+  const [guests, setGuests] = useState(Array.from({ length: 20 }).map((_, i) => ({
+    id: i + 1,
+    name: ['Rajesh Kumar', 'Priya Sharma', 'Amit Patel', 'Sneha Reddy', 'Vikram Singh', 'Ananya Iyer', 'Suresh Nair', 'Megha Gupta', 'Arjun Verma', 'Kavita Joshi', 'Rahul Deshmukh', 'Pooja Malhotra', 'Sandeep Bansal', 'Neha Choudhury', 'Vijay Ranganathan', 'Shilpa Kulkarni', 'Manish Tiwari', 'Divya Saxena', 'Pankaj Agarwal', 'Swati Bhattacharya'][i],
+    designation: ['CEO', 'Managing Director', 'Professor', 'Scientist', 'Founder', 'Director', 'General Manager', 'Chief Architect', 'Lead Consultant', 'Principal Engineer', 'VP Engineering', 'Executive Director', 'Chairman', 'President', 'Partner', 'Associate Director', 'Head of Ops', 'Senior Scientist', 'Advisor', 'Consultant'][i],
+    organization: ['Alpha Tech', 'Beta Solutions', 'Gamma University', 'Delta Research', 'Epsilon Labs', 'Zeta Corp', 'Sigma Industries', 'Iota Systems', 'Kappa Ventures', 'Lambda Group', 'Mu Software', 'Nu Enterprises', 'Xi Services', 'Omicron Networks', 'Pi Healthcare', 'Rho Finance', 'Sigma Media', 'Tau Education', 'Upsilon Global', 'Phi Logistics'][i],
+    contact: `98765432${20 + i}`,
+    email: `guest${i + 1}@example.com`,
+    status: i % 2 === 0 ? "Active" : "Inactive",
+  })));
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,7 +35,7 @@ const ChiefGuestListLayer = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
- 
+
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
     setCurrentPage(1);
@@ -71,18 +51,9 @@ const ChiefGuestListLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
-          <span className="text-md fw-medium text-secondary-light mb-0">
-            Show
-          </span>
-          <select
-            className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-          >
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <h4 className="mb-0"  >Chief Guest List</h4>
+        </div>
+        <div className="d-flex align-items-center flex-wrap gap-3">
           <form className="navbar-search">
             <input
               type="text"
@@ -104,14 +75,14 @@ const ChiefGuestListLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">Name</th>
-                <th scope="col">Designation</th>
-                <th scope="col">Organization</th>
-                <th scope="col">Contact</th>
-                <th scope="col">Email</th>
-                <th scope="col">Status</th>
-                <th scope="col" className="text-center">
+                <th scope="col" style={{ color: "black" }}>S.No</th>
+                <th scope="col" style={{ color: "black" }}>Name</th>
+                <th scope="col" style={{ color: "black" }}>Designation</th>
+                <th scope="col" style={{ color: "black" }}>Organization</th>
+                <th scope="col" style={{ color: "black" }}>Contact</th>
+                <th scope="col" style={{ color: "black" }}>Email</th>
+                <th scope="col" style={{ color: "black" }}>Status</th>
+                <th scope="col" className="text-center" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -132,11 +103,10 @@ const ChiefGuestListLayer = () => {
                     <td>{guest.email}</td>
                     <td>
                       <span
-                        className={`badge radius-4 px-10 py-4 text-sm ${
-                          guest.status === "Active"
-                            ? "bg-success-focus text-success-main"
-                            : "bg-danger-focus text-danger-main"
-                        }`}
+                        className={`badge radius-4 px-10 py-4 text-sm ${guest.status === "Active"
+                          ? "bg-success-focus text-success-main"
+                          : "bg-danger-focus text-danger-main"
+                          }`}
                       >
                         {guest.status}
                       </span>

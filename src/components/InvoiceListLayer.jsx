@@ -45,19 +45,7 @@ const InvoiceListLayer = () => {
         <div className="card">
             <div className="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
                 <div className="d-flex flex-wrap align-items-center gap-3">
-                    <div className="d-flex align-items-center gap-2">
-                        <span>Show</span>
-                        <select
-                            className="form-select form-select-sm w-auto"
-                            value={rowsPerPage}
-                            onChange={handleRowsPerPageChange}
-                        >
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                        </select>
-                    </div>
+                    <h4 className="mb-0"  >Invoice List</h4>
                     <div className="icon-field">
                         <input
                             type="text"

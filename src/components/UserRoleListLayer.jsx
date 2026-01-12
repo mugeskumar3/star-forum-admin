@@ -5,40 +5,14 @@ import TablePagination from "./TablePagination";
 
 const UserRoleListLayer = () => {
   // Static Dummy Data for User Roles
-  const [roles, setRoles] = useState([
-    {
-      id: "ROLE-001",
-      name: "Super Admin",
-      description: "Full access to all modules and settings.",
-      activeUsers: 3,
-      createdDate: "01 Jan 2025",
-      status: "Active",
-    },
-    {
-      id: "ROLE-002",
-      name: "Chapter Admin",
-      description: "Manage specific chapter operations and members.",
-      activeUsers: 12,
-      createdDate: "05 Jan 2025",
-      status: "Active",
-    },
-    {
-      id: "ROLE-003",
-      name: "Member",
-      description: "Regular member access with limited permissions.",
-      activeUsers: 450,
-      createdDate: "10 Jan 2025",
-      status: "Active",
-    },
-    {
-      id: "ROLE-004",
-      name: "Guest",
-      description: "View-only access for visitors.",
-      activeUsers: 0,
-      createdDate: "15 Jan 2025",
-      status: "Inactive",
-    },
-  ]);
+  const [roles, setRoles] = useState(Array.from({ length: 20 }).map((_, i) => ({
+    id: `ROLE-0${i + 101}`,
+    name: ['Super Admin', 'Chapter Admin', 'Member', 'Guest', 'Regional Director', 'Executive Director', 'State Coordinator', 'Event Lead', 'Finance Admin', 'Membership Head', 'Chapter Lead', 'Zone Manager', 'Star Member', 'Elite Member', 'Titan Member', 'Warrior Member', 'King Member', 'Fort Admin', 'Coast Lead', 'Port Admin'][i],
+    description: `Full access to Section ${i + 1} modules and settings. Managed by ${['Rajesh', 'Priya', 'Amit', 'Sneha', 'Vikram', 'Ananya', 'Suresh', 'Megha', 'Arjun', 'Kavita', 'Rahul', 'Pooja', 'Sandeep', 'Neha', 'Vijay', 'Shilpa', 'Manish', 'Divya', 'Pankaj', 'Swati'][i]}.`,
+    activeUsers: Math.floor(Math.random() * 500),
+    createdDate: "01 Jan 2025",
+    status: i % 2 === 0 ? "Active" : "Inactive",
+  })));
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -88,18 +62,9 @@ const UserRoleListLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
-          <span className="text-md fw-medium text-secondary-light mb-0">
-            Show
-          </span>
-          <select
-            className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-          >
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <h4 className="mb-0"  >User Roles</h4>
+        </div>
+        <div className="d-flex align-items-center flex-wrap gap-3">
           <form className="navbar-search">
             <input
               type="text"
@@ -114,39 +79,40 @@ const UserRoleListLayer = () => {
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
+          <Link
+            to="/user-roles/create"
+            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+          >
+            <Icon
+              icon="ic:baseline-plus"
+              className="icon text-xl line-height-1"
+            />
+            Add New Role
+          </Link>
         </div>
-        <Link
-          to="/user-roles/create"
-          className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-        >
-          <Icon
-            icon="ic:baseline-plus"
-            className="icon text-xl line-height-1"
-          />
-          Add New Role
-        </Link>
       </div>
       <div className="card-body p-24">
         <div className="table-responsive scroll-sm">
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">Role ID</th>
-                <th scope="col">Role Name</th>
-                <th scope="col">Description</th>
-                <th scope="col" className="text-center">
+                <th scope="col" style={{ color: "black" }}>Role ID</th>
+                <th scope="col" style={{ color: "black" }}>Role Name</th>
+                <th scope="col" style={{ color: "black" }}>Description</th>
+                <th scope="col" className="text-center" style={{ color: "black" }}>
                   Active Users
                 </th>
-                <th scope="col">Created Date</th>
-                <th scope="col">Status</th>
-                <th scope="col" className="text-center">
+                <th scope="col" style={{ color: "black" }}>Created Date</th>
+                <th scope="col" style={{ color: "black" }}>Status</th>
+                <th scope="col" className="text-center" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
             </thead>
             <tbody>
-              {filteredRoles.length > 0 ? (
-                filteredRoles.map((role) => (
+              {currentData.length > 0 ? (
+                currentData.map((role) => (
                   <tr key={role.id}>
                     <td>
                       <span className="text-md mb-0 fw-medium text-primary-600">

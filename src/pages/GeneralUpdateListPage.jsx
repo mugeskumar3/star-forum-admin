@@ -2,7 +2,7 @@ import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
 import GeneralUpdateListLayer from "../components/GeneralUpdateListLayer";
 
-const GeneralUpdatePage = () => {
+const GeneralUpdateListPage = () => {
     return (
         <MasterLayout>
             <GeneralUpdateListLayer />
@@ -10,4 +10,4 @@ const GeneralUpdatePage = () => {
     );
 };
 
-export default GeneralUpdatePage;
+export default GeneralUpdateListPage;

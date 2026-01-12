@@ -3,54 +3,16 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import TablePagination from './TablePagination';
 
-const GeneralUpdateFormLayer = () => {
-    const [updates, setUpdates] = useState([
-        {
-            id: 1,
-            image: 'assets/images/user-list/user-list1.png',
-            from: 'Admin User',
-            to: 'All Members',
-            description: 'Monthly forum meeting announcement for January.',
-            location: 'Main Hall, Chennai',
-            dateTime: '12 Jan 2026, 10:00 AM'
-        },
-        {
-            id: 2,
-            image: 'assets/images/user-list/user-list2.png',
-            from: 'System Admin',
-            to: 'Chapter Leaders',
-            description: 'Update on new membership guidelines and portal changes.',
-            location: 'Online (Zoom)',
-            dateTime: '13 Jan 2026, 03:30 PM'
-        },
-        {
-            id: 3,
-            image: 'assets/images/user-list/user-list3.png',
-            from: 'Event Coordinator',
-            to: 'Star Members',
-            description: 'Annual gala dinner invitation and registration details.',
-            location: 'Grand Ballroom, Madurai',
-            dateTime: '15 Jan 2026, 07:00 PM'
-        },
-        {
-            id: 4,
-            image: 'assets/images/user-list/user-list4.png',
-            from: 'Regional Director',
-            to: 'Coimbatore Chapter',
-            description: 'Chapter-specific achievement awards and recognition.',
-            location: 'Cosmopolitan Club',
-            dateTime: '18 Jan 2026, 11:00 AM'
-        },
-        {
-            id: 5,
-            image: 'assets/images/user-list/user-list5.png',
-            from: 'Tech Support',
-            to: 'All Users',
-            description: 'Scheduled maintenance of the forum mobile app.',
-            location: 'Platform-wide',
-            dateTime: '20 Jan 2026, 12:00 AM'
-        }
-    ]);
+const GeneralUpdateListLayer = () => {
+    const [updates, setUpdates] = useState(Array.from({ length: 20 }).map((_, i) => ({
+        id: i + 1,
+        image: `assets/images/user-list/user-list${(i % 6) + 1}.png`,
+        from: ['Rajesh Kumar', 'Priya Sharma', 'Amit Patel', 'Sneha Reddy', 'Vikram Singh', 'Ananya Iyer', 'Suresh Nair', 'Megha Gupta', 'Arjun Verma', 'Kavita Joshi', 'Rahul Deshmukh', 'Pooja Malhotra', 'Sandeep Bansal', 'Neha Choudhury', 'Vijay Ranganathan', 'Shilpa Kulkarni', 'Manish Tiwari', 'Divya Saxena', 'Pankaj Agarwal', 'Swati Bhattacharya'][i],
+        to: 'All Members',
+        description: `Update for Section ${i + 1}: Maintenance and guidelines for membership.`,
+        location: ['Chennai', 'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Chandigarh', 'Coimbatore', 'Madurai', 'Trichy', 'Salem', 'Erode', 'Vellore', 'Nellore', 'Vizag', 'Kochi'][i],
+        dateTime: '12 Jan 2026, 10:00 AM'
+    })));
 
     const [searchTerm, setSearchTerm] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -84,18 +46,10 @@ const GeneralUpdateFormLayer = () => {
     return (
         <div className="card h-100 p-0 radius-12">
             <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-                <h4 style={{ color: "#C4161C" }}>General Update </h4>
                 <div className="d-flex align-items-center flex-wrap gap-3">
-                    <span className="text-md fw-medium text-secondary-light mb-0">Show</span>
-                    <select
-                        className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
-                        value={rowsPerPage}
-                        onChange={handleRowsPerPageChange}
-                    >
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </select>
+                    <h4 className="mb-0"  >General Update</h4>
+                </div>
+                <div className="d-flex align-items-center flex-wrap gap-3">
                     <form className="navbar-search">
                         <input
                             type="text"
@@ -110,32 +64,32 @@ const GeneralUpdateFormLayer = () => {
                         />
                         <Icon icon="ion:search-outline" className="icon" />
                     </form>
+                    <Link
+                        to="/general-update"
+                        className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+                        style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+                    >
+                        <Icon
+                            icon="ic:baseline-plus"
+                            className="icon text-xl line-height-1"
+                        />
+                        Add New Update
+                    </Link>
                 </div>
-                {/* <Link
-                    to="/general-update"
-                    className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-                    style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-                >
-                    <Icon
-                        icon="ic:baseline-plus"
-                        className="icon text-xl line-height-1"
-                    />
-                    Add New Update
-                </Link> */}
             </div>
             <div className="card-body p-24">
                 <div className="table-responsive scroll-sm">
                     <table className="table bordered-table sm-table mb-0">
                         <thead>
                             <tr>
-                                <th scope="col">S.No</th>
-                                <th scope="col">Uploaded Image</th>
-                                <th scope="col">From</th>
-                                <th scope="col">To</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Location</th>
-                                <th scope="col">Date and Time</th>
-                                <th scope="col" className="text-center">Action</th>
+                                <th scope="col" style={{ color: 'black' }}>S.No</th>
+                                <th scope="col" style={{ color: 'black' }}>Uploaded Image</th>
+                                <th scope="col" style={{ color: 'black' }}>From</th>
+                                <th scope="col" style={{ color: 'black' }}>To</th>
+                                <th scope="col" style={{ color: 'black' }}>Description</th>
+                                <th scope="col" style={{ color: 'black' }}>Location</th>
+                                <th scope="col" style={{ color: 'black' }}>Date and Time</th>
+                                <th scope="col" className="text-center" style={{ color: 'black' }}>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -158,27 +112,27 @@ const GeneralUpdateFormLayer = () => {
                                             </div>
                                         </td>
                                         <td>
-                                            <span className="text-md mb-0 fw-normal text-secondary-light">
+                                            <span className="text-md mb-0 fw-normal">
                                                 {update.from}
                                             </span>
                                         </td>
                                         <td>
-                                            <span className="text-md mb-0 fw-normal text-secondary-light">
+                                            <span className="text-md mb-0 fw-normal">
                                                 {update.to}
                                             </span>
                                         </td>
                                         <td>
-                                            <span className="text-md mb-0 fw-normal text-secondary-light">
+                                            <span className="text-md mb-0 fw-normal">
                                                 {update.description}
                                             </span>
                                         </td>
                                         <td>
-                                            <span className="text-md mb-0 fw-normal text-secondary-light">
+                                            <span className="text-md mb-0 fw-normal">
                                                 {update.location}
                                             </span>
                                         </td>
                                         <td>
-                                            <span className="text-md mb-0 fw-normal text-secondary-light">
+                                            <span className="text-md mb-0 fw-normal">
                                                 {update.dateTime}
                                             </span>
                                         </td>
@@ -193,12 +147,12 @@ const GeneralUpdateFormLayer = () => {
                                                         className="icon text-xl"
                                                     />
                                                 </button>
-                                                {/* <button
+                                                <button
                                                     type="button"
                                                     className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                                                 >
                                                     <Icon icon="lucide:edit" className="menu-icon" />
-                                                </button> */}
+                                                </button>
                                                 <button
                                                     type="button"
                                                     className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
@@ -235,4 +189,4 @@ const GeneralUpdateFormLayer = () => {
     );
 };
 
-export default GeneralUpdateFormLayer;
+export default GeneralUpdateListLayer;

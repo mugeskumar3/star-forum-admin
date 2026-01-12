@@ -4,18 +4,16 @@ import { Link } from 'react-router-dom';
 import TablePagination from './TablePagination';
 
 const UsersListLayer = () => {
-    const [users, setUsers] = useState([
-        { id: 1, joinDate: '25 Jan 2024', name: 'Kathryn Murphy', email: 'osgoodwy@gmail.com', department: 'HR', designation: 'Manager', status: 'Active', image: 'assets/images/user-list/user-list1.png' },
-        { id: 2, joinDate: '25 Jan 2024', name: 'Annette Black', email: 'redaniel@gmail.com', department: 'Design', designation: 'UI UX Designer', status: 'Inactive', image: 'assets/images/user-list/user-list2.png' },
-        { id: 3, joinDate: '10 Feb 2024', name: 'Ronald Richards', email: 'seannand@mail.ru', department: 'Design', designation: 'UI UX Designer', status: 'Active', image: 'assets/images/user-list/user-list3.png' },
-        { id: 4, joinDate: '10 Feb 2024', name: 'Eleanor Pena', email: 'miyokoto@mail.ru', department: 'Design', designation: 'UI UX Designer', status: 'Active', image: 'assets/images/user-list/user-list4.png' },
-        { id: 5, joinDate: '15 March 2024', name: 'Leslie Alexander', email: 'icadahli@gmail.com', department: 'Design', designation: 'UI UX Designer', status: 'Inactive', image: 'assets/images/user-list/user-list5.png' },
-        { id: 6, joinDate: '15 March 2024', name: 'Albert Flores', email: 'warn@mail.ru', department: 'Design', designation: 'UI UX Designer', status: 'Active', image: 'assets/images/user-list/user-list6.png' },
-        { id: 7, joinDate: '27 April 2024', name: 'Jacob Jones', email: 'zitka@mail.ru', department: 'Development', designation: 'Frontend developer', status: 'Active', image: 'assets/images/user-list/user-list7.png' },
-        { id: 8, joinDate: '25 Jan 2024', name: 'Jerome Bell', email: 'igerrin@gmail.com', department: 'Development', designation: 'Frontend developer', status: 'Inactive', image: 'assets/images/user-list/user-list8.png' },
-        { id: 9, joinDate: '30 April 2024', name: 'Marvin McKinney', email: 'maka@yandex.ru', department: 'Development', designation: 'Frontend developer', status: 'Active', image: 'assets/images/user-list/user-list2.png' },
-        { id: 10, joinDate: '30 April 2024', name: 'Cameron Williamson', email: 'danten@mail.ru', department: 'Development', designation: 'Frontend developer', status: 'Active', image: 'assets/images/user-list/user-list10.png' },
-    ]);
+    const [users, setUsers] = useState(Array.from({ length: 20 }).map((_, i) => ({
+        id: i + 1,
+        joinDate: '25 Jan 2024',
+        name: ['Rajesh Kumar', 'Priya Sharma', 'Amit Patel', 'Sneha Reddy', 'Vikram Singh', 'Ananya Iyer', 'Suresh Nair', 'Megha Gupta', 'Arjun Verma', 'Kavita Joshi', 'Rahul Deshmukh', 'Pooja Malhotra', 'Sandeep Bansal', 'Neha Choudhury', 'Vijay Ranganathan', 'Shilpa Kulkarni', 'Manish Tiwari', 'Divya Saxena', 'Pankaj Agarwal', 'Swati Bhattacharya'][i],
+        email: `user${i + 1}@example.com`,
+        department: ['HR', 'Design', 'Development', 'Sales', 'Marketing'][i % 5],
+        designation: ['Manager', 'UI UX Designer', 'Frontend Developer', 'Sales Head', 'Marketing Lead'][i % 5],
+        status: i % 2 === 0 ? 'Active' : 'Inactive',
+        image: `assets/images/user-list/user-list${(i % 6) + 1}.png`
+    })));
 
     const [searchTerm, setSearchTerm] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -49,16 +47,7 @@ const UsersListLayer = () => {
         <div className="card h-100 p-0 radius-12">
             <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                 <div className="d-flex align-items-center flex-wrap gap-3">
-                    <span className="text-md fw-medium text-secondary-light mb-0">Show</span>
-                    <select
-                        className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
-                        value={rowsPerPage}
-                        onChange={handleRowsPerPageChange}
-                    >
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </select>
+                    <h4 className="mb-0"  >Users List</h4>
                     <form className="navbar-search">
                         <input
                             type="text"
@@ -91,6 +80,7 @@ const UsersListLayer = () => {
                 <Link
                     to="/add-user"
                     className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+                    style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
                 >
                     <Icon
                         icon="ic:baseline-plus"

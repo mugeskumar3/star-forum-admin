@@ -55,16 +55,7 @@ const BadgeListLayer = () => {
         <div className="card h-100 p-0 radius-12">
             <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                 <div className="d-flex align-items-center flex-wrap gap-3">
-                    <h6 className="text-lg fw-semibold mb-0">Badge List</h6>
-                    <select
-                        className="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px ms-3"
-                        value={rowsPerPage}
-                        onChange={handleRowsPerPageChange}
-                    >
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                    </select>
+                    <h4 className="mb-0"  >Badge List</h4>
                 </div>
                 <div className="d-flex gap-2">
                     <Link
