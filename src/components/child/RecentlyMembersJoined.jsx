@@ -108,7 +108,16 @@ const RecentlyMembersJoined = () => {
               <tbody>
                 {members.map((member, index) => (
                   <tr key={index}>
-                    <td>{member.name}</td>
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <img
+                          src="/assets/images/avatar/avatar-group1.png"
+                          alt=""
+                          className="w-32-px h-32-px rounded-circle object-fit-cover"
+                        />
+                        {member.name}
+                      </div>
+                    </td>
                     <td>{member.category}</td>
                     <td>{member.company}</td>
                     <td>{member.location}</td>
