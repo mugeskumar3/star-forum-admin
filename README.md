@@ -1,70 +1,139 @@
-# Getting Started with Create React App
+# Star Forum Admin
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Star Forum Admin is a robust, scalable, and production-ready React administration panel built for managing the complete operations of the Star Business Forum. The application is designed with maintainability, performance, and extensibility in mind, following industry best practices used in enterprise-grade systems.
 
-## Available Scripts
+It provides a centralized platform to manage members, chapters, meetings, training programs, commerce operations, notifications, and reporting with role-based access control.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Star Forum Admin serves as the operational backbone for business forum management. The system enables administrators and authorized users to efficiently manage organizational workflows, track participation, generate reports, and maintain data integrity across all forum activities.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The architecture emphasizes modularity, reusable components, and clear separation of concerns to support long-term scalability and future enhancements.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Technology Stack
 
-### `npm run build`
+- **Frontend Framework:** React 19.x
+- **Routing:** React Router
+- **UI Framework:** Bootstrap 5
+- **Charts & Analytics:** ApexCharts
+- **Calendars & Scheduling:** FullCalendar
+- **Data Tables & Reports:** DataTables
+- **State Management:** React Hooks & Context-based patterns
+- **Build Tooling:** Create React App
+- **Code Quality:** ESLint, modular folder structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Core Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### User & Access Control
+- Admin and member authentication
+- Role-based authorization
+- Fine-grained permission management
 
-### `npm run eject`
+### Chapter & Member Management
+- Chapter creation and administration
+- Member onboarding and lifecycle management
+- Badge creation and assignment system
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Meetings & Attendance
+- Meeting scheduling and calendar integration
+- Attendance tracking and visitor management
+- Historical participation records
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Training & Programs
+- Training program setup and administration
+- Member participation tracking
+- Program-level reporting
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### E-Commerce & Invoicing
+- Product and shop management
+- Order processing and tracking
+- Invoice generation and management
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Community & Notifications
+- Community announcements
+- Targeted notifications
+- Engagement tracking
 
-## Learn More
+### Reporting & Analytics
+- Chapter-wise performance reports
+- Attendance and visitor analytics
+- Activity and audit logs
+- Operational insights
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Installation
 
-### Code Splitting
+Install project dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm install
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Running the Application
 
-### Making a Progressive Web App
+Start the development server:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+npm start
+```
 
-### Advanced Configuration
+- Runs the application in development mode
+- Accessible at http://localhost:3000
+- Hot reload enabled for faster development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## Testing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Run the test suite:
 
-### `npm run build` fails to minify
+```bash
+npm test
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Executes tests in interactive watch mode.
+
+---
+
+## Production Build
+
+Generate an optimized production build:
+
+```bash
+npm run build
+```
+
+- Creates a minified and optimized bundle
+- Output stored in the `build/` directory
+- Ready for deployment to static hosting services
+
+---
+
+## Project Structure
+
+```
+Star-Forum-Admin/
+├── public/           # Static assets
+├── src/
+│   ├── components/   # Reusable UI components
+│   ├── pages/        # Page components
+│   ├── helper/       # Utility functions
+│   ├── hook/         # Custom React hooks
+│   ├── masterLayout/ # Layout components
+│   └── App.js        # Main application component
+└── package.json      # Dependencies and scripts
+``
+---
+
+## License
+
+This project is licensed under the MIT License.
