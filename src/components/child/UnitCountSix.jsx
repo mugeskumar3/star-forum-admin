@@ -16,10 +16,10 @@ const UnitCountSix = () => {
   const memberStats = [
     { label: "Members", value: 998, icon: "ri-group-line" },
     { label: "Gold Club", value: 56, icon: "ri-vip-crown-line" },
-    { label: "Diamond", value: 98, icon: "ri-vip-diamond-line" },
-    { label: "Platinum", value: 102, icon: "ri-medal-line" },
-    { label: "Prime", value: 10, icon: "ri-user-star-line" },
-    { label: "Elite", value: 6, icon: "ri-vip-line" },
+    { label: "Diamond Club", value: 98, icon: "ri-vip-diamond-line" },
+    { label: "Platinum Club", value: 102, icon: "ri-medal-line" },
+    { label: "Prime Chapter", value: 10, icon: "ri-user-star-line" },
+    { label: "Elite Chapter", value: 6, icon: "ri-vip-line" },
   ];
 
   // Group 3: Achievement Stats
