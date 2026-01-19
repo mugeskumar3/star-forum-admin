@@ -68,69 +68,72 @@ The architecture emphasizes modularity, reusable components, and clear separatio
 
 ---
 
-## Project Structure
-
-The project follows a modular and scalable structure suitable for large applications:
-src/
-├── components/ # Reusable UI components
-├── pages/ # Feature-level pages
-├── routes/ # Application routing
-├── services/ # API interaction and business logic
-├── hooks/ # Custom React hooks
-├── utils/ # Utility and helper functions
-├── assets/ # Static assets and styles
-└── App.js # Application entry point
-
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js v18 or higher
-- npm or yarn package manager
-
----
-
 ## Installation
 
 Install project dependencies:
 
 ```bash
 npm install
+```
 
-Running the Application
+---
+
+## Running the Application
 
 Start the development server:
 
+```bash
 npm start
+```
 
+- Runs the application in development mode
+- Accessible at http://localhost:3000
+- Hot reload enabled for faster development
 
-Runs the application in development mode
+---
 
-Accessible at http://localhost:3000
-
-Hot reload enabled for faster development
-
-Testing
+## Testing
 
 Run the test suite:
 
+```bash
 npm test
-
+```
 
 Executes tests in interactive watch mode.
 
-Production Build
+---
+
+## Production Build
 
 Generate an optimized production build:
 
+```bash
 npm run build
+```
 
+- Creates a minified and optimized bundle
+- Output stored in the `build/` directory
+- Ready for deployment to static hosting services
 
-Creates a minified and optimized bundle
+---
 
-Output stored in the build/ directory
+## Project Structure
 
-Ready for deployment to static hosting services
+```
+Star-Forum-Admin/
+├── public/           # Static assets
+├── src/
+│   ├── components/   # Reusable UI components
+│   ├── pages/        # Page components
+│   ├── helper/       # Utility functions
+│   ├── hook/         # Custom React hooks
+│   ├── masterLayout/ # Layout components
+│   └── App.js        # Main application component
+└── package.json      # Dependencies and scripts
+``
+---
+
+## License
+
+This project is licensed under the MIT License.
