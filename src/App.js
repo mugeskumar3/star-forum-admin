@@ -117,6 +117,8 @@ import ChapterFormPage from "./pages/ChapterFormPage";
 
 import MeetingListPage from "./pages/MeetingListPage";
 import MeetingFormPage from "./pages/MeetingFormPage";
+import MeetingAttendancePage from "./pages/MeetingAttendancePage";
+import MemberHistoryPage from "./pages/MemberHistoryPage";
 
 import CommunityUpdatePage from "./pages/CommunityUpdatePage";
 import CommunityUpdateFormPage from "./pages/CommunityUpdateFormPage";
@@ -280,6 +282,16 @@ function App() {
           exact
           path="/attendance-report"
           element={<AttendanceListPage />}
+        />
+        <Route
+          exact
+          path="/meeting-attendance/:id"
+          element={<MeetingAttendancePage />}
+        />
+        <Route
+          exact
+          path="/member-history/:id"
+          element={<MemberHistoryPage />}
         />
         <Route exact path="/general-update" element={<GeneralUpdatePage />} />
         <Route
