@@ -41,7 +41,7 @@ const MasterLayout = ({ children }) => {
 
     // Attach click event listeners to all dropdown triggers
     const dropdownTriggers = document.querySelectorAll(
-      ".sidebar-menu .dropdown > a, .sidebar-menu .dropdown > Link"
+      ".sidebar-menu .dropdown > a, .sidebar-menu .dropdown > Link",
     );
 
     dropdownTriggers.forEach((trigger) => {
@@ -72,7 +72,7 @@ const MasterLayout = ({ children }) => {
       setTimeout(() => {
         const activeLink = document.querySelector(".sidebar-menu .active-page");
         if (activeLink && sidebarRef.current) {
-          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       }, 300);
     };
@@ -90,25 +90,25 @@ const MasterLayout = ({ children }) => {
 
   useEffect(() => {
     // Restore scroll position
-    const savedScrollPos = sessionStorage.getItem('sidebarScroll');
+    const savedScrollPos = sessionStorage.getItem("sidebarScroll");
     if (savedScrollPos && sidebarRef.current) {
       sidebarRef.current.scrollTop = parseInt(savedScrollPos, 10);
     }
 
     const handleScroll = () => {
       if (sidebarRef.current) {
-        sessionStorage.setItem('sidebarScroll', sidebarRef.current.scrollTop);
+        sessionStorage.setItem("sidebarScroll", sidebarRef.current.scrollTop);
       }
     };
 
     const sidebar = sidebarRef.current;
     if (sidebar) {
-      sidebar.addEventListener('scroll', handleScroll);
+      sidebar.addEventListener("scroll", handleScroll);
     }
 
     return () => {
       if (sidebar) {
-        sidebar.removeEventListener('scroll', handleScroll);
+        sidebar.removeEventListener("scroll", handleScroll);
       }
     };
   }, []);
@@ -130,13 +130,23 @@ const MasterLayout = ({ children }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const formattedTime = new Intl.DateTimeFormat("en-IN", {
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
+  const dateStr = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Asia/Kolkata",
+  })
+    .format(currentTime)
+    .replace(/ /g, "-");
+
+  const timeStr = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: true,
     timeZone: "Asia/Kolkata",
   }).format(currentTime);
+
+  const formattedTime = `${dateStr} ${timeStr}`;
 
   return (
     <section className={mobileMenu ? "overlay active" : "overlay "}>
@@ -176,8 +186,8 @@ const MasterLayout = ({ children }) => {
             />
           </Link>
         </div>
-        <div className='sidebar-menu-area' ref={sidebarRef}>
-          <ul className='sidebar-menu' id='sidebar-menu'>
+        <div className="sidebar-menu-area" ref={sidebarRef}>
+          <ul className="sidebar-menu" id="sidebar-menu">
             {/* Dashboard */}
             <li>
               <NavLink
@@ -211,14 +221,25 @@ const MasterLayout = ({ children }) => {
               </Link>
               <ul className="sidebar-submenu">
                 <li>
-
-                  <NavLink to='/organisation' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Organisation
+                  <NavLink
+                    to="/organisation"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Organisation
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to='/badge' className={(navData) => navData.isActive ? "active-page" : ""}>
-                    <i className='ri-circle-fill circle-icon text-primary-600 w-auto' /> Badge Creation
+                  <NavLink
+                    to="/badge"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Badge Creation
                   </NavLink>
                 </li>
               </ul>
@@ -606,7 +627,7 @@ const MasterLayout = ({ children }) => {
                 >
                   {formattedTime}
                 </span>
-                <ThemeToggleButton />
+                {/* <ThemeToggleButton /> */}
                 <div className="dropdown d-none d-sm-inline-block">
                   <button
                     className="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
@@ -846,13 +867,13 @@ const MasterLayout = ({ children }) => {
         <div className="dashboard-main-body">{children}</div>
 
         {/* Footer section */}
-        <footer className='d-footer'>
-          <div className='row align-items-center justify-content-between'>
+        <footer className="d-footer">
+          <div className="row align-items-center justify-content-between">
             <p className="mb-0 text-end">
-              © {new Date().getFullYear()}{' '}
-              <span className="text-primary-600">Star Business.</span> All Rights Reserved.
+              © {new Date().getFullYear()}{" "}
+              <span className="text-primary-600">Star Business.</span> All
+              Rights Reserved.
             </p>
-
           </div>
         </footer>
       </main>

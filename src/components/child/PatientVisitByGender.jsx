@@ -54,7 +54,6 @@ const PatientVisitByGender = () => {
     yAxis: {
       allowDecimals: false,
       min: 0,
-      max: 80,
       title: {
         text: "",
       },
@@ -64,6 +63,13 @@ const PatientVisitByGender = () => {
         style: {
           fontSize: "12px",
           color: "#333",
+        },
+        formatter: function () {
+          if (this.value >= 10000000)
+            return (this.value / 10000000).toFixed(1) + " Cr";
+          if (this.value >= 100000)
+            return (this.value / 100000).toFixed(1) + " L";
+          return this.value;
         },
       },
     },
@@ -87,8 +93,11 @@ const PatientVisitByGender = () => {
     ],
     series: [
       {
-        name: "Visits",
-        data: [15, 25, 42, 38, 30, 75, 52, 62, 5, 2, 2, 2],
+        name: "Values",
+        data: [
+          1500000, 2500000, 5000000, 8000000, 10500000, 15000000, 22000000,
+          30000000, 28000000, 12000000, 5000000, 2000000,
+        ],
         showInLegend: false,
       },
     ],
@@ -97,7 +106,12 @@ const PatientVisitByGender = () => {
     },
     tooltip: {
       headerFormat: "<b>{point.key}</b><br>",
-      pointFormat: "Visits: {point.y}",
+      pointFormatter: function () {
+        let val = this.y;
+        if (val >= 10000000) val = (val / 10000000).toFixed(1) + " Cr";
+        else if (val >= 100000) val = (val / 100000).toFixed(1) + " L";
+        return "Visits: " + val;
+      },
     },
   };
 
