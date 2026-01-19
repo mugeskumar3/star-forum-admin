@@ -132,7 +132,7 @@ const MasterLayout = ({ children }) => {
 
   const dateStr = new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
-    month: "short",
+    month: "long",
     year: "numeric",
     timeZone: "Asia/Kolkata",
   })
@@ -240,6 +240,28 @@ const MasterLayout = ({ children }) => {
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
                     Badge Creation
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/award"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Award
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/business-category"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Business Category
                   </NavLink>
                 </li>
               </ul>

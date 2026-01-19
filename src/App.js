@@ -140,6 +140,10 @@ import UserRoleListPage from "./pages/UserRoleListPage";
 import UserRoleFormPage from "./pages/UserRoleFormPage";
 import ChiefGuestListPage from "./pages/ChiefGuestListPage";
 import GeneralUpdateListPage from "./pages/GeneralUpdateListPage";
+import AwardListPage from "./pages/AwardListPage";
+import AwardFormPage from "./pages/AwardFormPage";
+import BusinessCategoryListPage from "./pages/BusinessCategoryListPage";
+import BusinessCategoryFormPage from "./pages/BusinessCategoryFormPage";
 
 function App() {
   return (
@@ -182,11 +186,7 @@ function App() {
           path="/admin-registration/edit/:id"
           element={<AdminRegistrationEditPage />}
         />
-        <Route
-          exact
-          path="/organisation"
-          element={<OrganisationListPage />}
-        />
+        <Route exact path="/organisation" element={<OrganisationListPage />} />
         <Route
           exact
           path="/organisation/add"
@@ -197,21 +197,31 @@ function App() {
           path="/organisation/edit/:id"
           element={<OrganisationFormPage />}
         />
-        <Route
-          exact
-          path="/badge"
-          element={<BadgeCreationPage />}
-        />
+        <Route exact path="/badge" element={<BadgeCreationPage />} />
 
+        <Route exact path="/badge/create" element={<BadgeCreateFormPage />} />
+        <Route exact path="/badge/assign" element={<BadgeAssignFormPage />} />
+
+        {/* Award Module Routes */}
+        <Route exact path="/award" element={<AwardListPage />} />
+        <Route exact path="/award/add" element={<AwardFormPage />} />
+        <Route exact path="/award/edit/:id" element={<AwardFormPage />} />
+
+        {/* Business Category Module Routes */}
         <Route
           exact
-          path="/badge/create"
-          element={<BadgeCreateFormPage />}
+          path="/business-category"
+          element={<BusinessCategoryListPage />}
         />
         <Route
           exact
-          path="/badge/assign"
-          element={<BadgeAssignFormPage />}
+          path="/business-category/add"
+          element={<BusinessCategoryFormPage />}
+        />
+        <Route
+          exact
+          path="/business-category/edit/:id"
+          element={<BusinessCategoryFormPage />}
         />
 
         <Route
@@ -272,7 +282,11 @@ function App() {
           element={<AttendanceListPage />}
         />
         <Route exact path="/general-update" element={<GeneralUpdatePage />} />
-        <Route exact path="/general-update-list" element={<GeneralUpdateListPage />} />
+        <Route
+          exact
+          path="/general-update-list"
+          element={<GeneralUpdateListPage />}
+        />
         <Route
           exact
           path="/community-update"
