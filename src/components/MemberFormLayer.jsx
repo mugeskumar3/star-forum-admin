@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Select from "react-select";
 
 const MemberFormLayer = () => {
   const { id } = useParams();
@@ -97,6 +98,13 @@ const MemberFormLayer = () => {
     }));
   };
 
+  const handleSelectChange = (selectedOption, { name }) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "",
+    }));
+  };
+
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFormData({
@@ -110,6 +118,67 @@ const MemberFormLayer = () => {
     e.preventDefault();
     console.log("Member Data Submitted:", formData);
     navigate("/members-registration");
+  };
+
+  // Options for React Select
+  const regionOptions = [
+    { value: "North Region", label: "North Region" },
+    { value: "South Region", label: "South Region" },
+  ];
+
+  const chapterOptions = [
+    { value: "Star Chapter", label: "Star Chapter" },
+    { value: "Galaxy Chapter", label: "Galaxy Chapter" },
+  ];
+
+  const businessCategoryOptions = [
+    { value: "Technology", label: "Technology" },
+    { value: "Manufacturing", label: "Manufacturing" },
+    { value: "Retail", label: "Retail" },
+  ];
+
+  const referredByOptions = [
+    { value: "None", label: "None" },
+    { value: "John Doe", label: "John Doe" },
+    { value: "Jane Smith", label: "Jane Smith" },
+  ];
+
+  const paymentModeOptions = [
+    { value: "Cash", label: "Cash" },
+    { value: "Card", label: "Card" },
+    { value: "UPI", label: "UPI" },
+    { value: "Bank Transfer", label: "Bank Transfer" },
+  ];
+
+  const awardOptions = [
+    { value: "Best Member", label: "Best Member" },
+    { value: "Star Performer", label: "Star Performer" },
+  ];
+
+  // Helper to get selected option object from string value
+  const getSelectedOption = (options, value) => {
+    return options.find((option) => option.value === value) || null;
+  };
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "40px", // Match height of text inputs
+      borderRadius: "8px",
+      borderColor: "#dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#dee2e6",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#495057",
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      paddingLeft: "16px",
+    }),
   };
 
   return (
@@ -126,9 +195,12 @@ const MemberFormLayer = () => {
             <div className="col-12">
               <h6 className="text-primary-600 pb-2 mb-3">Basic Information</h6>
             </div>
-            <div className="col-md-12">
-              <div className="row gy-3">
-                <div className="col-md-2 text-center">
+
+            {/* Outer Row to separate Profile and Inputs */}
+            <div className="col-12">
+              <div className="row gy-4">
+                {/* Left Column: Profile Image */}
+                <div className="col-xxl-2 col-xl-3 col-lg-3 text-center">
                   <div
                     className="upload-image-app-icon rounded-circle overflow-hidden position-relative mx-auto mb-3"
                     style={{
@@ -164,158 +236,191 @@ const MemberFormLayer = () => {
                   />
                 </div>
 
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">Full Name *</label>
-                  <input
-                    type="text"
-                    className="form-control radius-8"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control radius-8"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Company Name *
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control radius-8"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Mobile Number *
-                  </label>
-                  <input
-                    type="tel"
-                    className="form-control radius-8"
-                    name="mobileNumber"
-                    value={formData.mobileNumber}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">Region *</label>
-                  <select
-                    className="form-select radius-8"
-                    name="region"
-                    value={formData.region}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select Region</option>
-                    <option value="North Region">North Region</option>
-                    <option value="South Region">South Region</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">Chapter *</label>
-                  <select
-                    className="form-select radius-8"
-                    name="chapter"
-                    value={formData.chapter}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select Chapter</option>
-                    <option value="Star Chapter">Star Chapter</option>
-                    <option value="Galaxy Chapter">Galaxy Chapter</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Membership ID *
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control radius-8 bg-light"
-                    name="membershipId"
-                    value={formData.membershipId}
-                    readOnly
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">Position *</label>
-                  <input
-                    type="text"
-                    className="form-control radius-8"
-                    name="position"
-                    value={formData.position}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Business Category
-                  </label>
-                  <select
-                    className="form-select radius-8"
-                    name="businessCategory"
-                    value={formData.businessCategory}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Category</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Retail">Retail</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">Referred By</label>
-                  <select
-                    className="form-select radius-8"
-                    name="referredBy"
-                    value={formData.referredBy}
-                    onChange={handleChange}
-                  >
-                    <option value="None">None</option>
-                    <option value="John Doe">John Doe</option>
-                    <option value="Jane Smith">Jane Smith</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">
-                    Date of Birth *
-                  </label>
-                  <input
-                    type="date"
-                    className="form-control radius-8"
-                    name="dob"
-                    value={formData.dob}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label fw-semibold">Anniversary</label>
-                  <input
-                    type="date"
-                    className="form-control radius-8"
-                    name="anniversary"
-                    value={formData.anniversary}
-                    onChange={handleChange}
-                  />
+                {/* Right Column: Input Fields Grid */}
+                <div className="col-xxl-10 col-xl-9 col-lg-9">
+                  <div className="row gy-3">
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control radius-8"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        className="form-control radius-8"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Company Name *
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control radius-8"
+                        name="companyName"
+                        value={formData.companyName}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Mobile Number *
+                      </label>
+                      <input
+                        type="tel"
+                        className="form-control radius-8"
+                        name="mobileNumber"
+                        value={formData.mobileNumber}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">Region *</label>
+                      <Select
+                        name="region"
+                        options={regionOptions}
+                        value={getSelectedOption(
+                          regionOptions,
+                          formData.region,
+                        )}
+                        onChange={handleSelectChange}
+                        styles={customStyles}
+                        placeholder="Select Region"
+                        isClearable={false}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Chapter *
+                      </label>
+                      <Select
+                        name="chapter"
+                        options={chapterOptions}
+                        value={getSelectedOption(
+                          chapterOptions,
+                          formData.chapter,
+                        )}
+                        onChange={handleSelectChange}
+                        styles={customStyles}
+                        placeholder="Select Chapter"
+                        isClearable={false}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Membership ID *
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control radius-8 bg-light"
+                        name="membershipId"
+                        value={formData.membershipId}
+                        readOnly
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Position *
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control radius-8"
+                        name="position"
+                        value={formData.position}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Business Category
+                      </label>
+                      <Select
+                        name="businessCategory"
+                        options={businessCategoryOptions}
+                        value={getSelectedOption(
+                          businessCategoryOptions,
+                          formData.businessCategory,
+                        )}
+                        onChange={handleSelectChange}
+                        styles={customStyles}
+                        placeholder="Select Category"
+                        isClearable
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Referred By
+                      </label>
+                      <Select
+                        name="referredBy"
+                        options={referredByOptions}
+                        value={getSelectedOption(
+                          referredByOptions,
+                          formData.referredBy,
+                        )}
+                        onChange={handleSelectChange}
+                        styles={customStyles}
+                        placeholder="Select Referrer"
+                        isClearable
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Date of Birth *
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control radius-8"
+                        name="dob"
+                        value={formData.dob}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-semibold">
+                        Anniversary
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control radius-8"
+                        name="anniversary"
+                        value={formData.anniversary}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -463,19 +568,19 @@ const MemberFormLayer = () => {
             </div>
             <div className="col-md-3">
               <label className="form-label fw-semibold">Payment Mode *</label>
-              <select
-                className="form-select radius-8"
+              <Select
                 name="paymentMode"
-                value={formData.paymentMode}
-                onChange={handleChange}
+                options={paymentModeOptions}
+                value={getSelectedOption(
+                  paymentModeOptions,
+                  formData.paymentMode,
+                )}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Mode"
+                isClearable={false}
                 required
-              >
-                <option value="">Select Mode</option>
-                <option value="Cash">Cash</option>
-                <option value="Card">Card</option>
-                <option value="UPI">UPI</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-              </select>
+              />
             </div>
             <div className="col-md-3">
               <label className="form-label fw-semibold">Payment Date *</label>
@@ -615,16 +720,15 @@ const MemberFormLayer = () => {
                 </div>
                 <div className="col-md-12">
                   <label className="form-label fw-semibold">Choose Award</label>
-                  <select
-                    className="form-select radius-8"
+                  <Select
                     name="award"
-                    value={formData.award}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Award</option>
-                    <option value="Best Member">Best Member</option>
-                    <option value="Star Performer">Star Performer</option>
-                  </select>
+                    options={awardOptions}
+                    value={getSelectedOption(awardOptions, formData.award)}
+                    onChange={handleSelectChange}
+                    styles={customStyles}
+                    placeholder="Select Award"
+                    isClearable={false}
+                  />
                 </div>
                 <div className="col-md-12 text-end">
                   <button
