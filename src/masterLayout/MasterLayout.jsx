@@ -433,7 +433,7 @@ const MasterLayout = ({ children }) => {
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Orders
+                    Orders List
                   </NavLink>
                 </li>
               </ul>
