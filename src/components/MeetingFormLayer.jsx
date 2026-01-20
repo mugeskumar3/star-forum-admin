@@ -114,7 +114,9 @@ const MeetingFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-        <h6 className="text-primary-600 pb-2 mb-0">{id ? "Edit Meeting" : "Meeting Creation"}</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">
+          {id ? "Edit Meeting" : "Meeting Creation"}
+        </h6>
         <Link
           to="/meeting-creation"
           className="btn btn-outline-secondary btn-sm"
@@ -257,7 +259,10 @@ const MeetingFormLayer = () => {
             {/* Map Section - Full Width */}
             <div className="col-12 mt-0">
               <LoadScript
-                googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                googleMapsApiKey={
+                  process.env.REACT_APP_GOOGLE_MAPS_API_KEY ||
+                  "YOUR_VALID_API_KEY_HERE"
+                }
               >
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
