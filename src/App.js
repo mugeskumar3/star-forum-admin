@@ -29,6 +29,7 @@ import AttendanceListPage from "./pages/AttendanceListPage";
 
 import ChapterListPage from "./pages/ChapterListPage";
 import ChapterFormPage from "./pages/ChapterFormPage";
+import ChapterViewPage from "./pages/ChapterViewPage";
 
 import MeetingListPage from "./pages/MeetingListPage";
 import MeetingFormPage from "./pages/MeetingFormPage";
@@ -126,6 +127,7 @@ function App() {
         <Route exact path="/chapter-creation" element={<ChapterListPage />} />
         <Route exact path="/chapter-creation/add" element={<ChapterFormPage />} />
         <Route exact path="/chapter-creation/edit/:id" element={<ChapterFormPage />} />
+        <Route exact path="/chapter-view/:id" element={<ChapterViewPage />} />
 
         {/* Members Registration */}
         <Route exact path="/members-registration" element={<MemberListPage />} />
