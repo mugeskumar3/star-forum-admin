@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Select from "react-select";
 
 const ShopFormLayer = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,13 @@ const ShopFormLayer = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (selectedOption, { name }) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "",
+    }));
   };
 
   const handleImageChange = (e) => {
@@ -35,10 +43,42 @@ const ShopFormLayer = () => {
     console.log("Form Submitted:", formData);
   };
 
+  const categoryOptions = [
+    { value: "Electronics", label: "Electronics" },
+    { value: "Clothing", label: "Clothing" },
+    { value: "Accessories", label: "Accessories" },
+    { value: "Home & Garden", label: "Home & Garden" },
+  ];
+
+  const getSelectedOption = (options, value) => {
+    return options.find((option) => option.value === value) || null;
+  };
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "40px",
+      borderRadius: "8px",
+      borderColor: "#dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#dee2e6",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#495057",
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      paddingLeft: "16px",
+    }),
+  };
+
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-lg fw-semibold mb-0">Add New Product</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">Add New Product</h6>
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
@@ -85,19 +125,16 @@ const ShopFormLayer = () => {
               <label className="form-label fw-semibold">
                 Category <span className="text-danger">*</span>
               </label>
-              <select
-                className="form-select radius-8"
+              <Select
                 name="category"
-                value={formData.category}
-                onChange={handleChange}
+                options={categoryOptions}
+                value={getSelectedOption(categoryOptions, formData.category)}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Category"
+                isClearable={false}
                 required
-              >
-                <option value="">Select Category</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Home & Garden">Home & Garden</option>
-              </select>
+              />
             </div>
 
             {/* Image Upload */}
@@ -139,7 +176,7 @@ const ShopFormLayer = () => {
 
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
-              to="/shop-admin"
+              to="/shop-create"
               className="btn btn-outline-secondary radius-8 px-20 py-11"
             >
               Cancel

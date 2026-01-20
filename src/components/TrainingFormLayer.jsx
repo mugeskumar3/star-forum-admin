@@ -72,7 +72,7 @@ const TrainingFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-lg fw-semibold mb-0">
+        <h6 className="text-primary-600 pb-2 mb-0">
           {isEditMode ? "Edit Training Session" : "Add New Training Session"}
         </h6>
       </div>
@@ -167,11 +167,10 @@ const TrainingFormLayer = () => {
                         }}
                       >
                         <span
-                          className={`${
-                            formData.chapter.includes(option)
-                              ? "text-primary-600 fw-medium"
-                              : "text-secondary-light"
-                          }`}
+                          className={`${formData.chapter.includes(option)
+                            ? "text-primary-600 fw-medium"
+                            : "text-secondary-light"
+                            }`}
                         >
                           {option}
                         </span>

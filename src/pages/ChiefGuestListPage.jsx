@@ -7,7 +7,6 @@ const ChiefGuestListPage = () => {
   return (
     <>
       <MasterLayout>
-        <Breadcrumb title="Chief Guest List" />
         <ChiefGuestListLayer />
       </MasterLayout>
     </>
