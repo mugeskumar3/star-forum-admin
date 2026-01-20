@@ -1,10 +1,18 @@
 import React from "react";
-import ChapterCreation from "./ChapterCreation";
 
 const FormPageLayer = ({ title }) => {
   return (
     <div className="row justify-content-center">
-      <ChapterCreation title={title} />
+      <div className="col-12">
+        <div className="card">
+          <div className="card-header">
+            <h5 className="card-title mb-0">{title}</h5>
+          </div>
+          <div className="card-body">
+            <p className="text-secondary-light">Form content for {title} goes here.</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

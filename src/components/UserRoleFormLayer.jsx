@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import Select from "react-select";
 
 const UserRoleFormLayer = () => {
   const { id } = useParams();
@@ -41,6 +42,13 @@ const UserRoleFormLayer = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSelectChange = (selectedOption, { name }) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "Active",
+    }));
+  };
+
   const handlePermissionChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prev) => {
@@ -61,10 +69,40 @@ const UserRoleFormLayer = () => {
     navigate("/user-roles");
   };
 
+  const statusOptions = [
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
+
+  const getSelectedOption = (options, value) => {
+    return options.find((option) => option.value === value) || options[0];
+  };
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "40px",
+      borderRadius: "8px",
+      borderColor: "#dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#dee2e6",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#495057",
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      paddingLeft: "16px",
+    }),
+  };
+
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-lg fw-semibold mb-0">
+        <h6 className="text-primary-600 pb-2 mb-0">
           {isEditMode ? "Edit User Role" : "Add New User Role"}
         </h6>
       </div>
@@ -105,16 +143,15 @@ const UserRoleFormLayer = () => {
               <label className="form-label fw-semibold">
                 Status <span className="text-danger">*</span>
               </label>
-              <select
-                className="form-select radius-8"
+              <Select
                 name="status"
-                value={formData.status}
-                onChange={handleChange}
-                required
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
+                options={statusOptions}
+                value={getSelectedOption(statusOptions, formData.status)}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                isClearable={false}
+                searchable={false}
+              />
             </div>
 
             {/* Permissions */}

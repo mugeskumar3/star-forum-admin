@@ -7,7 +7,7 @@ const UserRoleListPage = () => {
   return (
     <>
       <MasterLayout>
-        <Breadcrumb title="User Roles" />
+
         <UserRoleListLayer />
       </MasterLayout>
     </>

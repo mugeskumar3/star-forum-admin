@@ -55,9 +55,10 @@ const MasterLayout = ({ children }) => {
         submenuLinks.forEach((link) => {
           const path = link.getAttribute("href") || link.getAttribute("to");
           if (
-            path &&
-            (location.pathname === path ||
-              location.pathname.startsWith(path + "/"))
+            (path &&
+              (location.pathname === path ||
+                location.pathname.startsWith(path + "/"))) ||
+            link.classList.contains("active-page")
           ) {
             dropdown.classList.add("open");
             const submenu = dropdown.querySelector(".sidebar-submenu");
@@ -132,7 +133,7 @@ const MasterLayout = ({ children }) => {
 
   const dateStr = new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
-    month: "short",
+    month: "long",
     year: "numeric",
     timeZone: "Asia/Kolkata",
   })
@@ -202,16 +203,6 @@ const MasterLayout = ({ children }) => {
               </NavLink>
             </li>
 
-            {/* Admin Registration */}
-            <li>
-              <NavLink
-                to="/admin-registration"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
-              >
-                <i className="ri-admin-line menu-icon" />
-                <span>Admin Registration</span>
-              </NavLink>
-            </li>
 
             {/* Master Creation */}
             <li className="dropdown">
@@ -220,6 +211,28 @@ const MasterLayout = ({ children }) => {
                 <span>Master Creation</span>
               </Link>
               <ul className="sidebar-submenu">
+                <li>
+                  <NavLink
+                    to="/user-roles"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Roles & Permissions
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/admin-registration"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Admin Registration
+                  </NavLink>
+                </li>
                 <li>
                   <NavLink
                     to="/organisation"
@@ -240,6 +253,28 @@ const MasterLayout = ({ children }) => {
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
                     Badge Creation
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/award"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Award
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/business-category"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Business Category
                   </NavLink>
                 </li>
               </ul>
@@ -278,14 +313,20 @@ const MasterLayout = ({ children }) => {
               </NavLink>
             </li>
 
-            {/* Attendance Report */}
+            {/* Attendance List */}
             <li>
               <NavLink
                 to="/attendance-report"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
+                className={(navData) =>
+                  navData.isActive ||
+                    location.pathname.startsWith("/meeting-attendance") ||
+                    location.pathname.startsWith("/member-history")
+                    ? "active-page"
+                    : ""
+                }
               >
                 <i className="ri-file-list-3-line menu-icon" />
-                <span>Attendance Report</span>
+                <span>Attendance List</span>
               </NavLink>
             </li>
 
@@ -336,13 +377,22 @@ const MasterLayout = ({ children }) => {
             <li>
               <NavLink
                 to="/training"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
+                className={(navData) =>
+                  navData.isActive ||
+                    location.pathname === "/training-list" ||
+                    location.pathname === "/training-create" ||
+                    location.pathname.startsWith("/training-edit") ||
+                    location.pathname.startsWith("/training-view")
+                    ? "active-page"
+                    : ""
+                }
               >
                 <i className="ri-presentation-line menu-icon" />
                 <span>Training</span>
               </NavLink>
             </li>
 
+            {/* Shop */}
             {/* Shop */}
             <li className="dropdown">
               <Link to="#">
@@ -352,38 +402,41 @@ const MasterLayout = ({ children }) => {
               <ul className="sidebar-submenu">
                 <li>
                   <NavLink
+                    to="/shop-create"
+                    className={(navData) =>
+                      navData.isActive || location.pathname === "/shop-add"
+                        ? "active-page"
+                        : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Create Product
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
                     to="/shop-list"
                     className={(navData) =>
                       navData.isActive ? "active-page" : ""
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    List
+                    Place Order
                   </NavLink>
                 </li>
+
                 <li>
                   <NavLink
-                    to="/shop-create"
+                    to="/orders"
                     className={(navData) =>
                       navData.isActive ? "active-page" : ""
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Create
+                    Orders List
                   </NavLink>
                 </li>
               </ul>
-            </li>
-
-            {/* Orders */}
-            <li>
-              <NavLink
-                to="/orders"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
-              >
-                <i className="ri-shopping-cart-line menu-icon" />
-                <span>Orders</span>
-              </NavLink>
             </li>
 
             {/* Log Report */}
@@ -518,46 +571,16 @@ const MasterLayout = ({ children }) => {
             </li>
 
             {/* Chief Guest List */}
-            <li className="dropdown">
-              <Link to="#">
+            <li>
+              <NavLink
+                to="/chief-guest-list"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
                 <i className="ri-vip-diamond-line menu-icon" />
                 <span>Chief Guest List</span>
-              </Link>
-              <ul className="sidebar-submenu">
-                <li>
-                  <NavLink
-                    to="/chief-guest-list"
-                    className={(navData) =>
-                      navData.isActive ? "active-page" : ""
-                    }
-                  >
-                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    List
-                  </NavLink>
-                </li>
-              </ul>
+              </NavLink>
             </li>
 
-            {/* User Accounts */}
-            <li className="dropdown">
-              <Link to="#">
-                <i className="ri-account-circle-line menu-icon" />
-                <span>User Accounts</span>
-              </Link>
-              <ul className="sidebar-submenu">
-                <li>
-                  <NavLink
-                    to="/user-roles"
-                    className={(navData) =>
-                      navData.isActive ? "active-page" : ""
-                    }
-                  >
-                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Roles & Permissions
-                  </NavLink>
-                </li>
-              </ul>
-            </li>
 
             {/* Locations */}
             <li className="dropdown">

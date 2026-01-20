@@ -95,9 +95,7 @@ const AdminUserFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header bg-transparent border-bottom px-24 py-16">
-        <h2 className="card-title mb-0">
-          {isEdit ? "Edit Admin" : "Admin Registration"}
-        </h2>
+        <h6 className="text-primary-600 pb-2 mb-0"> {isEdit ? "Edit Admin" : "Admin Registration"}</h6>
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>

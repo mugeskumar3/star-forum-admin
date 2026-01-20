@@ -10,16 +10,14 @@ const ShopAdminListLayer = () => {
       name: "Shawl",
       price: 2999,
       category: "Electronics",
-      image:
-        "https://images.meesho.com/images/products/578705335/lo6fd_512.webp?width=512",
+      image: "assets/images/products/watch.jpg",
     },
     {
       id: 2,
       name: "Shirt",
       price: 599,
       category: "Clothing",
-      image:
-        "https://images.meesho.com/images/products/578705335/lo6fd_512.webp?width=512",
+      image: "assets/images/products/watch.jpg",
     },
     {
       id: 3,
@@ -87,8 +85,8 @@ const ShopAdminListLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-        <div className="d-flex align-items-center flex-wrap gap-3">
-          <h4 className="mb-0"  >Shop Admin List</h4>
+        <h6 className="text-primary-600 pb-2 mb-0">Product List</h6>
+        <div className="d-flex align-items-center flex-wrap gap-3 ms-auto">
           <form className="navbar-search">
             <input
               type="text"
@@ -103,18 +101,18 @@ const ShopAdminListLayer = () => {
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
+          <Link
+            to="/shop-add"
+            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+          >
+            <Icon
+              icon="ic:baseline-plus"
+              className="icon text-xl line-height-1"
+            />
+            Add New Product
+          </Link>
         </div>
-        <Link
-          to="/shop-add"
-          className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-          style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-        >
-          <Icon
-            icon="ic:baseline-plus"
-            className="icon text-xl line-height-1"
-          />
-          Add New Product
-        </Link>
       </div>
       <div className="card-body p-24">
         <div className="table-responsive scroll-sm">

@@ -13,7 +13,7 @@ const BadgeAssignLayer = () => {
     };
 
     return (
-        <div className="card h-100 p-0 radius-12 col-lg-8 mx-auto">
+        <div className="card h-100 p-0 radius-12">
             <div className="card-body p-24">
                 <form onSubmit={handleSubmit}>
                     <div className="row gy-3">

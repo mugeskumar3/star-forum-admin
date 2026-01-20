@@ -7,7 +7,7 @@ const TrainingListPage = () => {
   return (
     <>
       <MasterLayout>
-        <Breadcrumb title="Training Management" />
+
         <TrainingListLayer />
       </MasterLayout>
     </>
