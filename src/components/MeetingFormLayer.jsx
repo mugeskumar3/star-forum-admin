@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { MockDataService } from "../helper/MockDataService";
 import Select from "react-select";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 const MeetingFormLayer = () => {
   const navigate = useNavigate();
@@ -18,11 +19,38 @@ const MeetingFormLayer = () => {
     location: "",
   });
 
+  // Google Maps Configuration
+  const mapContainerStyle = {
+    width: "100%",
+    height: "300px",
+    borderRadius: "8px",
+    marginTop: "16px",
+  };
+
+  const defaultCenter = {
+    lat: 13.0827, // Default to Chennai
+    lng: 80.2707,
+  };
+
+  const [markerPosition, setMarkerPosition] = useState(null);
+
   useEffect(() => {
     if (id) {
       const meeting = MockDataService.getMeetingById(id);
       if (meeting) {
         setFormData(meeting);
+        if (meeting.location) {
+          // Try to parse lat,lng from location string if possible, else just keep text
+          // This is a simple assumption for the demo
+          const parts = meeting.location.split(",");
+          if (parts.length === 2) {
+            const lat = parseFloat(parts[0]);
+            const lng = parseFloat(parts[1]);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              setMarkerPosition({ lat, lng });
+            }
+          }
+        }
       }
     }
   }, [id]);
@@ -37,6 +65,13 @@ const MeetingFormLayer = () => {
       ...formData,
       [name]: selectedOption ? selectedOption.value : "",
     });
+  };
+
+  const onMapClick = (e) => {
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    setMarkerPosition({ lat, lng });
+    setFormData({ ...formData, location: `${lat}, ${lng}` });
   };
 
   const handleSubmit = (e) => {
@@ -93,7 +128,7 @@ const MeetingFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Column 1 */}
+            {/* Top Section: 3 items per column */}
             <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
@@ -140,7 +175,6 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            {/* Column 2 */}
             <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
@@ -186,7 +220,10 @@ const MeetingFormLayer = () => {
                   required
                 />
               </div>
+            </div>
 
+            {/* Bottom Section: Late Punch Time and Location side-by-side */}
+            <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
                   Late Punch Time <span className="text-danger-600">*</span>
@@ -202,7 +239,7 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            <div className="col-6">
+            <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
                   Location <span className="text-danger-600">*</span>
@@ -211,14 +248,30 @@ const MeetingFormLayer = () => {
                   type="text"
                   name="location"
                   className="form-control"
-                  placeholder="Search for a location"
+                  placeholder="Click map to select location"
                   value={formData.location}
                   onChange={handleInputChange}
                   required
                 />
-                <div className="form-text">
-                  Enter the meeting location address
-                </div>
+              </div>
+            </div>
+
+            {/* Map Section - Full Width */}
+            <div className="col-12 mt-0">
+              <LoadScript
+                googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+              >
+                <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={markerPosition || defaultCenter}
+                  zoom={12}
+                  onClick={onMapClick}
+                >
+                  {markerPosition && <Marker position={markerPosition} />}
+                </GoogleMap>
+              </LoadScript>
+              <div className="form-text mt-2">
+                Click on the map to automatically fill the location coordinates.
               </div>
             </div>
 
