@@ -257,7 +257,7 @@ const MeetingFormLayer = () => {
             </div>
 
             {/* Map Section - Full Width */}
-            {/* <div className="col-12 mt-0">
+            <div className="col-12 mt-0">
               <LoadScript
                 googleMapsApiKey={
                   process.env.REACT_APP_GOOGLE_MAPS_API_KEY ||
@@ -276,7 +276,7 @@ const MeetingFormLayer = () => {
               <div className="form-text mt-2">
                 Click on the map to automatically fill the location coordinates.
               </div>
-            </div> */}
+            </div>
 
             <div className="col-12 mt-4 pt-4">
               <div className="d-flex justify-content-end gap-3">
