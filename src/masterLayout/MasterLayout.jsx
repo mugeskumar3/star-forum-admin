@@ -284,7 +284,11 @@ const MasterLayout = ({ children }) => {
             <li>
               <NavLink
                 to="/chapter-creation"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
+                className={(navData) =>
+                  navData.isActive || location.pathname.startsWith("/chapter-view")
+                    ? "active-page"
+                    : ""
+                }
               >
                 <i className="ri-community-line menu-icon" />
                 <span>Chapter Creation</span>

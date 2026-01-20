@@ -130,15 +130,15 @@ const ChapterListLayer = () => {
                     <td>{chapter.createdDate}</td>
                     <td className="text-center">
                       <div className="d-flex align-items-center gap-10 justify-content-center">
-                        <button
-                          type="button"
+                        <Link
+                          to={`/chapter-view/${chapter.id}`}
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
                             icon="majesticons:eye-line"
                             className="icon text-xl"
                           />
-                        </button>
+                        </Link>
                         <Link
                           to={`/chapter-creation/edit/${chapter.id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
