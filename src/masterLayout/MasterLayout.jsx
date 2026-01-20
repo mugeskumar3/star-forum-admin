@@ -376,13 +376,22 @@ const MasterLayout = ({ children }) => {
             <li>
               <NavLink
                 to="/training"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
+                className={(navData) =>
+                  navData.isActive ||
+                    location.pathname === "/training-list" ||
+                    location.pathname === "/training-create" ||
+                    location.pathname.startsWith("/training-edit") ||
+                    location.pathname.startsWith("/training-view")
+                    ? "active-page"
+                    : ""
+                }
               >
                 <i className="ri-presentation-line menu-icon" />
                 <span>Training</span>
               </NavLink>
             </li>
 
+            {/* Shop */}
             {/* Shop */}
             <li className="dropdown">
               <Link to="#">
@@ -412,18 +421,18 @@ const MasterLayout = ({ children }) => {
                     Create
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="/orders"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Orders
+                  </NavLink>
+                </li>
               </ul>
-            </li>
-
-            {/* Orders */}
-            <li>
-              <NavLink
-                to="/orders"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
-              >
-                <i className="ri-shopping-cart-line menu-icon" />
-                <span>Orders</span>
-              </NavLink>
             </li>
 
             {/* Log Report */}
@@ -558,24 +567,14 @@ const MasterLayout = ({ children }) => {
             </li>
 
             {/* Chief Guest List */}
-            <li className="dropdown">
-              <Link to="#">
+            <li>
+              <NavLink
+                to="/chief-guest-list"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
                 <i className="ri-vip-diamond-line menu-icon" />
                 <span>Chief Guest List</span>
-              </Link>
-              <ul className="sidebar-submenu">
-                <li>
-                  <NavLink
-                    to="/chief-guest-list"
-                    className={(navData) =>
-                      navData.isActive ? "active-page" : ""
-                    }
-                  >
-                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    List
-                  </NavLink>
-                </li>
-              </ul>
+              </NavLink>
             </li>
 
 
