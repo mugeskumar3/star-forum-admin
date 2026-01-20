@@ -114,9 +114,7 @@ const MeetingFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-        <h5 className="text-lg fw-semibold mb-0">
-          {id ? "Edit Meeting" : "Meeting Creation"}
-        </h5>
+        <h6 className="text-primary-600 pb-2 mb-0">{id ? "Edit Meeting" : "Meeting Creation"}</h6>
         <Link
           to="/meeting-creation"
           className="btn btn-outline-secondary btn-sm"

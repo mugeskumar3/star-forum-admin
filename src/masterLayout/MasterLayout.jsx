@@ -55,9 +55,10 @@ const MasterLayout = ({ children }) => {
         submenuLinks.forEach((link) => {
           const path = link.getAttribute("href") || link.getAttribute("to");
           if (
-            path &&
-            (location.pathname === path ||
-              location.pathname.startsWith(path + "/"))
+            (path &&
+              (location.pathname === path ||
+                location.pathname.startsWith(path + "/"))) ||
+            link.classList.contains("active-page")
           ) {
             dropdown.classList.add("open");
             const submenu = dropdown.querySelector(".sidebar-submenu");
@@ -401,26 +402,29 @@ const MasterLayout = ({ children }) => {
               <ul className="sidebar-submenu">
                 <li>
                   <NavLink
+                    to="/shop-create"
+                    className={(navData) =>
+                      navData.isActive || location.pathname === "/shop-add"
+                        ? "active-page"
+                        : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Create Product
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
                     to="/shop-list"
                     className={(navData) =>
                       navData.isActive ? "active-page" : ""
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    List
+                    Place Order
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink
-                    to="/shop-create"
-                    className={(navData) =>
-                      navData.isActive ? "active-page" : ""
-                    }
-                  >
-                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Create
-                  </NavLink>
-                </li>
+
                 <li>
                   <NavLink
                     to="/orders"
@@ -429,7 +433,7 @@ const MasterLayout = ({ children }) => {
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Orders
+                    Orders List
                   </NavLink>
                 </li>
               </ul>

@@ -39,10 +39,10 @@ const StarUpdateFormLayer = () => {
     return (
         <div className="card h-100 p-0 radius-12">
             <div className="card-header bg-transparent border-bottom px-24 py-16">
-                <h4 className="card-title mb-0">
+                <h6 className="text-primary-600 pb-2 mb-0">
                     <Icon icon="ri:star-line" className="me-2" />
                     Star Update
-                </h4>
+                </h6>
             </div>
 
             <div className="card-body p-24">

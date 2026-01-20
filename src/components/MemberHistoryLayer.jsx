@@ -58,7 +58,7 @@ const MemberHistoryLayer = () => {
                     >
                         <Icon icon="ion:arrow-back-outline" className="text-xl" />
                     </button>
-                    <h6 className="text-primary-600 pb-2 mb-3">{memberName} Attendance History</h6>
+                    <h6 className="text-primary-600 pb-2 mb-0">{memberName} Attendance History</h6>
                 </div>
 
                 <div className="row g-3">

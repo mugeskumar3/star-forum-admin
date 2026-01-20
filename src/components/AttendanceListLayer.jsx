@@ -89,7 +89,7 @@ const AttendanceListLayer = () => {
       />
 
       <div className="card-body p-24">
-        <h6 className="text-primary-600 pb-2 mb-3">Recent Meeting List</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">Recent Meeting List</h6>
         <div className="table-responsive scroll-sm">
           <table className="table bordered-table sm-table mb-0">
             <thead>

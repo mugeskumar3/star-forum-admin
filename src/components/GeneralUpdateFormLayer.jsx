@@ -129,7 +129,7 @@ const GeneralUpdateFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-        <h4 style={{ color: "#C4161C" }}>General Update </h4>
+        <h6 className="text-primary-600 pb-2 mb-0">General Update</h6>
         <div className="d-flex align-items-center flex-wrap gap-3">
           <span className="text-md fw-medium text-secondary-light mb-0">
             Show
