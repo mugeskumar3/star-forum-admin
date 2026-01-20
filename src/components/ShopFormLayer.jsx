@@ -78,7 +78,7 @@ const ShopFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-lg fw-semibold mb-0">Add New Product</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">Add New Product</h6>
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
@@ -176,7 +176,7 @@ const ShopFormLayer = () => {
 
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
-              to="/shop-admin"
+              to="/shop-create"
               className="btn btn-outline-secondary radius-8 px-20 py-11"
             >
               Cancel

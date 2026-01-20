@@ -58,7 +58,7 @@ const AwardListLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
-          <h4 className="mb-0">Award List</h4>
+          <h6 className="text-primary-600 pb-2 mb-0">Award List</h6>
         </div>
         <div className="d-flex align-items-center flex-wrap gap-3">
           <form className="navbar-search">

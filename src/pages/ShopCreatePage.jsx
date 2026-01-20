@@ -1,12 +1,12 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import ShopCreateLayer from "../components/ShopCreateLayer";
+import ShopAdminListLayer from "../components/ShopAdminListLayer";
 
 const ShopCreatePage = () => {
   return (
     <>
       <MasterLayout>
-        <ShopCreateLayer />
+        <ShopAdminListLayer />
       </MasterLayout>
     </>
   );

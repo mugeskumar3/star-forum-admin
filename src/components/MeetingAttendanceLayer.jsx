@@ -68,7 +68,7 @@ const MeetingAttendanceLayer = () => {
                     >
                         <Icon icon="ion:arrow-back-outline" className="text-xl" />
                     </button>
-                    <h6 className="text-primary-600 pb-2 mb-3">{chapterName} Attendance List</h6>
+                    <h6 className="text-primary-600 pb-2 mb-0">{chapterName} Attendance List</h6>
                 </div>
 
                 <form className="navbar-search mr-0">

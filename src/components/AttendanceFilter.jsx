@@ -72,7 +72,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
                     >
                         <Icon icon="ion:arrow-back-outline" className="text-xl" />
                     </button> */}
-                    <h6 className="text-primary-600 pb-2 mb-3">Attendance Filter</h6>
+                    <h6 className="text-primary-600 pb-2 mb-0">Attendance Filter</h6>
                 </div>
             </div>
 

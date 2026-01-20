@@ -70,7 +70,7 @@ const Note121Layer = () => {
                                 <div className="p-2">
                                     {/* Chapter Header */}
                                     <div className="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 className="mb-0 fw-semibold" style={{ color: 'var(--text-primary-light)' }}>{chapter.name}</h6>
+                                        <h6 className="text-primary-600 pb-2 mb-0">{chapter.name}</h6>
                                         <span className="fw-bold" style={{ color: 'var(--primary-600)', fontSize: '14px' }}>
                                             {chapter.count}
                                         </span>

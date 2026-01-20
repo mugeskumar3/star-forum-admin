@@ -1,181 +1,409 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Select from "react-select";
 
 const ShopListLayer = () => {
-  const [orderState, setOrderState] = useState({});
+  const [formData, setFormData] = useState({
+    zone: "",
+    region: "",
+    chapter: "",
+    member: "",
+    date: new Date().toISOString().split("T")[0],
+  });
 
-  const products = [
-    {
-      id: 1,
-      name: "Shawl",
-      price: 2999,
-      category: "Electronics",
-      image:
-        "https://m.media-amazon.com/images/I/81FZ+wSFtKL._AC_UY350_.jpg",
-    },
-    {
-      id: 2,
-      name: "Shirt",
-      price: 599,
-      category: "Clothing",
-      image:
-        "https://m.media-amazon.com/images/I/81FZ+wSFtKL._AC_UY350_.jpg",
-    },
-    {
-      id: 3,
-      name: "Smart Watch",
-      price: 4500,
-      category: "Electronics",
-      image: "assets/images/products/watch.jpg",
-    },
-    {
-      id: 4,
-      name: "Leather Wallet",
-      price: 1200,
-      category: "Accessories",
-      image: "assets/images/products/wallet.jpg",
-    },
-    {
-      id: 5,
-      name: "Running Shoes",
-      price: 3499,
-      category: "Clothing",
-      image: "assets/images/products/shoes.jpg",
-    },
-    {
-      id: 6,
-      name: "Desk Lamp",
-      price: 899,
-      category: "Home & Garden",
-      image: "assets/images/products/lamp.jpg",
-    },
+  const [cart, setCart] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // Mock Data
+  const zoneOptions = [
+    { value: "Zone A", label: "Zone A" },
+    { value: "Zone B", label: "Zone B" },
+  ];
+  const regionOptions = [
+    { value: "North Region", label: "North Region" },
+    { value: "South Region", label: "South Region" },
+  ];
+  const chapterOptions = [
+    { value: "Star Chapter", label: "Star Chapter" },
+    { value: "Galaxy Chapter", label: "Galaxy Chapter" },
+  ];
+  const memberOptions = [
+    { value: "John Doe", label: "John Doe" },
+    { value: "Jane Smith", label: "Jane Smith" },
+    { value: "Alice Johnson", label: "Alice Johnson" },
   ];
 
-  const handleOrderClick = (id) => {
-    setOrderState((prev) => ({
+  const productOptions = [
+    { value: 1, label: "T-Shirt", price: 500 },
+    { value: 2, label: "Jeans", price: 1200 },
+    { value: 3, label: "Cap", price: 300 },
+    { value: 4, label: "Jacket", price: 2500 },
+    { value: 5, label: "Sneakers", price: 3000 },
+  ];
+
+  const handleSelectChange = (selectedOption, { name }) => {
+    setFormData((prev) => ({
       ...prev,
-      [id]: { ordering: true, count: 1 },
+      [name]: selectedOption ? selectedOption.value : "",
     }));
   };
 
-  const handleCountChange = (id, delta) => {
-    setOrderState((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        count: Math.max(1, (prev[id]?.count || 1) + delta),
-      },
-    }));
+  const handleProductSelect = (selectedOption) => {
+    if (!selectedOption) return;
+
+    // Check if product already exists in cart
+    const existingItem = cart.find((item) => item.id === selectedOption.value);
+    if (existingItem) {
+      // Increment quantity
+      setCart((prev) =>
+        prev.map((item) =>
+          item.id === selectedOption.value
+            ? { ...item, count: item.count + 1 }
+            : item
+        )
+      );
+    } else {
+      // Add new item
+      setCart((prev) => [
+        ...prev,
+        {
+          id: selectedOption.value,
+          name: selectedOption.label,
+          price: selectedOption.price,
+          count: 1,
+        },
+      ]);
+    }
+    setSelectedProduct(null); // Reset dropdown
   };
 
-  const handlePlaceOrder = (product) => {
-    const qty = orderState[product.id]?.count || 1;
-    alert(
-      `Order placed successfully!\nProduct: ${
-        product.name
-      }\nQuantity: ${qty}\nTotal: ₹${product.price * qty}`
+  const updateQuantity = (id, delta) => {
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item.id === id) {
+          const newCount = Math.max(1, item.count + delta);
+          return { ...item, count: newCount };
+        }
+        return item;
+      })
     );
-    setOrderState((prev) => ({
-      ...prev,
-      [product.id]: { ordering: false, count: 1 },
-    }));
+  };
+
+  const removeItem = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price * item.count, 0);
+  };
+
+  const calculateTotal = (items) => {
+    return items.reduce((total, item) => total + item.price * item.count, 0);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Order Submitted:", { ...formData, cart });
+    // Navigate to orders list just like the request asked
+    window.location.href = "/orders";
+  };
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "40px",
+      borderRadius: "8px",
+      borderColor: "#dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#dee2e6",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#495057",
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      paddingLeft: "16px",
+    }),
+  };
+
+  const getSelectedOption = (options, value) => {
+    return options.find((option) => option.value === value) || null;
   };
 
   return (
-    <div className="row gy-4">
-      {/* Client View - No "Add Product" button here */}
-      {products.map((product) => {
-        const isOrdering = orderState[product.id]?.ordering;
-        const count = orderState[product.id]?.count || 1;
+    <div className="card h-100 p-0 radius-12">
+      <div className="card-header border-bottom bg-base py-16 px-24">
+        <h6 className="text-primary-600 pb-2 mb-0">Place New Order</h6>
+      </div>
+      <div className="card-body p-24">
+        <form onSubmit={handleSubmit}>
+          <div className="row gy-4">
 
-        return (
-          <div key={product.id} className="col-xxl-3 col-xl-4 col-sm-6 col-12">
-            <div className="card h-100 radius-12 overflow-hidden hover-scale-img">
-              <div className="card-img-top position-relative m-0">
-                <div className="w-100 h-200-px bg-neutral-100 d-flex justify-content-center align-items-center text-secondary-light">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-100 h-100 object-fit-contain"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://placehold.co/200x200?text=No+Image";
-                    }}
-                  />
-                </div>
-                {!isOrdering && (
-                  <span className="position-absolute inset-0"></span>
-                )}
-              </div>
-              <div className="card-body p-24 d-flex flex-column">
-                <div className="d-flex align-items-center justify-content-between gap-2 mb-16">
-                  <span className="text-secondary-light text-sm fw-medium px-12 py-4 bg-base radius-4 border">
-                    {product.category}
-                  </span>
-                  <span className="text-primary-600 fw-bold text-md">
-                    ₹{product.price}
-                  </span>
-                </div>
-                <h6 className="text-lg fw-bold mb-16 text-line-2">
-                  <Link to="#" className="text-heading hover-text-primary-600">
-                    {product.name}
-                  </Link>
-                </h6>
-
-                <div className="mt-auto">
-                  {isOrdering ? (
-                    <div className="d-flex flex-column gap-2">
-                      <div className="d-flex align-items-center justify-content-between bg-base radius-8 border p-1">
-                        <button
-                          type="button"
-                          className="btn btn-icon btn-sm text-secondary-light hover-text-primary-600"
-                          onClick={() => handleCountChange(product.id, -1)}
-                        >
-                          <Icon icon="ic:round-minus" />
-                        </button>
-                        <span className="fw-semibold text-md">{count}</span>
-                        <button
-                          type="button"
-                          className="btn btn-icon btn-sm text-secondary-light hover-text-primary-600"
-                          onClick={() => handleCountChange(product.id, 1)}
-                        >
-                          <Icon icon="ic:round-plus" />
-                        </button>
-                      </div>
-                      <button
-                        type="button"
-                        className="btn btn-primary w-100 radius-8 py-2 text-sm"
-                        onClick={() => handlePlaceOrder(product)}
-                      >
-                        Place Order
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="d-flex align-items-center justify-content-between gap-2">
-                      <button
-                        type="button"
-                        className="btn btn-outline-primary w-100 radius-8 py-2 text-sm fw-medium"
-                        onClick={() => handleOrderClick(product.id)}
-                      >
-                        Order Now
-                      </button>
-                      <div className="d-flex gap-2">
-                        <Link
-                          to="#"
-                          className="w-32-px h-32-px bg-info-100 text-info-600 rounded-circle d-flex justify-content-center align-items-center hover-bg-info-600 hover-text-white transition-2"
-                        >
-                          <Icon icon="heroicons:eye" className="text-md" />
-                        </Link>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+            {/* Zone Selection */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Zone <span className="text-danger">*</span>
+              </label>
+              <Select
+                name="zone"
+                options={zoneOptions}
+                value={getSelectedOption(zoneOptions, formData.zone)}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Zone"
+                isClearable={false}
+                required
+              />
             </div>
+
+            {/* Region Selection */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Region <span className="text-danger">*</span>
+              </label>
+              <Select
+                name="region"
+                options={regionOptions}
+                value={getSelectedOption(regionOptions, formData.region)}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Region"
+                isClearable={false}
+                required
+              />
+            </div>
+
+            {/* Chapter Selection */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Chapter <span className="text-danger">*</span>
+              </label>
+              <Select
+                name="chapter"
+                options={chapterOptions}
+                value={getSelectedOption(chapterOptions, formData.chapter)}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Chapter"
+                isClearable={false}
+                required
+              />
+            </div>
+
+            {/* Member Selection */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Member <span className="text-danger">*</span>
+              </label>
+              <Select
+                name="member"
+                options={memberOptions}
+                value={getSelectedOption(memberOptions, formData.member)}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Member"
+                isClearable={false}
+                required
+              />
+            </div>
+
+            {/* Product Selection */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                Select Product <span className="text-danger">*</span>
+              </label>
+              <Select
+                name="product"
+                options={productOptions}
+                value={selectedProduct}
+                onChange={handleProductSelect}
+                styles={customStyles}
+                placeholder="Search & Select Product..."
+                isClearable={true}
+              />
+            </div>
+
+            {/* Product Cart Table - Only show if cart has items */}
+            {cart.length > 0 && (
+              <div className="col-12">
+                <div className="table-responsive">
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th
+                          className="text-center"
+                          style={{
+                            backgroundColor: "#C4161C",
+                            color: "white",
+                            border: "none",
+                            width: "60px"
+                          }}
+                        >
+                          S.No
+                        </th>
+                        <th
+                          style={{
+                            backgroundColor: "#C4161C",
+                            color: "white",
+                            border: "none",
+                          }}
+                        >
+                          Product Name
+                        </th>
+                        <th
+                          className="text-center"
+                          style={{
+                            backgroundColor: "#C4161C",
+                            color: "white",
+                            border: "none",
+                            width: "200px"
+                          }}
+                        >
+                          Price
+                        </th>
+                        <th
+                          className="text-center"
+                          style={{
+                            backgroundColor: "#C4161C",
+                            color: "white",
+                            border: "none",
+                            width: "240px"
+                          }}
+                        >
+                          Quantity
+                        </th>
+                        <th
+                          className="text-center"
+                          style={{
+                            backgroundColor: "#C4161C",
+                            color: "white",
+                            border: "none",
+                            width: "220px"
+                          }}
+                        >
+                          Total
+                        </th>
+                        <th
+                          className="text-center"
+                          style={{
+                            backgroundColor: "#C4161C",
+                            color: "white",
+                            border: "none",
+                            width: "80px"
+                          }}
+                        >
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cart.map((item, index) => (
+                        <tr key={item.id}>
+                          <td className="text-center align-middle fw-medium" style={{ width: "60px" }}>
+                            {index + 1}
+                          </td>
+                          <td className="align-middle">{item.name}</td>
+                          <td className="text-center align-middle" style={{ width: "100px" }}>
+                            ₹{item.price}
+                          </td>
+                          <td className="text-center align-middle" style={{ width: "140px" }}>
+                            <div className="d-flex justify-content-center">
+                              <div className="d-flex border rounded" style={{ width: "120px" }}>
+                                <button
+                                  type="button"
+                                  className="btn btn-light border-0 d-flex align-items-center justify-content-center"
+                                  style={{ width: "40px" }}
+                                  onClick={() => updateQuantity(item.id, -1)}
+                                  disabled={item.count <= 1}
+                                >
+                                  <Icon icon="mdi:minus" style={{ fontSize: "16px" }} />
+                                </button>
+
+                                <div
+                                  className="d-flex align-items-center justify-content-center fw-semibold"
+                                  style={{
+                                    width: "40px",
+                                    backgroundColor: "#f8f9fa",
+                                    borderLeft: "1px solid #dee2e6",
+                                    borderRight: "1px solid #dee2e6"
+                                  }}
+                                >
+                                  {item.count}
+                                </div>
+
+                                <button
+                                  type="button"
+                                  className="btn btn-light border-0 d-flex align-items-center justify-content-center"
+                                  style={{ width: "40px" }}
+                                  onClick={() => updateQuantity(item.id, 1)}
+                                >
+                                  <Icon icon="mdi:plus" style={{ fontSize: "16px" }} />
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-center align-middle" style={{ width: "120px" }}>
+                            ₹{item.price * item.count}
+                          </td>
+                          <td className="text-center align-middle">
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-sm p-1 d-flex align-items-center justify-content-center mx-auto"
+                              style={{ width: "32px", height: "32px" }}
+                              onClick={() => removeItem(item.id)}
+                            >
+                              <Icon
+                                icon="mdi:trash-can-outline"
+                                style={{ fontSize: "18px" }}
+                              />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="text-end fw-bold align-middle"
+                        >
+                          Grand Total:
+                        </td>
+                        <td
+                          colSpan="2"
+                          className="fw-bold fs-5 text-primary align-middle"
+                        >
+                          ₹{getTotalPrice()}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            )}
+
           </div>
-        );
-      })}
+
+          <div className="d-flex justify-content-end gap-2 mt-24">
+            <Link
+              to="/shop-list"
+              className="btn btn-outline-secondary radius-8 px-20 py-11"
+            >
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              className="btn btn-primary radius-8 px-20 py-11"
+            >
+              Confirm Order
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
