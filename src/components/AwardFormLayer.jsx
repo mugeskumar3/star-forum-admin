@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import AwardApi from "../Api/AwardApi";
 
 const AwardFormLayer = () => {
   const { id } = useParams();
@@ -7,32 +8,50 @@ const AwardFormLayer = () => {
   const isEditMode = !!id;
 
   const [formData, setFormData] = useState({
-    awardName: "",
+    name: "",
   });
 
   useEffect(() => {
     if (isEditMode) {
-      setFormData({
-        awardName: "Best Chapter Award",
-      });
+      getAwardById(id);
     }
-  }, [isEditMode]);
+  }, [isEditMode, id]);
+
+  const getAwardById = async (id) => {
+    const response = await AwardApi.getAward(id);
+    if (response && response.status && response.response.data) {
+      setFormData(response.response.data);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    navigate("/award");
+    if (isEditMode) {
+      const payload = { ...formData, id };
+      console.log(payload, "payload");
+      const response = await AwardApi.updateAward(payload);
+      if (response && response.status) {
+        navigate("/award");
+      }
+    } else {
+      const response = await AwardApi.createAward(formData);
+      if (response && response.status) {
+        navigate("/award");
+      }
+    }
   };
 
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-primary-600 pb-2 mb-0">{isEditMode ? "Edit Award" : "Add New Award"}</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">
+          {isEditMode ? "Edit Award" : "Add New Award"}
+        </h6>
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
@@ -44,8 +63,8 @@ const AwardFormLayer = () => {
               <input
                 type="text"
                 className="form-control radius-8"
-                name="awardName"
-                value={formData.awardName}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter award name"
                 required

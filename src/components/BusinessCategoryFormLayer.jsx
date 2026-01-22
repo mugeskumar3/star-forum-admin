@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import BusinessCategoryApi from "../Api/BusinessCategoryApi";
 
 const BusinessCategoryFormLayer = () => {
   const { id } = useParams();
@@ -7,32 +8,53 @@ const BusinessCategoryFormLayer = () => {
   const isEditMode = !!id;
 
   const [formData, setFormData] = useState({
-    categoryName: "",
+    name: "",
   });
 
   useEffect(() => {
     if (isEditMode) {
-      setFormData({
-        categoryName: "Technology",
-      });
+      getCategoryById(id);
     }
-  }, [isEditMode]);
+  }, [isEditMode, id]);
+
+  const getCategoryById = async (id) => {
+    const response = await BusinessCategoryApi.getBusinessCategory(id);
+    if (response && response.status && response.response.data) {
+      setFormData(response.response.data);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    navigate("/business-category");
+    if (isEditMode) {
+      const payload = { ...formData, id };
+      const response = await BusinessCategoryApi.updateBusinessCategory(
+        payload.id,
+        payload,
+      );
+      if (response && response.status) {
+        navigate("/business-category");
+      }
+    } else {
+      const response =
+        await BusinessCategoryApi.createBusinessCategory(formData);
+      if (response && response.status) {
+        navigate("/business-category");
+      }
+    }
   };
 
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-primary-600 pb-2 mb-0">{isEditMode ? "Edit Business Category" : "Add New Business Category"}</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">
+          {isEditMode ? "Edit Business Category" : "Add New Business Category"}
+        </h6>
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
@@ -44,8 +66,8 @@ const BusinessCategoryFormLayer = () => {
               <input
                 type="text"
                 className="form-control radius-8"
-                name="categoryName"
-                value={formData.categoryName}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter category name"
                 required

@@ -1,154 +1,210 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Icon } from '@iconify/react/dist/iconify.js';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Select from "react-select";
 
 const StarUpdateFormLayer = () => {
-    const navigate = useNavigate();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isEditMode = !!id;
 
-    const [formData, setFormData] = useState({
-        memberName: '',
-        achievement: '',
-        achievementDate: '',
-        description: '',
-        image: null
-    });
+  const [formData, setFormData] = useState({
+    chapter: [],
+    category: [],
+    title: "",
+    details: "",
+    lastDate: "",
+    location: "",
+  });
 
-    const [preview, setPreview] = useState(null);
+  // Dummy data for edit mode
+  useEffect(() => {
+    if (isEditMode) {
+      setFormData({
+        chapter: [
+          { value: "chennai", label: "Chennai" },
+          { value: "madurai", label: "Madurai" },
+        ],
+        category: [{ value: "business", label: "Business" }],
+        title: "New Business Opportunity",
+        details: "Looking for business partners",
+        lastDate: "2026-01-30",
+        location: "Chennai",
+      });
+    }
+  }, [isEditMode]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "44px",
+      borderRadius: "8px",
+      borderColor: "#dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#dee2e6",
+      },
+    }),
+  };
 
-    const handleFileChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setFormData({ ...formData, image: file });
-            setPreview(URL.createObjectURL(file));
-        }
-    };
+  const chapterOptions = [
+    { value: "chennai", label: "Chennai" },
+    { value: "madurai", label: "Madurai" },
+    { value: "coimbatore", label: "Coimbatore" },
+    { value: "trichy", label: "Trichy" },
+    { value: "salem", label: "Salem" },
+  ];
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Star Update Data:', formData);
-        // Add your save logic here
-        alert('Star Update submitted successfully!');
-        navigate('/star-update');
-    };
+  const categoryOptions = [
+    { value: "business", label: "Business" },
+    { value: "award", label: "Award" },
+    { value: "event", label: "Event" },
+    { value: "community", label: "Community" },
+    { value: "recognition", label: "Recognition" },
+  ];
 
-    return (
-        <div className="card h-100 p-0 radius-12">
-            <div className="card-header bg-transparent border-bottom px-24 py-16">
-                <h6 className="text-primary-600 pb-2 mb-0">
-                    <Icon icon="ri:star-line" className="me-2" />
-                    Star Update
-                </h6>
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleMultiSelectChange = (selectedOptions, { name }) => {
+    setFormData((prev) => ({ ...prev, [name]: selectedOptions || [] }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form Submitted:", formData);
+    // Add API call here
+    navigate("/star-update");
+  };
+
+  return (
+    <div className="card h-100 p-0 radius-12">
+      <div className="card-header border-bottom bg-base py-16 px-24">
+        <h6 className="text-primary-600 pb-2 mb-0">
+          {isEditMode ? "Edit Star Update" : "Add New Star Update"}
+        </h6>
+      </div>
+      <div className="card-body p-24">
+        <form onSubmit={handleSubmit}>
+          <div className="row gy-3">
+            {/* Chapter - Multi Select */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Chapter <span className="text-danger">*</span>
+              </label>
+              <Select
+                isMulti
+                name="chapter"
+                options={chapterOptions}
+                value={formData.chapter}
+                onChange={handleMultiSelectChange}
+                placeholder="Select Chapters"
+                styles={customStyles}
+                required
+              />
             </div>
 
-            <div className="card-body p-24">
-                <form onSubmit={handleSubmit}>
-                    <div className="row gy-4">
-                        <div className="col-md-6">
-                            <div className="mb-4">
-                                <label className="form-label fw-medium">Member Name <span className="text-danger-600">*</span></label>
-                                <input
-                                    type="text"
-                                    name="memberName"
-                                    className="form-control"
-                                    placeholder="Enter member name"
-                                    value={formData.memberName}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label className="form-label fw-medium">Achievement Type <span className="text-danger-600">*</span></label>
-                                <select
-                                    name="achievement"
-                                    className="form-select"
-                                    value={formData.achievement}
-                                    onChange={handleInputChange}
-                                    required
-                                >
-                                    <option value="">Select achievement type</option>
-                                    <option value="Business Milestone">Business Milestone</option>
-                                    <option value="Award">Award</option>
-                                    <option value="Recognition">Recognition</option>
-                                    <option value="Community Service">Community Service</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-
-                            <div className="mb-4">
-                                <label className="form-label fw-medium">Achievement Date <span className="text-danger-600">*</span></label>
-                                <input
-                                    type="date"
-                                    name="achievementDate"
-                                    className="form-control"
-                                    value={formData.achievementDate}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="col-md-6">
-                            <div className="mb-4">
-                                <label className="form-label fw-medium">Achievement Photo</label>
-                                <input
-                                    type="file"
-                                    className="form-control"
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                />
-                                <div className="form-text">Upload a photo of the achievement (optional)</div>
-                            </div>
-
-                            {preview && (
-                                <div className="mb-4">
-                                    <label className="form-label fw-medium">Preview</label>
-                                    <div className="text-center">
-                                        <img
-                                            src={preview}
-                                            alt="Preview"
-                                            className="img-fluid rounded-8 border"
-                                            style={{ maxHeight: '200px' }}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="col-12">
-                            <div className="mb-4">
-                                <label className="form-label fw-medium">Description <span className="text-danger-600">*</span></label>
-                                <textarea
-                                    name="description"
-                                    className="form-control"
-                                    rows="6"
-                                    placeholder="Describe the achievement in detail"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
-                                    required
-                                ></textarea>
-                            </div>
-                        </div>
-
-                        <div className="col-12 mt-4 pt-4 border-top">
-                            <div className="d-flex justify-content-end gap-3">
-                                <Link to="/star-update" className="btn btn-outline-secondary px-32">Cancel</Link>
-                                <button type="submit" className="btn btn-primary px-32" style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}>
-                                    <Icon icon="ri:star-fill" className="me-2" />
-                                    Publish Star Update
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+            {/* Category - Multi Select */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Category <span className="text-danger">*</span>
+              </label>
+              <Select
+                isMulti
+                name="category"
+                options={categoryOptions}
+                value={formData.category}
+                onChange={handleMultiSelectChange}
+                placeholder="Select Categories"
+                styles={customStyles}
+                required
+              />
             </div>
-        </div>
-    );
+
+            {/* Title */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Title <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control radius-8"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="Enter title"
+                required
+              />
+            </div>
+
+            {/* Last Date */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Last Date <span className="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                className="form-control radius-8"
+                name="lastDate"
+                value={formData.lastDate}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Details */}
+            <div className="col-12">
+              <label className="form-label fw-semibold">
+                Details <span className="text-danger">*</span>
+              </label>
+              <textarea
+                className="form-control radius-8"
+                rows="4"
+                name="details"
+                value={formData.details}
+                onChange={handleChange}
+                placeholder="Enter details"
+                required
+              />
+            </div>
+
+            {/* Location */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Location <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control radius-8"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Enter location"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-end gap-2 mt-24">
+            <Link
+              to="/star-update"
+              className="btn btn-outline-secondary radius-8 px-20 py-11"
+            >
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              className="btn btn-primary radius-8 px-20 py-11"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default StarUpdateFormLayer;

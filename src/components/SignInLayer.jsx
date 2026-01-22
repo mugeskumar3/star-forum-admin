@@ -1,10 +1,13 @@
-  import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import LoginApi from "../Api/LoginApi";
 
 const SignInLayer = () => {
+  const navigate = useNavigate();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [pin, setPin] = useState(["", "", "", ""]);
+  const [loading, setLoading] = useState(false);
   const pinRefs = useRef([]);
 
   const handlePinChange = (index, value) => {
@@ -13,16 +16,69 @@ const SignInLayer = () => {
     newPin[index] = value;
     setPin(newPin);
 
-    // Auto-focus next input
     if (value && index < 3) {
       pinRefs.current[index + 1].focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
-    // Handle backspace to focus previous
     if (e.key === "Backspace" && !pin[index] && index > 0) {
       pinRefs.current[index - 1].focus();
+    }
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!phoneNumber.trim()) {
+      alert("Please enter your phone number");
+      return;
+    }
+    const pinValue = pin.join("");
+    if (pinValue.length !== 4) {
+      alert("Please enter a complete 4-digit PIN");
+      return;
+    }
+    setLoading(true);
+    try {
+      const credentials = {
+        phoneNumber: phoneNumber.trim(),
+        pin: pinValue,
+      };
+
+      const result = await LoginApi.login(credentials);
+      console.log("Login Result:", result); // Debugging log
+
+      if (result.status) {
+        // Handle potential token locations (direct or nested in data)
+        const token =
+          result.response.token ||
+          result.response.data?.token ||
+          result.response.accessToken;
+        const user = result.response.user || result.response.data?.user;
+
+        if (token) {
+          localStorage.setItem("userToken", token);
+          // Configure axios default immediately as well for redundancy
+          // apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } else {
+          console.error("Token missing in response:", result.response);
+          alert("Login successful but token missing from response.");
+          setLoading(false);
+          return;
+        }
+
+        if (user) {
+          localStorage.setItem("userData", JSON.stringify(user));
+        }
+
+        // Small delay to ensure localStorage is set before navigation triggers new requests
+        setTimeout(() => {
+          navigate("/");
+        }, 100);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,8 +123,7 @@ const SignInLayer = () => {
           </p>
         </div>
 
-        <form action="#">
-          {/* Phone Number Input */}
+        <form onSubmit={handleSubmit}>
           <div className="icon-field mb-20 text-start">
             <label className="form-label text-secondary text-sm fw-medium mb-8">
               Phone Number
@@ -83,11 +138,11 @@ const SignInLayer = () => {
                 placeholder="Enter Phone Number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
+                disabled={loading}
               />
             </div>
           </div>
 
-          {/* 4-Digit PIN Input */}
           <div className="mb-32 text-start">
             <label className="form-label text-secondary text-sm fw-medium mb-8">
               4-digit PIN
@@ -104,6 +159,7 @@ const SignInLayer = () => {
                   value={digit}
                   onChange={(e) => handlePinChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
+                  disabled={loading}
                 />
               ))}
             </div>
@@ -113,8 +169,20 @@ const SignInLayer = () => {
             type="submit"
             className="btn btn-danger btn-lg w-100 radius-12 h-56-px fw-semibold"
             style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+            disabled={loading}
           >
-            Sign In
+            {loading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Signing In...
+              </>
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
       </div>
