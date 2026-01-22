@@ -1,0 +1,95 @@
+import apiClient from "../Config/Index";
+import ShowNotifications from "../helper/ShowNotifications";
+
+class AwardApi {
+  async createAward(data) {
+    try {
+      const response = await apiClient.post("/admin/award", data);
+      if (response.status === 200 || response.status === 201) {
+        ShowNotifications.showAlertNotification(
+          response.data.message || "Award created successfully!",
+          true,
+        );
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        error?.message ||
+        "Failed to create award. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+  async getAward(id) {
+    try {
+      const url = id ? `/admin/award/${id}` : "/admin/award";
+      const response = await apiClient.get(url);
+      if (response.status === 200 || response.status === 201) {
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to get award. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+  async updateAward(data) {
+    try {
+      const response = await apiClient.put(`/admin/award/${data.id}`, data);
+      if (response.status === 200 || response.status === 201) {
+        ShowNotifications.showAlertNotification(
+          response.data.message || "Award updated successfully!",
+          true,
+        );
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        error?.message ||
+        "Failed to update award. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+  async deleteAward(id) {
+    try {
+      const response = await apiClient.delete(`/admin/award/${id}`);
+      if (response.status === 200 || response.status === 201) {
+        ShowNotifications.showAlertNotification(
+          response.data.message || "Award deleted successfully!",
+          true,
+        );
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        error?.message ||
+        "Failed to delete award. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+}
+
+export default new AwardApi();

@@ -1,30 +1,30 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import TablePagination from "./TablePagination";
+import AwardApi from "../Api/AwardApi";
 
 const AwardListLayer = () => {
-  const [awards, setAwards] = useState(
-    Array.from({ length: 10 }).map((_, i) => ({
-      id: i + 1,
-      name: [
-        `Best Chapter`,
-        `Best Member`,
-        `Star Performer`,
-        `Early Bird`,
-        `Networking King`,
-        `Giving Hero`,
-        `Attendance Champ`,
-        `Visitor Magnet`,
-        `Growth Driver`,
-        `Value Creator`,
-      ][i],
-      createdDate: "2025-01-01",
-    })),
-  );
+  const [awards, setAwards] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    fetchAwards();
+  }, []);
+
+  const fetchAwards = async () => {
+    setLoading(true);
+    const response = await AwardApi.getAward();
+    if (response && response.status && response.response.data) {
+      setAwards(response.response.data);
+    } else {
+      setAwards([]);
+    }
+    setLoading(false);
+  };
 
   // Initial Data for Filter/Search
   const filteredAwards = awards.filter((award) =>
@@ -48,9 +48,12 @@ const AwardListLayer = () => {
     setCurrentPage(1);
   };
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = async (id) => {
     if (window.confirm("Are you sure you want to delete this award?")) {
-      setAwards((prev) => prev.filter((c) => c.id !== id));
+      const response = await AwardApi.deleteAward(id);
+      if (response && response.status) {
+        fetchAwards(); // Refresh list
+      }
     }
   };
 
@@ -100,6 +103,9 @@ const AwardListLayer = () => {
                   Award Name
                 </th>
                 <th scope="col" style={{ color: "black" }}>
+                  Status
+                </th>
+                <th scope="col" style={{ color: "black" }}>
                   Created Date
                 </th>
                 <th
@@ -123,27 +129,39 @@ const AwardListLayer = () => {
                         </span>
                       </div>
                     </td>
-                    <td>{award.createdDate}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          award.isActive
+                            ? "bg-success-focus text-success-main"
+                            : "bg-danger-focus text-danger-main"
+                        }`}
+                      >
+                        {award.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td>
+                      {award.createdAt
+                        ? new Date(award.createdAt)
+                            .toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })
+                            .replace(/ /g, "-")
+                        : "-"}
+                    </td>
                     <td className="text-center">
                       <div className="d-flex align-items-center gap-10 justify-content-center">
-                        <button
-                          type="button"
-                          className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                        >
-                          <Icon
-                            icon="majesticons:eye-line"
-                            className="icon text-xl"
-                          />
-                        </button>
                         <Link
-                          to={`/award/edit/${award.id}`}
+                          to={`/award/edit/${award._id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon icon="lucide:edit" className="menu-icon" />
                         </Link>
                         <button
                           type="button"
-                          onClick={() => handleDeleteClick(award.id)}
+                          onClick={() => handleDeleteClick(award._id)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -158,7 +176,7 @@ const AwardListLayer = () => {
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center py-4">
-                    No awards found.
+                    {loading ? "Loading..." : "No awards found."}
                   </td>
                 </tr>
               )}

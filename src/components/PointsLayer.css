@@ -1,0 +1,65 @@
+/* Standard Web styles for Points Layer */
+
+.points-card-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(196, 22, 28, 0.1);
+    color: #c4161c;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.points-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.overall-points-stats {
+    background: linear-gradient(135deg, #c4161c 0%, #8252e9 100%);
+    color: #fff !important;
+}
+
+.overall-points-stats .text-secondary-light {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.overall-points-stats .points-value {
+    color: #fff !important;
+}
+
+.overall-points-stats .points-card-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.points-tab-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.points-tab-btn.active {
+    background-color: #c4161c;
+    color: #fff;
+}
+
+.points-tab-btn:not(.active) {
+    background-color: transparent;
+    color: #666;
+    border-color: #eee;
+}
+
+.points-tab-btn:not(.active):hover {
+    background-color: #f8f9fa;
+    border-color: #ddd;
+}
+
+.bg-white-20 {
+    background: rgba(255, 255, 255, 0.2);
+}

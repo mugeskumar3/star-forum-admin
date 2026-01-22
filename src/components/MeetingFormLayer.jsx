@@ -10,7 +10,8 @@ const MeetingFormLayer = () => {
 
   const [formData, setFormData] = useState({
     topic: "",
-    amount: "",
+    meetingFee: "",
+    visitorFee: "",
     chapter: "",
     hotelName: "",
     startDate: "",
@@ -128,11 +129,11 @@ const MeetingFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Top Section: 3 items per column */}
+            {/* Row 1: Topic, Meeting Fee, Visitor Fee */}
             <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
-                  Topic <span className="text-danger-600">*</span>
+                  Meeting Topic <span className="text-danger-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -144,37 +145,43 @@ const MeetingFormLayer = () => {
                   required
                 />
               </div>
+            </div>
 
+            <div className="col-md-3">
               <div className="mb-4">
                 <label className="form-label fw-medium">
-                  Amount <span className="text-danger-600">*</span>
+                  Meeting Fee <span className="text-danger-600">*</span>
                 </label>
                 <input
                   type="number"
-                  name="amount"
+                  name="meetingFee"
                   className="form-control"
-                  placeholder="Enter amount"
-                  value={formData.amount}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  Start Date & Time <span className="text-danger-600">*</span>
-                </label>
-                <input
-                  type="datetime-local"
-                  name="startDate"
-                  className="form-control"
-                  value={formData.startDate}
+                  placeholder="Enter meeting fee"
+                  value={formData.meetingFee}
                   onChange={handleInputChange}
                   required
                 />
               </div>
             </div>
 
+            <div className="col-md-3">
+              <div className="mb-4">
+                <label className="form-label fw-medium">
+                  Visitor Fee <span className="text-danger-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  name="visitorFee"
+                  className="form-control"
+                  placeholder="Enter visitor fee"
+                  value={formData.visitorFee}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Row 2: Chapter and Hotel */}
             <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
@@ -191,7 +198,9 @@ const MeetingFormLayer = () => {
                   required
                 />
               </div>
+            </div>
 
+            <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
                   Hotel Name <span className="text-danger-600">*</span>
@@ -206,7 +215,26 @@ const MeetingFormLayer = () => {
                   required
                 />
               </div>
+            </div>
 
+            {/* Row 3: Date Inputs (3 in a row) */}
+            <div className="col-md-4">
+              <div className="mb-4">
+                <label className="form-label fw-medium">
+                  Start Date & Time <span className="text-danger-600">*</span>
+                </label>
+                <input
+                  type="datetime-local"
+                  name="startDate"
+                  className="form-control"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="col-md-4">
               <div className="mb-4">
                 <label className="form-label fw-medium">
                   End Date & Time <span className="text-danger-600">*</span>
@@ -222,8 +250,7 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            {/* Bottom Section: Late Punch Time and Location side-by-side */}
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-4">
                 <label className="form-label fw-medium">
                   Late Punch Time <span className="text-danger-600">*</span>
@@ -239,7 +266,8 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            {/* Row 4: Location */}
+            <div className="col-md-12">
               <div className="mb-4">
                 <label className="form-label fw-medium">
                   Location <span className="text-danger-600">*</span>

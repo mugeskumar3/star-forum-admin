@@ -1,35 +1,28 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import TablePagination from "./TablePagination";
-
+import BusinessCategoryApi from "../Api/BusinessCategoryApi";
 const BusinessCategoryListLayer = () => {
-  const [categories, setCategories] = useState(
-    Array.from({ length: 15 }).map((_, i) => ({
-      id: i + 1,
-      name: [
-        `Technology`,
-        `Healthcare`,
-        `Real Estate`,
-        `Education`,
-        `Manufacturing`,
-        `Finance`,
-        `Marketing`,
-        `Logistics`,
-        `Retail`,
-        `Hospitality`,
-        `Consulting`,
-        `Construction`,
-        `Automotive`,
-        `Energy`,
-        `Entertainment`,
-      ][i],
-      createdDate: "2025-01-01",
-    })),
-  );
+  const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await BusinessCategoryApi.getBusinessCategory();
+      if (response && response.status && response.response.data) {
+        setCategories(response.response.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch categories", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   // Initial Data for Filter/Search
   const filteredCategories = categories.filter((category) =>
@@ -53,9 +46,12 @@ const BusinessCategoryListLayer = () => {
     setCurrentPage(1);
   };
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = async (id) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
-      setCategories((prev) => prev.filter((c) => c.id !== id));
+      const response = await BusinessCategoryApi.deleteBusinessCategory(id);
+      if (response && response.status) {
+        fetchCategories();
+      }
     }
   };
 
@@ -105,6 +101,9 @@ const BusinessCategoryListLayer = () => {
                   Category Name
                 </th>
                 <th scope="col" style={{ color: "black" }}>
+                  Status
+                </th>
+                <th scope="col" style={{ color: "black" }}>
                   Created Date
                 </th>
                 <th
@@ -128,27 +127,39 @@ const BusinessCategoryListLayer = () => {
                         </span>
                       </div>
                     </td>
-                    <td>{category.createdDate}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          category.isActive
+                            ? "bg-success-focus text-success-main"
+                            : "bg-danger-focus text-danger-main"
+                        }`}
+                      >
+                        {category.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td>
+                      {category.createdAt
+                        ? new Date(category.createdAt)
+                            .toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })
+                            .replace(/ /g, "-")
+                        : "-"}
+                    </td>
                     <td className="text-center">
                       <div className="d-flex align-items-center gap-10 justify-content-center">
-                        <button
-                          type="button"
-                          className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                        >
-                          <Icon
-                            icon="majesticons:eye-line"
-                            className="icon text-xl"
-                          />
-                        </button>
                         <Link
-                          to={`/business-category/edit/${category.id}`}
+                          to={`/business-category/edit/${category._id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon icon="lucide:edit" className="menu-icon" />
                         </Link>
                         <button
                           type="button"
-                          onClick={() => handleDeleteClick(category.id)}
+                          onClick={() => handleDeleteClick(category._id)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon

@@ -74,23 +74,13 @@ const TestimonialsLayer = () => {
         padding: '1.25rem'
       }}
     >
-      {/* Header */}
-      <div className="container-fluid mb-2">
+      {/* Header section */}
+      <div className="d-flex align-items-center justify-content-between mb-24 px-12">
         <div className="d-flex align-items-center">
-          <div
-            style={{
-              width: '4px',
-              height: '32px',
-              background: 'var(--primary-600)',
-              borderRadius: '2px',
-              marginRight: '0.75rem'
-            }}
-          />
-          <div>
-            <p className="fw-bold mb-0" style={{ fontSize: '24px', color: 'var(--text-primary-light)' }}>
-              Testimonials Report
-            </p>
-            <p className="mb-0 small" style={{ color: 'var(--text-secondary-light)' }}>Member testimonials and ratings</p>
+          <div className="bg-danger-600 radius-2" style={{ width: '4px', height: '32px' }}></div>
+          <div className="ms-12">
+            <h5 className="fw-bold mb-0" style={{ color: '#101828' }}>Testimonials Report</h5>
+            <p className="text-sm text-secondary-light mb-0">Member testimonials and ratings</p>
           </div>
         </div>
       </div>
