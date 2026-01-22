@@ -1,13 +1,13 @@
 import React from "react";
 import MasterLayout from "../masterLayout/MasterLayout";
-import StarUpdateFormLayer from "../components/StarUpdateFormLayer";
+import StarUpdateListLayer from "../components/StarUpdateListLayer";
 
 const StarUpdatePage = () => {
-    return (
-        <MasterLayout>
-            <StarUpdateFormLayer />
-        </MasterLayout>
-    );
+  return (
+    <MasterLayout>
+      <StarUpdateListLayer />
+    </MasterLayout>
+  );
 };
 
 export default StarUpdatePage;

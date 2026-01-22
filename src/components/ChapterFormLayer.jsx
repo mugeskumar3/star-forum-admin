@@ -255,7 +255,6 @@ const ChapterFormLayer = () => {
               />
             </div>
 
-            {/* Executive Director */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Executive Director
@@ -272,7 +271,6 @@ const ChapterFormLayer = () => {
               />
             </div>
 
-            {/* Regional Director (Multi Select Tags) */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Regional Director

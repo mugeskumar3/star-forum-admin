@@ -1,6 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Modal, Button, Tabs, Tab } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 import Select from "react-select";
@@ -8,6 +7,8 @@ import Select from "react-select";
 const CommunityUpdateListLayer = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [showResponseModal, setShowResponseModal] = useState(false);
+  const [selectedResponseNames, setSelectedResponseNames] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [activeTab, setActiveTab] = useState("ask");
@@ -36,17 +37,19 @@ const CommunityUpdateListLayer = () => {
   };
 
   const chapterOptions = [
-    { value: "aram", label: "ARAM" },
-    { value: "star", label: "STAR" },
-    { value: "galaxy", label: "GALAXY" },
-    { value: "elite", label: "ELITE" },
-    { value: "titan", label: "TITAN" },
+    { value: "Chennai Central", label: "Chennai Central" },
+    { value: "Mumbai South", label: "Mumbai South" },
+    { value: "Delhi West", label: "Delhi West" },
+    { value: "Bangalore East", label: "Bangalore East" },
+    { value: "Hyderabad North", label: "Hyderabad North" },
   ];
 
   const personOptions = [
-    { value: "rajesh", label: "Rajesh Kumar" },
-    { value: "priya", label: "Priya Sharma" },
-    { value: "john", label: "John Doe" },
+    { value: "Rajesh Kumar", label: "Rajesh Kumar" },
+    { value: "Priya Sharma", label: "Priya Sharma" },
+    { value: "John Doe", label: "John Doe" },
+    { value: "Anita Desai", label: "Anita Desai" },
+    { value: "Vikram Singh", label: "Vikram Singh" },
   ];
 
   const handleFilterChange = (key, selectedOption) => {
@@ -54,93 +57,62 @@ const CommunityUpdateListLayer = () => {
       ...prev,
       [key]: selectedOption,
     }));
+    setCurrentPage(1); // Reset to first page on filter change
+  };
+
+  const generateData = (startId) => {
+    return Array.from({ length: 20 }).map((_, i) => ({
+      id: startId + i,
+      publicationDate: new Date(2024, i % 12, (i % 28) + 1).toLocaleDateString(
+        "en-GB",
+        {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        },
+      ),
+      chapterName: [
+        "Chennai Central",
+        "Mumbai South",
+        "Delhi West",
+        "Bangalore East",
+        "Hyderabad North",
+      ][i % 5],
+      authorName: [
+        "Rajesh Kumar",
+        "Priya Sharma",
+        "John Doe",
+        "Anita Desai",
+        "Vikram Singh",
+      ][i % 5],
+      title: `Community Update Title ${startId + i}`,
+      details: `This is the detailed description for the community update regarding item ${
+        startId + i
+      }.`,
+      responses: Array.from(
+        { length: (i % 5) + 1 },
+        (_, j) => `Responder ${j + 1}`,
+      ),
+      image: `assets/images/user-list/user-list${(i % 6) + 1}.png`,
+    }));
   };
 
   const [data, setData] = useState({
-    ask: Array.from({ length: 20 }).map((_, i) => ({
-      id: i + 1,
-      chapterName: [
-        "Chennai Central",
-        "Mumbai South",
-        "Delhi West",
-        "Bangalore East",
-        "Hyderabad North",
-        "Kolkata Metro",
-        "Pune City",
-        "Ahmedabad GIDC",
-        "Jaipur Pink",
-        "Lucknow Nawabs",
-        "Chandigarh Royal",
-        "Coimbatore Elite",
-        "Madurai Star",
-        "Trichy Titans",
-        "Salem Warriors",
-        "Erode Kings",
-        "Vellore Fort",
-        "Nellore Coast",
-        "Vizag Port",
-        "Kochi Spice",
-      ][i],
-      image: `assets/images/user-list/user-list${(i % 6) + 1}.png`,
-      description: `Looking for resources in Section ${i + 1} for upcoming community event.`,
-    })),
-    give: Array.from({ length: 20 }).map((_, i) => ({
-      id: i + 21,
-      chapterName: [
-        "Chennai Central",
-        "Mumbai South",
-        "Delhi West",
-        "Bangalore East",
-        "Hyderabad North",
-        "Kolkata Metro",
-        "Pune City",
-        "Ahmedabad GIDC",
-        "Jaipur Pink",
-        "Lucknow Nawabs",
-        "Chandigarh Royal",
-        "Coimbatore Elite",
-        "Madurai Star",
-        "Trichy Titans",
-        "Salem Warriors",
-        "Erode Kings",
-        "Vellore Fort",
-        "Nellore Coast",
-        "Vizag Port",
-        "Kochi Spice",
-      ][i],
-      image: `assets/images/user-list/user-list${(i % 6) + 1}.png`,
-      description: `Offering sponsorship for Section ${i + 1} annual meetup.`,
-    })),
-    required: Array.from({ length: 20 }).map((_, i) => ({
-      id: i + 41,
-      chapterName: [
-        "Chennai Central",
-        "Mumbai South",
-        "Delhi West",
-        "Bangalore East",
-        "Hyderabad North",
-        "Kolkata Metro",
-        "Pune City",
-        "Ahmedabad GIDC",
-        "Jaipur Pink",
-        "Lucknow Nawabs",
-        "Chandigarh Royal",
-        "Coimbatore Elite",
-        "Madurai Star",
-        "Trichy Titans",
-        "Salem Warriors",
-        "Erode Kings",
-        "Vellore Fort",
-        "Nellore Coast",
-        "Vizag Port",
-        "Kochi Spice",
-      ][i],
-      image: `assets/images/user-list/user-list${(i % 6) + 1}.png`,
-      description: `Immediate requirement for volunteers in Section ${i + 1}.`,
-    })),
+    ask: generateData(1),
+    give: generateData(21),
+    required: generateData(41),
   });
 
-  const currentTabData = data[activeTab];
+  const currentTabData = data[activeTab].filter((item) => {
+    const matchesChapter = filters.chapter
+      ? item.chapterName === filters.chapter.value
+      : true;
+    const matchesPerson = filters.person
+      ? item.authorName === filters.person.value
+      : true;
+    return matchesChapter && matchesPerson;
+  });
+
   const totalRecords = currentTabData.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
@@ -173,9 +145,19 @@ const CommunityUpdateListLayer = () => {
     setItemToDelete(null);
   };
 
-  const handleClose = () => {
+  const handleCloseDelete = () => {
     setShowDeleteModal(false);
     setItemToDelete(null);
+  };
+
+  const handleShowResponses = (names) => {
+    setSelectedResponseNames(names);
+    setShowResponseModal(true);
+  };
+
+  const handleCloseResponse = () => {
+    setShowResponseModal(false);
+    setSelectedResponseNames([]);
   };
 
   return (
@@ -194,6 +176,7 @@ const CommunityUpdateListLayer = () => {
               styles={customStyles}
               className="basic-single"
               classNamePrefix="select"
+              isClearable
             />
             <Select
               placeholder="Select Person"
@@ -203,6 +186,7 @@ const CommunityUpdateListLayer = () => {
               styles={customStyles}
               className="basic-single"
               classNamePrefix="select"
+              isClearable
             />
           </div>
         </div>
@@ -237,7 +221,8 @@ const CommunityUpdateListLayer = () => {
         </div>
       </div>
 
-      <Modal show={showDeleteModal} onHide={handleClose} centered>
+      {/* Delete Modal */}
+      <Modal show={showDeleteModal} onHide={handleCloseDelete} centered>
         <Modal.Body className="text-center p-5">
           <div className="d-flex justify-content-center mb-3">
             <div className="bg-danger-focus rounded-circle d-flex justify-content-center align-items-center w-64-px h-64-px">
@@ -255,7 +240,7 @@ const CommunityUpdateListLayer = () => {
             <Button
               variant="outline-secondary"
               className="px-32"
-              onClick={handleClose}
+              onClick={handleCloseDelete}
             >
               Cancel
             </Button>
@@ -270,6 +255,31 @@ const CommunityUpdateListLayer = () => {
           </div>
         </Modal.Body>
       </Modal>
+
+      {/* Response Modal */}
+      <Modal show={showResponseModal} onHide={handleCloseResponse} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Responses</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedResponseNames.length > 0 ? (
+            <ul className="list-group">
+              {selectedResponseNames.map((name, index) => (
+                <li key={index} className="list-group-item">
+                  {name}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center text-muted">No responses yet.</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseResponse}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 
@@ -283,13 +293,22 @@ const CommunityUpdateListLayer = () => {
                 S.No
               </th>
               <th scope="col" style={{ color: "black" }}>
-                Chapter Name
+                Date
               </th>
               <th scope="col" style={{ color: "black" }}>
-                Image
+                Chapter
               </th>
               <th scope="col" style={{ color: "black" }}>
-                Description
+                Name
+              </th>
+              <th scope="col" style={{ color: "black" }}>
+                Title
+              </th>
+              <th scope="col" style={{ color: "black" }}>
+                Details
+              </th>
+              <th scope="col" style={{ color: "black" }}>
+                Response
               </th>
               <th
                 scope="col"
@@ -305,29 +324,27 @@ const CommunityUpdateListLayer = () => {
               items.map((item, index) => (
                 <tr key={item.id}>
                   <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                  <td>{item.publicationDate}</td>
                   <td>{item.chapterName}</td>
-                  <td>
-                    <img
-                      src={item.image}
-                      alt=""
-                      className="w-40-px h-40-px rounded-circle flex-shrink-0"
-                      onError={(e) => {
-                        e.target.src = "https://placehold.co/40x40?text=IMG";
-                      }}
-                    />
+                  <td>{item.authorName}</td>
+                  <td>{item.title}</td>
+                  <td
+                    className="text-truncate"
+                    style={{ maxWidth: "200px" }}
+                    title={item.details}
+                  >
+                    {item.details}
                   </td>
-                  <td>{item.description}</td>
+                  <td>
+                    <span
+                      className="text-primary-600 fw-bold cursor-pointer text-decoration-underline"
+                      onClick={() => handleShowResponses(item.responses)}
+                    >
+                      {item.responses.length}
+                    </span>
+                  </td>
                   <td className="text-center">
                     <div className="d-flex align-items-center gap-10 justify-content-center">
-                      <button
-                        type="button"
-                        className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                      >
-                        <Icon
-                          icon="majesticons:eye-line"
-                          className="icon text-xl"
-                        />
-                      </button>
                       <button
                         type="button"
                         onClick={() => confirmDelete(item)}
@@ -344,7 +361,7 @@ const CommunityUpdateListLayer = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center py-24">
+                <td colSpan="8" className="text-center py-24">
                   No records found
                 </td>
               </tr>

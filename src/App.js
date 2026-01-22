@@ -39,6 +39,7 @@ import MemberHistoryPage from "./pages/MemberHistoryPage";
 import CommunityUpdatePage from "./pages/CommunityUpdatePage";
 import CommunityUpdateFormPage from "./pages/CommunityUpdateFormPage";
 import StarUpdatePage from "./pages/StarUpdatePage";
+import StarUpdateFormPage from "./pages/StarUpdateFormPage";
 
 import GeneralUpdatePage from "./pages/GeneralUpdatePage";
 import ChapterReportPage from "./pages/ChapterReportPage";
@@ -84,32 +85,104 @@ function App() {
         <Route exact path="/company" element={<CompanyPage />} />
 
         {/* Dynamic Forms using FormPage */}
-        <Route exact path="/chapter-badge" element={<FormPage title="Chapter Badge" />} />
-        <Route exact path="/member-badge" element={<FormPage title="Member Badge" />} />
-        <Route exact path="/meetings-create" element={<FormPage title="Meeting Creation" />} />
-        <Route exact path="/renewal-report" element={<FormPage title="Renewal Report" />} />
-        <Route exact path="/ed-report" element={<FormPage title="ED Report" />} />
-        <Route exact path="/rd-report" element={<FormPage title="RD Report" />} />
-        <Route exact path="/power-date" element={<FormPage title="Power date" />} />
-        <Route exact path="/present-update" element={<FormPage title="Present Update" />} />
-        <Route exact path="/roles-permissions" element={<FormPage title="Roles & Permissions" />} />
-        <Route exact path="/office-location" element={<FormPage title="Office Location" />} />
+        <Route
+          exact
+          path="/chapter-badge"
+          element={<FormPage title="Chapter Badge" />}
+        />
+        <Route
+          exact
+          path="/member-badge"
+          element={<FormPage title="Member Badge" />}
+        />
+        <Route
+          exact
+          path="/meetings-create"
+          element={<FormPage title="Meeting Creation" />}
+        />
+        <Route
+          exact
+          path="/renewal-report"
+          element={<FormPage title="Renewal Report" />}
+        />
+        <Route
+          exact
+          path="/ed-report"
+          element={<FormPage title="ED Report" />}
+        />
+        <Route
+          exact
+          path="/rd-report"
+          element={<FormPage title="RD Report" />}
+        />
+        <Route
+          exact
+          path="/power-date"
+          element={<FormPage title="Power date" />}
+        />
+        <Route
+          exact
+          path="/present-update"
+          element={<FormPage title="Present Update" />}
+        />
+        <Route
+          exact
+          path="/roles-permissions"
+          element={<FormPage title="Roles & Permissions" />}
+        />
+        <Route
+          exact
+          path="/office-location"
+          element={<FormPage title="Office Location" />}
+        />
         <Route exact path="/form" element={<FormPage />} />
 
         {/* Master Creation */}
         <Route exact path="/user-roles" element={<UserRoleListPage />} />
         <Route exact path="/user-roles/create" element={<UserRoleFormPage />} />
-        <Route exact path="/user-roles/edit/:id" element={<UserRoleFormPage />} />
-        <Route exact path="/user-roles/view/:id" element={<UserRoleFormPage />} />
+        <Route
+          exact
+          path="/user-roles/edit/:id"
+          element={<UserRoleFormPage />}
+        />
+        <Route
+          exact
+          path="/user-roles/view/:id"
+          element={<UserRoleFormPage />}
+        />
 
-        <Route exact path="/admin-registration" element={<AdminRegistrationListPage />} />
-        <Route exact path="/admin-registration/add" element={<AdminRegistrationFormPage />} />
-        <Route exact path="/admin-registration/view/:id" element={<AdminRegistrationViewPage />} />
-        <Route exact path="/admin-registration/edit/:id" element={<AdminRegistrationEditPage />} />
+        <Route
+          exact
+          path="/admin-registration"
+          element={<AdminRegistrationListPage />}
+        />
+        <Route
+          exact
+          path="/admin-registration/add"
+          element={<AdminRegistrationFormPage />}
+        />
+        <Route
+          exact
+          path="/admin-registration/view/:id"
+          element={<AdminRegistrationViewPage />}
+        />
+        <Route
+          exact
+          path="/admin-registration/edit/:id"
+          element={<AdminRegistrationEditPage />}
+        />
 
         <Route exact path="/organisation" element={<OrganisationListPage />} />
-        <Route exact path="/organisation/add" element={<OrganisationFormPage />} />
-        <Route exact path="/organisation/edit/:id" element={<OrganisationFormPage />} />
+        <Route
+          exact
+          path="/organisation/add"
+          element={<OrganisationFormPage />}
+        />
+        <Route
+          exact
+          path="/organisation/edit/:id"
+          element={<OrganisationFormPage />}
+        />
 
         <Route exact path="/badge" element={<BadgeCreationPage />} />
         <Route exact path="/badge/create" element={<BadgeCreateFormPage />} />
@@ -119,39 +192,114 @@ function App() {
         <Route exact path="/award/add" element={<AwardFormPage />} />
         <Route exact path="/award/edit/:id" element={<AwardFormPage />} />
 
-        <Route exact path="/business-category" element={<BusinessCategoryListPage />} />
-        <Route exact path="/business-category/add" element={<BusinessCategoryFormPage />} />
-        <Route exact path="/business-category/edit/:id" element={<BusinessCategoryFormPage />} />
+        <Route
+          exact
+          path="/business-category"
+          element={<BusinessCategoryListPage />}
+        />
+        <Route
+          exact
+          path="/business-category/add"
+          element={<BusinessCategoryFormPage />}
+        />
+        <Route
+          exact
+          path="/business-category/edit/:id"
+          element={<BusinessCategoryFormPage />}
+        />
 
         {/* Chapter Creation */}
         <Route exact path="/chapter-creation" element={<ChapterListPage />} />
-        <Route exact path="/chapter-creation/add" element={<ChapterFormPage />} />
-        <Route exact path="/chapter-creation/edit/:id" element={<ChapterFormPage />} />
+        <Route
+          exact
+          path="/chapter-creation/add"
+          element={<ChapterFormPage />}
+        />
+        <Route
+          exact
+          path="/chapter-creation/edit/:id"
+          element={<ChapterFormPage />}
+        />
         <Route exact path="/chapter-view/:id" element={<ChapterViewPage />} />
 
         {/* Members Registration */}
-        <Route exact path="/members-registration" element={<MemberListPage />} />
-        <Route exact path="/members-registration/add" element={<MemberFormPage />} />
-        <Route exact path="/members-registration/edit/:id" element={<MemberFormPage />} />
+        <Route
+          exact
+          path="/members-registration"
+          element={<MemberListPage />}
+        />
+        <Route
+          exact
+          path="/members-registration/add"
+          element={<MemberFormPage />}
+        />
+        <Route
+          exact
+          path="/members-registration/edit/:id"
+          element={<MemberFormPage />}
+        />
 
         {/* Meeting Creation */}
         <Route exact path="/meeting-creation" element={<MeetingListPage />} />
-        <Route exact path="/meeting-creation/add" element={<MeetingFormPage />} />
-        <Route exact path="/meeting-creation/edit/:id" element={<MeetingFormPage />} />
+        <Route
+          exact
+          path="/meeting-creation/add"
+          element={<MeetingFormPage />}
+        />
+        <Route
+          exact
+          path="/meeting-creation/edit/:id"
+          element={<MeetingFormPage />}
+        />
 
         {/* Attendance List */}
-        <Route exact path="/attendance-report" element={<AttendanceListPage />} />
-        <Route exact path="/meeting-attendance/:id" element={<MeetingAttendancePage />} />
-        <Route exact path="/member-history/:id" element={<MemberHistoryPage />} />
+        <Route
+          exact
+          path="/attendance-report"
+          element={<AttendanceListPage />}
+        />
+        <Route
+          exact
+          path="/meeting-attendance/:id"
+          element={<MeetingAttendancePage />}
+        />
+        <Route
+          exact
+          path="/member-history/:id"
+          element={<MemberHistoryPage />}
+        />
 
         {/* Announcement */}
         <Route exact path="/general-update" element={<GeneralUpdatePage />} />
-        <Route exact path="/general-update-list" element={<GeneralUpdateListPage />} />
+        <Route
+          exact
+          path="/general-update-list"
+          element={<GeneralUpdateListPage />}
+        />
 
-        <Route exact path="/community-update" element={<CommunityUpdatePage />} />
-        <Route exact path="/community-update/add" element={<CommunityUpdateFormPage />} />
+        <Route
+          exact
+          path="/community-update"
+          element={<CommunityUpdatePage />}
+        />
+        <Route
+          exact
+          path="/community-update/add"
+          element={<CommunityUpdateFormPage />}
+        />
 
         <Route exact path="/star-update" element={<StarUpdatePage />} />
+        <Route exact path="/star-update/add" element={<StarUpdateFormPage />} />
+        <Route
+          exact
+          path="/star-update/edit/:id"
+          element={<StarUpdateFormPage />}
+        />
+        <Route
+          exact
+          path="/star-update/view/:id"
+          element={<StarUpdateFormPage />}
+        />
 
         {/* Training */}
         <Route exact path="/training" element={<TrainingListPage />} />
@@ -184,7 +332,11 @@ function App() {
         <Route exact path="/testimonials" element={<TestimonialsPage />} />
 
         {/* Chief Guest List */}
-        <Route exact path="/chief-guest-list" element={<ChiefGuestListPage />} />
+        <Route
+          exact
+          path="/chief-guest-list"
+          element={<ChiefGuestListPage />}
+        />
 
         <Route exact path="*" element={<ErrorPage />} />
       </Routes>
