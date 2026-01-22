@@ -58,6 +58,7 @@ import UserRoleListPage from "./pages/UserRoleListPage";
 import UserRoleFormPage from "./pages/UserRoleFormPage";
 import ChiefGuestListPage from "./pages/ChiefGuestListPage";
 import GeneralUpdateListPage from "./pages/GeneralUpdateListPage";
+import PointsPage from "./pages/PointsPage";
 import AwardListPage from "./pages/AwardListPage";
 import AwardFormPage from "./pages/AwardFormPage";
 import BusinessCategoryListPage from "./pages/BusinessCategoryListPage";
@@ -152,6 +153,7 @@ function App() {
         <Route exact path="/community-update/add" element={<CommunityUpdateFormPage />} />
 
         <Route exact path="/star-update" element={<StarUpdatePage />} />
+        <Route exact path="/points" element={<PointsPage />} />
 
         {/* Training */}
         <Route exact path="/training" element={<TrainingListPage />} />
