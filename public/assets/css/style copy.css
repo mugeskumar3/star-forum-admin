@@ -8035,9 +8035,9 @@ h6,
 
 .btn-primary-600:active,
 .btn-primary-600:focus {
-  background-color: var(--primary-800) !important;
+  background-color: var(--primary-600) !important;
   color: #fff !important;
-  border-color: var(--primary-800) !important;
+  border-color: var(--primary-600) !important;
 }
 
 .btn-primary-700 {
