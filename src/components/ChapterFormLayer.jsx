@@ -278,13 +278,12 @@ const ChapterFormLayer = () => {
                 Regional Director
               </label>
               <Select
-                isMulti
                 name="regionalDirector"
                 options={regionalDirectorOptions}
                 value={regionalDirectorOptions.filter((option) =>
                   formData.regionalDirector.includes(option.value),
                 )}
-                onChange={handleMultiSelectChange}
+                onChange={handleSelectChange}
                 placeholder="Select Regional Directors"
                 styles={customStyles}
               />
@@ -300,21 +299,6 @@ const ChapterFormLayer = () => {
                 className="form-control radius-8"
                 name="createdDate"
                 value={formData.createdDate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Meeting Date & Time */}
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Meeting Date & Time <span className="text-danger">*</span>
-              </label>
-              <input
-                type="datetime-local"
-                className="form-control radius-8"
-                name="meetingDateTime"
-                value={formData.meetingDateTime}
                 onChange={handleChange}
                 required
               />
