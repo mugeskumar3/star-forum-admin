@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import './ThankYouSlipLayer.css';
 
 const ThankYouSlipLayer = () => {
     const [activeTab, setActiveTab] = useState('given'); // 'given' or 'received'
@@ -9,7 +10,7 @@ const ThankYouSlipLayer = () => {
         chapters: [
             {
                 id: 1,
-                name: 'ARAM',
+                name: 'ARAM Chapter',
                 amount: '₹1,34,11,533',
                 members: [
                     { id: 1, name: 'Logarajan S P', company: 'e-intellisafe & Security', category: 'CCTV & Security', amount: '₹25,00,000' },
@@ -19,11 +20,21 @@ const ThankYouSlipLayer = () => {
             },
             {
                 id: 2,
-                name: 'Arni',
+                name: 'Arni Chapter',
                 amount: '₹67,29,71,600',
                 members: [
                     { id: 4, name: 'Ramesh Kumar', company: 'Auto Solutions', category: 'Automobile', amount: '₹30,00,000' },
-                    { id: 5, name: 'Priya Lakshmi', company: 'Fashion Trends', category: 'Retail', amount: '₹15,75,000' }
+                    { id: 5, name: 'Priya Lakshmi', company: 'Fashion Trends', category: 'Retail', amount: '₹15,75,000' },
+                    { id: 8, name: 'Suresh Raina', company: 'Cricket Academy', category: 'Sports', amount: '₹12,00,000' }
+                ]
+            },
+            {
+                id: 3,
+                name: 'Salem Chapter',
+                amount: '₹45,20,000',
+                members: [
+                    { id: 9, name: 'Anbu Selvan', company: 'Textile Hub', category: 'Manufacturing', amount: '₹20,00,000' },
+                    { id: 10, name: 'Revathi S', company: 'Organic Foods', category: 'FMCG', amount: '₹25,20,000' }
                 ]
             }
         ]
@@ -34,154 +45,125 @@ const ThankYouSlipLayer = () => {
         chapters: [
             {
                 id: 1,
-                name: 'ARAM',
+                name: 'ARAM Chapter',
                 amount: '₹95,00,000',
                 members: [
                     { id: 6, name: 'Vijay Kumar', company: 'Tech Services', category: 'IT Solutions', amount: '₹45,00,000' },
                     { id: 7, name: 'Anitha R', company: 'Consulting Firm', category: 'Business Consulting', amount: '₹50,00,000' }
+                ]
+            },
+            {
+                id: 4,
+                name: 'Coimbatore Chapter',
+                amount: '₹55,00,000',
+                members: [
+                    { id: 11, name: 'Murugan G', company: 'Pump Works', category: 'Industry', amount: '₹30,00,000' },
+                    { id: 12, name: 'Santhosh M', company: 'Jewels & Co', category: 'Retail', amount: '₹25,00,000' }
                 ]
             }
         ]
     };
 
     const currentData = activeTab === 'given' ? givenData : receivedData;
-    const pageTitle = activeTab === 'given' ? 'Thank You Slip - Given' : 'Thank You Slip - Received';
 
     return (
-        <div
-            style={{
-                background: 'var(--bg-color)',
-                minHeight: '100vh',
-                padding: '1.25rem'
-            }}
-        >
-            {/* Header */}
-            <div className="container-fluid mb-2">
-                <div className="d-flex align-items-center justify-content-between">
-                    <div className="d-flex align-items-center">
-                        <div
-                            style={{
-                                width: '4px',
-                                height: '32px',
-                                background: 'var(--primary-600)',
-                                borderRadius: '2px',
-                                marginRight: '0.75rem'
-                            }}
-                        />
-                        <div>
-                            <p className="fw-bold mb-0" style={{ fontSize: '24px', color: 'var(--text-primary-light)' }}>
-                                {pageTitle}
-                            </p>
-                            <p className="mb-0 small" style={{ color: 'var(--text-secondary-light)' }}>Chapter-wise thank you slip details</p>
-                        </div>
+        <div className="d-flex flex-column gap-4">
+            {/* Header section */}
+            <div className="d-flex align-items-center justify-content-between mb-24 px-12 flex-wrap gap-3">
+                <div className="d-flex align-items-center">
+                    <div className="bg-danger-600 radius-2" style={{ width: '4px', height: '32px' }}></div>
+                    <div className="ms-12">
+                        <h5 className="fw-bold mb-0" style={{ color: '#101828' }}>Thank You Slip Reports</h5>
+                        <p className="text-sm text-secondary-light mb-0">Detailed list of business generated across chapters</p>
                     </div>
+                </div>
 
-                    {/* Tab Buttons */}
-                    <div className="btn-group" role="group">
-                        <button
-                            type="button"
-                            className={`btn ${activeTab === 'given' ? 'btn-primary' : 'btn-outline-primary'}`}
-                            style={activeTab === 'given' ? { backgroundColor: "var(--primary-600)", borderColor: "var(--primary-600)", color: "#fff" } : { color: "var(--primary-600)", borderColor: "var(--primary-600)" }}
-                            onClick={() => setActiveTab('given')}
-                        >
-                            <Icon icon="mdi:hand-coin-outline" className="me-1" />
-                            Given
-                        </button>
-                        <button
-                            type="button"
-                            className={`btn ${activeTab === 'received' ? 'btn-primary' : 'btn-outline-primary'}`}
-                            style={activeTab === 'received' ? { backgroundColor: "var(--primary-600)", borderColor: "var(--primary-600)", color: "#fff" } : { color: "var(--primary-600)", borderColor: "var(--primary-600)" }}
-                            onClick={() => setActiveTab('received')}
-                        >
-                            <Icon icon="mdi:hand-heart-outline" className="me-1" />
-                            Received
-                        </button>
-                    </div>
+                {/* Tab Selection */}
+                <div className="d-flex align-items-center gap-2 p-1 bg-neutral-100 radius-12">
+                    <button
+                        type="button"
+                        className={`btn btn-sm py-10 px-20 radius-8 border-0 d-flex align-items-center gap-2 transition-2 ${activeTab === 'given'
+                            ? 'bg-primary-600 text-white shadow-sm'
+                            : 'text-secondary-light hover-bg-neutral-200'
+                            }`}
+                        onClick={() => setActiveTab('given')}
+                    >
+                        <Icon icon="solar:hand-money-outline" fontSize={18} />
+                        Given Slips
+                    </button>
+                    <button
+                        type="button"
+                        className={`btn btn-sm py-10 px-20 radius-8 border-0 d-flex align-items-center gap-2 transition-2 ${activeTab === 'received'
+                            ? 'bg-primary-600 text-white shadow-sm'
+                            : 'text-secondary-light hover-bg-neutral-200'
+                            }`}
+                        onClick={() => setActiveTab('received')}
+                    >
+                        <Icon icon="solar:handshake-outline" fontSize={18} />
+                        Received Slips
+                    </button>
                 </div>
             </div>
 
-            {/* Cards */}
-            <div className="container-fluid">
-                <div className="row g-2">
-                    {currentData.chapters.map(chapter => (
-                        <div key={chapter.id} className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-                            <div
-                                className="h-100 shadow-sm"
-                                style={{ backgroundColor: 'var(--white)', borderRadius: '14px', border: '1px solid var(--border-color)' }}
-                            >
-                                <div className="p-2">
-                                    {/* Chapter Header */}
-                                    <div className="d-flex align-items-center justify-content-between mb-1">
-                                        <h6 className="mb-0 fw-semibold" style={{ color: 'var(--text-primary-light)' }}>{chapter.name}</h6>
-                                        <span className="fw-bold" style={{ color: 'var(--success-600)', fontSize: '14px' }}>
-                                            {chapter.amount}
-                                        </span>
-                                    </div>
-
-                                    {/* Total Amount */}
-                                    <div
-                                        className="rounded-3 p-2 mb-2"
-                                        style={{ background: 'var(--success-600)', color: '#fff' }}
-                                    >
-                                        <div className="d-flex align-items-center justify-content-between" style={{ padding: '0px 5px' }}>
-                                            <span
-                                                style={{
-                                                    fontSize: '11px',
-                                                    fontWeight: 500,
-                                                    textTransform: 'uppercase',
-                                                    opacity: 0.85,
-                                                }}
-                                            >
-                                                Total Amount
-                                            </span>
-                                            <span style={{ fontSize: '18px', fontWeight: 700 }}>
-                                                {chapter.amount}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Members */}
-                                    <div className="d-flex flex-column gap-1">
-                                        {chapter.members.map(member => (
-                                            <div
-                                                key={member.id}
-                                                className="d-flex align-items-center justify-content-between border rounded-3 p-2"
-                                                style={{ background: 'var(--neutral-50)', borderColor: 'var(--border-color)', padding: '0px 5px' }}
-                                            >
-                                                {/* Left */}
-                                                <div className="flex-grow-1">
-                                                    <div className="fw-semibold" style={{ fontSize: '13px', padding: '0px 5px', color: 'var(--text-primary-light)' }}>
-                                                        {member.name}
-                                                    </div>
-                                                    <div style={{ fontSize: '11px', padding: '0px 5px', color: 'var(--text-secondary-light)' }}>
-                                                        {member.company}
-                                                    </div>
-                                                    <div style={{ fontSize: '10px', padding: '0px 5px', color: 'var(--text-secondary-light)', opacity: 0.8 }}>
-                                                        {member.category}
-                                                    </div>
-                                                </div>
-
-                                                {/* Right */}
-                                                <div
-                                                    className="fw-bold"
-                                                    style={{
-                                                        fontSize: '15px',
-                                                        color: 'var(--success-600)',
-                                                        minWidth: '80px',
-                                                        textAlign: 'right',
-                                                        padding: '0px 5px'
-                                                    }}
-                                                >
-                                                    {member.amount}
-                                                </div>
-                                            </div>
-                                        ))}
+            {/* Grid of Chapter Slips */}
+            <div className="row gy-3 px-12">
+                {currentData.chapters.map(chapter => (
+                    <div key={chapter.id} className="col-xl-3 col-md-6 col-12">
+                        <div className="card h-100 p-0 radius-12 shadow-hover-sm transition-2 overflow-hidden border-0">
+                            {/* Chapter Header with Green Gradient */}
+                            <div className="p-12 bg-success-600 text-white">
+                                <div className="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 className="fw-bold mb-0 text-white text-truncate" style={{ maxWidth: '140px' }}>{chapter.name}</h6>
+                                    <div className="w-32-px h-32-px rounded-circle bg-white-20 d-flex align-items-center justify-content-center">
+                                        <Icon icon="solar:globus-outline" fontSize={18} />
                                     </div>
                                 </div>
+                                <div className="mt-8">
+                                    <span className="text-xxs opacity-75 text-uppercase spacing-1 d-block mb-1">Chapter Value</span>
+                                    <h5 className="fw-bolder mb-0 text-white">{chapter.amount}</h5>
+                                </div>
+                            </div>
+
+                            {/* Members List */}
+                            <div className="card-body p-12 bg-base">
+                                <h6 className="text-xxs fw-bold text-secondary-light text-uppercase spacing-1 mb-12">Transactions</h6>
+                                <div className="d-flex flex-column gap-2">
+                                    {chapter.members.map(member => (
+                                        <div
+                                            key={member.id}
+                                            className="p-10 radius-8 border transition-2 hover-bg-neutral-50"
+                                            style={{ borderColor: '#f2f2f2' }}
+                                        >
+                                            <div className="d-flex justify-content-between align-items-start mb-4">
+                                                <div className="flex-grow-1 overflow-hidden">
+                                                    <h6 className="text-sm fw-bold mb-2 text-dark text-truncate">{member.name}</h6>
+                                                    <span className="badge bg-neutral-100 text-secondary-light py-2 px-6 radius-4 text-xxs">
+                                                        {member.category}
+                                                    </span>
+                                                </div>
+                                                <div className="text-end">
+                                                    <span className="text-success-main fw-bold text-md d-block">{member.amount}</span>
+                                                </div>
+                                            </div>
+                                            <div className="d-flex align-items-center gap-2 mt-4 opacity-75 overflow-hidden">
+                                                <Icon icon="solar:case-outline" fontSize={12} className="text-success-600 flex-shrink-0" />
+                                                <span className="text-xxs fw-medium text-secondary-light text-truncate">{member.company}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Card Footer Action */}
+                            <div className="card-footer bg-neutral-50 border-top-0 p-8 text-center">
+                                <button type="button" className="btn p-0 text-success-600 fw-bold text-xs hover-text-success-700 d-flex align-items-center gap-2 mx-auto">
+                                    View Report
+                                    <Icon icon="solar:arrow-right-outline" fontSize={12} />
+                                </button>
                             </div>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

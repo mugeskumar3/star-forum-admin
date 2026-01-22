@@ -375,7 +375,7 @@ const ShopListLayer = () => {
                         </td>
                         <td
                           colSpan="2"
-                          className="fw-bold fs-5 text-primary align-middle"
+                          className="fw-bold fs-5 text-primary-600 align-middle"
                         >
                           ₹{getTotalPrice()}
                         </td>
