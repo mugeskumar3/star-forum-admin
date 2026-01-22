@@ -66,40 +66,20 @@ const ChapterReportDesign5 = () => {
     ];
 
     return (
-        <div
-            style={{
-                background: 'var(--bg-color)',
-                minHeight: '100vh',
-                padding: '1.5rem'
-            }}
-        >
-            {/* Header */}
-            <div className="container-fluid mb-3">
-                <div className="row align-items-center">
-                    <div className="col-md-8">
-                        <div className="d-flex align-items-center">
-                            <div
-                                style={{
-                                    width: '4px',
-                                    height: '36px',
-                                    background: 'var(--primary-600)',
-                                    borderRadius: '2px',
-                                    marginRight: '0.75rem'
-                                }}
-                            />
-                            <div>
-                                <p className="fw-bold mb-0" style={{ fontSize: '28px', color: 'var(--text-primary-light)' }}>
-                                    Chapter Performance
-                                </p>
-                                <p className="mb-0 small" style={{ color: 'var(--text-secondary-light)' }}>Live analytics</p>
-                            </div>
-                        </div>
+        <div className="d-flex flex-column gap-4">
+            {/* Header section */}
+            <div className="d-flex align-items-center justify-content-between mb-24 px-12">
+                <div className="d-flex align-items-center">
+                    <div className="bg-danger-600 radius-2" style={{ width: '4px', height: '32px' }}></div>
+                    <div className="ms-12">
+                        <h5 className="fw-bold mb-0" style={{ color: '#101828' }}>Chapter Performance</h5>
+                        <p className="text-sm text-secondary-light mb-0">Live analytics</p>
                     </div>
                 </div>
             </div>
 
             {/* Cards */}
-            <div className="container-fluid">
+            <div className="px-12">
                 <div className="row g-3">
                     {chapters.map(chapter => (
                         <div key={chapter.id} className="col-xl-4 col-lg-6 col-md-6 col-sm-12">
@@ -117,12 +97,10 @@ const ChapterReportDesign5 = () => {
                                     <div
                                         className="d-flex align-items-center justify-content-between mb-2"
                                     >
-                                        {/* LEFT – Chapter Name */}
                                         <h6 className="mb-0 fw-semibold" style={{ color: 'var(--text-primary-light)' }}>
                                             {chapter.name}
                                         </h6>
 
-                                        {/* RIGHT – Members Count */}
                                         <span
                                             style={{
                                                 fontSize: '12px',
@@ -219,8 +197,7 @@ const ChapterReportDesign5 = () => {
                 </div>
             </div>
         </div>
-    )
-
+    );
 };
 
 export default ChapterReportDesign5;

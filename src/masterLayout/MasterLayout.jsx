@@ -374,6 +374,17 @@ const MasterLayout = ({ children }) => {
                     Star Update
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="/points"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Points
+                  </NavLink>
+                </li>
               </ul>
             </li>
 
