@@ -1,9 +1,9 @@
 import axios from "axios";
 
 // Production URLs
-// export const IMAGE_BASE_URL = "https://star-forum-backend.onrender.com/";
-// export const BASE_URL = "https://star-forum-backend.onrender.com/";
-// export const server = "https://star-forum-backend.onrender.com/";
+export const IMAGE_BASE_URL = "https://star-forum-backend.onrender.com/api";
+export const BASE_URL = "https://star-forum-backend.onrender.com/api";
+export const server = "https://star-forum-backend.onrender.com/api";
 
 // Development URLs (commented out)
 // export const IMAGE_BASE_URL = "http://localhost:5000/api/public";
@@ -11,9 +11,9 @@ import axios from "axios";
 // export const server = "http://localhost:3000"
 
 // Local Network URLs (commented out)
-export const IMAGE_BASE_URL = "http://192.168.1.27:5000/api";
-export const BASE_URL = "http://192.168.1.27:5000/api";
-export const server = "http://192.168.1.27:3000";
+// export const IMAGE_BASE_URL = "http://192.168.1.27:5000/api";
+// export const BASE_URL = "http://192.168.1.27:5000/api";
+// export const server = "http://192.168.1.27:3000";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,

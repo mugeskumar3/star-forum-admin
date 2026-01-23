@@ -10,6 +10,7 @@ const AwardFormLayer = () => {
   const [formData, setFormData] = useState({
     name: "",
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (isEditMode) {
@@ -27,10 +28,15 @@ const AwardFormLayer = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name.trim()) {
+      setErrors({ name: "Award Name is required" });
+      return;
+    }
     if (isEditMode) {
       const payload = { ...formData, id };
       console.log(payload, "payload");
@@ -67,8 +73,11 @@ const AwardFormLayer = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter award name"
-                required
+                required={false}
               />
+              {errors.name && (
+                <span className="text-danger text-sm mt-1">{errors.name}</span>
+              )}
             </div>
           </div>
           <div className="d-flex justify-content-end gap-2 mt-24">
