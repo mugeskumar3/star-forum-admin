@@ -1,90 +1,93 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { MockDataService } from "../helper/MockDataService";
 import Select from "react-select";
-import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
-import OrganisationApi from "../Api/ZoneApi";
+import OrganisationApi from "../Api/OrganisationApi";
 import RegionApi from "../Api/RegionApi";
+import ZoneApi from "../Api/ZoneApi";
 
 const OrganisationFormLayer = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [knownZones, setKnownZones] = useState([]);
+
   const [formData, setFormData] = useState({
-    zone: "",
-    zone: "",
-    region: "",
     country: "",
     state: "",
+    zone: "",
+    region: "",
     ed: "",
     rd: "",
   });
+
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [edOptions, setEdOptions] = useState([]);
+  const [rdOptions, setRdOptions] = useState([]);
+  const [formErrors, setFormErrors] = useState({});
   const [filteredZones, setFilteredZones] = useState([]);
   const [filteredRegions, setFilteredRegions] = useState([]);
-  const [knownRegions, setKnownRegions] = useState([]);
-  const [showZoneModal, setShowZoneModal] = useState(false);
-  const [newZoneName, setNewZoneName] = useState("");
-  const [newZoneCountry, setNewZoneCountry] = useState(null);
-  const [newZoneState, setNewZoneState] = useState(null);
-  const [zoneError, setZoneError] = useState("");
-  const [formErrors, setFormErrors] = useState({});
-  const [rdInput, setRdInput] = useState("");
-  const edOptions = [
-    { value: "ED John Doe", label: "ED John Doe" },
-    { value: "ED Jane Smith", label: "ED Jane Smith" },
-    { value: "ED Alex Wilson", label: "ED Alex Wilson" },
-  ];
-  const rdOptions = [
-    { value: "RD Michael Brown", label: "RD Michael Brown" },
-    { value: "RD Sarah Connor", label: "RD Sarah Connor" },
-    { value: "RD David Miller", label: "RD David Miller" },
-    { value: "RD Chris Evans", label: "RD Chris Evans" },
-    { value: "RD Natasha Romanoff", label: "RD Natasha Romanoff" },
-  ];
+  const [allRegions, setAllRegions] = useState([]);
+
   useEffect(() => {
+    fetchAdminUsers();
+    fetchRegions();
     if (id) {
-      const org = MockDataService.getOrganisationById(id);
-      if (org) {
-        setFormData(org);
-      }
+      getOrganisationById(id);
     }
   }, [id]);
-  /* const getZone = async () => {
-    // Removed old fetch all
-  }; */
 
   useEffect(() => {
-    if (selectedCountry && selectedState) {
-      getZonesForState(selectedState.label);
+    if (formData.state) {
+      fetchZones(formData.state);
     } else {
       setFilteredZones([]);
     }
-  }, [selectedCountry, selectedState]);
+  }, [formData.state]);
 
-  const getZonesForState = async (stateName) => {
-    const response = await OrganisationApi.getZoneByState(stateName);
+  useEffect(() => {
+    if (formData.zone && allRegions.length > 0) {
+      const regions = allRegions.filter((r) => r.zone === formData.zone);
+      setFilteredRegions(regions.length > 0 ? regions : allRegions);
+    } else {
+      setFilteredRegions([]);
+    }
+  }, [formData.zone, allRegions]);
+
+  const fetchZones = async (stateName) => {
+    const response = await ZoneApi.getZoneByState(stateName);
     if (response && response.status && response.response.data) {
       setFilteredZones(response.response.data);
-    } else {
-      setFilteredZones([]);
     }
   };
 
-  const getRegionsForZone = async (zoneName) => {
-    // Assuming RegionApi has a getRegionByZone or similar, if not we might filter locally if we fetch all.
-    // Checking RegionApi.js content first would be ideal, but let's assume standard pattern or fetch all and filter.
-    // Based on previous file list, RegionApi.js exists.
-    // Let's rely on a hypothetical getRegionByZone or just fetch all and filter.
-    // Ideally update RegionApi.js first if needed.
+  const fetchRegions = async () => {
     const response = await RegionApi.getRegion();
     if (response && response.status && response.response.data) {
-      const regions = response.response.data.filter((r) => r.zone === zoneName);
-      setFilteredRegions(regions);
+      setAllRegions(response.response.data);
+    }
+  };
+
+  const fetchAdminUsers = async () => {
+    const response = await RegionApi.getAdminUser();
+    if (response && response.status && response.response.data) {
+      const users = response.response.data;
+      setAdminUsers(users);
+      const options = users.map((user) => ({
+        value: user.name,
+        label: user.name,
+      }));
+      setEdOptions(options);
+      setRdOptions(options);
+    }
+  };
+
+  const getOrganisationById = async (id) => {
+    const response = await OrganisationApi.getOrganisation(id);
+    if (response && response.status && response.response.data) {
+      setFormData(response.response.data);
     }
   };
 
@@ -99,13 +102,7 @@ const OrganisationFormLayer = () => {
     setFormData({
       ...formData,
       [name]: selectedOption ? selectedOption.value : "",
-      country: selectedOption ? selectedOption.country : "",
-      state: selectedOption ? selectedOption.state : "",
     });
-    if (name === "zone") {
-      getRegionsForZone(selectedOption.value);
-      setFormData((prev) => ({ ...prev, region: "" }));
-    }
     if (formErrors[name]) {
       setFormErrors({ ...formErrors, [name]: "" });
     }
@@ -136,43 +133,6 @@ const OrganisationFormLayer = () => {
     }),
   };
 
-  const handleZoneModalClose = () => {
-    setShowZoneModal(false);
-    setNewZoneName("");
-    setNewZoneCountry(null);
-    setNewZoneState(null);
-    setZoneError("");
-  };
-  const handleZoneModalShow = () => setShowZoneModal(true);
-
-  const handleAddZone = async () => {
-    if (!newZoneName.trim()) {
-      setZoneError("Zone name cannot be empty");
-      return;
-    }
-    if (!newZoneCountry) {
-      setZoneError("Country is required");
-      return;
-    }
-    if (!newZoneState) {
-      setZoneError("State is required");
-      return;
-    }
-    const payload = {
-      name: newZoneName.trim(),
-      country: newZoneCountry.label,
-      state: newZoneState.label,
-    };
-    const resp = await OrganisationApi.createZone(payload);
-    if (resp && resp.status) {
-      const updatedZones = [...knownZones, newZoneName.trim()];
-      setKnownZones(updatedZones);
-      setFormData({ ...formData, zone: newZoneName.trim() });
-      // Toast handled in Api
-      handleZoneModalClose();
-    }
-  };
-
   const validateForm = () => {
     let errors = {};
     let isValid = true;
@@ -190,7 +150,7 @@ const OrganisationFormLayer = () => {
     return isValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -198,14 +158,18 @@ const OrganisationFormLayer = () => {
       return;
     }
 
-    if (formData.zone && !knownZones.includes(formData.zone)) {
-      const newZones = [...knownZones, formData.zone];
-      setKnownZones(newZones);
+    if (id) {
+      const payload = { ...formData, id };
+      const response = await OrganisationApi.updateOrganisation(payload);
+      if (response && response.status) {
+        navigate("/organisation");
+      }
+    } else {
+      const response = await OrganisationApi.createOrganisation(formData);
+      if (response && response.status) {
+        navigate("/organisation");
+      }
     }
-
-    MockDataService.saveOrganisation(formData);
-
-    navigate("/organisation");
   };
 
   return (
@@ -213,13 +177,10 @@ const OrganisationFormLayer = () => {
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
         <h6 className="text-primary-600 pb-2 mb-0">Create Organisation</h6>
         <div className="d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-primary btn-sm d-flex align-items-center"
-            onClick={handleZoneModalShow}
-          >
-            <Icon icon="ic:baseline-plus" className="me-1" /> Add Zone
-          </button>
+          <Link to="/zone/add" className="btn btn-primary btn-sm">
+            <Icon icon="ic:baseline-plus" className="text-xl me-1" />
+            Add Zone
+          </Link>
           <Link to="/organisation" className="btn btn-outline-secondary btn-sm">
             Back to List
           </Link>
@@ -261,27 +222,41 @@ const OrganisationFormLayer = () => {
                 </label>
                 <Select
                   options={
-                    selectedCountry
-                      ? State.getStatesOfCountry(selectedCountry.value).map(
-                          (state) => ({
-                            value: state.isoCode,
-                            label: state.name,
-                          }),
-                        )
+                    formData.country
+                      ? State.getStatesOfCountry(
+                          Country.getAllCountries().find(
+                            (c) => c.name === formData.country,
+                          )?.isoCode,
+                        ).map((state) => ({
+                          value: state.isoCode,
+                          label: state.name,
+                        }))
                       : []
                   }
-                  value={selectedState}
+                  value={
+                    formData.state
+                      ? { value: formData.state, label: formData.state }
+                      : null
+                  }
                   onChange={(selectedOption) => {
-                    setSelectedState(selectedOption);
                     setFormData({
                       ...formData,
                       state: selectedOption ? selectedOption.label : "",
-                      zone: "",
+                      zone: "", // Reset zone when state changes
                     });
+                    if (formErrors.state) {
+                      setFormErrors({ ...formErrors, state: "" });
+                    }
                   }}
                   placeholder="Select State"
-                  isDisabled={!selectedCountry}
+                  isDisabled={!formData.country}
+                  styles={customStyles}
                 />
+                {formErrors.state && (
+                  <div className="text-danger mt-1 fontsize-14">
+                    {formErrors.state}
+                  </div>
+                )}
               </div>
 
               <div className="mb-4">
@@ -293,29 +268,30 @@ const OrganisationFormLayer = () => {
                   options={filteredZones.map((z) => ({
                     value: z.name,
                     label: z.name,
-                    country: z.country,
-                    state: z.state,
                   }))}
                   value={
                     formData.zone
                       ? { value: formData.zone, label: formData.zone }
                       : null
                   }
-                  onChange={handleSelectChange}
+                  onChange={(selectedOption) => {
+                    handleSelectChange(selectedOption, { name: "zone" });
+                    setFormData((prev) => ({
+                      ...prev,
+                      zone: selectedOption.value,
+                      region: "",
+                    }));
+                  }}
                   styles={customStyles}
                   placeholder="Select Zone"
                   isClearable={false}
-                  error={!!formErrors.zone}
-                  isDisabled={!selectedState}
+                  isDisabled={!formData.state}
                 />
                 {formErrors.zone && (
                   <div className="text-danger mt-1 fontsize-14">
                     {formErrors.zone}
                   </div>
                 )}
-                <div className="form-text">
-                  Select Country and State first to see available zones.
-                </div>
               </div>
 
               <div className="mb-4">
@@ -358,8 +334,12 @@ const OrganisationFormLayer = () => {
                   placeholder="Select Region"
                   isClearable={false}
                   isDisabled={!formData.zone}
-                  required
                 />
+                {formErrors.region && (
+                  <div className="text-danger mt-1 fontsize-14">
+                    {formErrors.region}
+                  </div>
+                )}
               </div>
 
               {/* RD Single Selection */}
@@ -399,78 +379,6 @@ const OrganisationFormLayer = () => {
           </div>
         </form>
       </div>
-
-      {/* Add Zone Modal */}
-      <Modal show={showZoneModal} onHide={handleZoneModalClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Zone</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="mb-3">
-            <label className="form-label">
-              Country <span className="text-danger">*</span>
-            </label>
-            <Select
-              options={Country.getAllCountries().map((country) => ({
-                value: country.isoCode,
-                label: country.name,
-              }))}
-              value={newZoneCountry}
-              onChange={(selectedOption) => {
-                setNewZoneCountry(selectedOption);
-                setNewZoneState(null); // Reset state when country changes
-              }}
-              placeholder="Select Country"
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">
-              State <span className="text-danger">*</span>
-            </label>
-            <Select
-              options={
-                newZoneCountry
-                  ? State.getStatesOfCountry(newZoneCountry.value).map(
-                      (state) => ({
-                        value: state.isoCode,
-                        label: state.name,
-                      }),
-                    )
-                  : []
-              }
-              value={newZoneState}
-              onChange={(selectedOption) => setNewZoneState(selectedOption)}
-              placeholder="Select State"
-              isDisabled={!newZoneCountry}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">
-              Zone Name <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              className={`form-control ${zoneError ? "is-invalid" : ""}`}
-              placeholder="Enter Zone Name"
-              value={newZoneName}
-              onChange={(e) => {
-                setNewZoneName(e.target.value);
-                if (zoneError) setZoneError("");
-              }}
-            />
-            {zoneError && <div className="invalid-feedback">{zoneError}</div>}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleZoneModalClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleAddZone}>
-            Add Zone
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };

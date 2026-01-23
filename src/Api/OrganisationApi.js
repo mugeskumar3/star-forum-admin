@@ -1,31 +1,13 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class RegionApi {
-  async getAdminUser() {
-    try {
-      const response = await apiClient.get("/admin/adminUser");
-      if (response.status === 200 || response.status === 201) {
-        return { status: true, response: response.data };
-      }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to get admin user. Please try again.";
-      ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
-    }
-  }
-  async createRegion(data) {
+class OrganisationApi {
+  async createOrganisation(data) {
     try {
       const response = await apiClient.post("/admin/region", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region created successfully!",
+          response.data.message || "Organisation created successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -34,7 +16,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to create region. Please try again.";
+        "Failed to create organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -42,9 +24,11 @@ class RegionApi {
       };
     }
   }
-  async getRegion() {
+
+  async getOrganisation(id) {
     try {
-      const response = await apiClient.get("/admin/region");
+      const url = id ? `/admin/region/${id}` : "/admin/region";
+      const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }
@@ -52,7 +36,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to get region. Please try again.";
+        "Failed to get organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -60,12 +44,13 @@ class RegionApi {
       };
     }
   }
-  async updateRegion(data) {
+
+  async updateOrganisation(data) {
     try {
       const response = await apiClient.put(`/admin/region/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region updated successfully!",
+          response.data.message || "Organisation updated successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -74,7 +59,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to update region. Please try again.";
+        "Failed to update organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -82,12 +67,13 @@ class RegionApi {
       };
     }
   }
-  async deleteRegion(id) {
+
+  async deleteOrganisation(id) {
     try {
       const response = await apiClient.delete(`/admin/region/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region deleted successfully!",
+          response.data.message || "Organisation deleted successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -96,7 +82,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to delete region. Please try again.";
+        "Failed to delete organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -106,4 +92,4 @@ class RegionApi {
   }
 }
 
-export default new RegionApi();
+export default new OrganisationApi();

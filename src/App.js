@@ -65,7 +65,7 @@ import AwardFormPage from "./pages/AwardFormPage";
 import BusinessCategoryListPage from "./pages/BusinessCategoryListPage";
 import BusinessCategoryFormPage from "./pages/BusinessCategoryFormPage";
 import CompanyPage from "./pages/CompanyPage";
-
+import ZoneFormPage from "./pages/ZoneFormPage";
 function App() {
   return (
     <BrowserRouter>
@@ -141,6 +141,7 @@ function App() {
         {/* Master Creation */}
         <Route exact path="/user-roles" element={<UserRoleListPage />} />
         <Route exact path="/user-roles/create" element={<UserRoleFormPage />} />
+        <Route exact path="/zone/add" element={<ZoneFormPage />} />
         <Route
           exact
           path="/user-roles/edit/:id"
