@@ -41,12 +41,9 @@ const BadgeCreateLayer = () => {
 
     return (
         <div className="card h-100 p-0 radius-12">
-
-            {/* 🔹 HEADER */}
             <div className="card-header bg-transparent border-bottom">
                 <h6 className="text-primary-600 pb-2 mb-0">Badge Creation</h6>
             </div>
-
             <div className="card-body p-24">
                 <form onSubmit={handleSubmit}>
                     <div className="row gy-3">
