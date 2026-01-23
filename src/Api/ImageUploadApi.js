@@ -1,15 +1,19 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class imageUploadApi {
+class ImageUploadApi {
   async uploadImage(data) {
     try {
-      const response = await apiClient.post("/admin/image-upload",data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const response = await apiClient.post(
+        `/admin/image/upload`,
+        data.formData,
+        {
+          params: {
+            path: data.path,
+          },
         },
-      });
+      );
+
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Image uploaded successfully!",
@@ -22,21 +26,20 @@ class imageUploadApi {
         error?.response?.data?.message ||
         error?.message ||
         "Image upload failed. Please try again.";
+
       ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
+      return { status: false, response: error };
     }
   }
+
   async deleteImage(data) {
     try {
-      const response = await apiClient.post("/admin/image-delete",data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const response = await apiClient.delete(`/admin/image/delete`, {
+        params: {
+          path: data.path,
         },
       });
+
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Image deleted successfully!",
@@ -49,13 +52,11 @@ class imageUploadApi {
         error?.response?.data?.message ||
         error?.message ||
         "Image delete failed. Please try again.";
+
       ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
+      return { status: false, response: error };
     }
   }
 }
 
-export default new imageUploadApi();
+export default new ImageUploadApi();
