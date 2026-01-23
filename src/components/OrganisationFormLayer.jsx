@@ -18,7 +18,7 @@ const OrganisationFormLayer = () => {
     zoneId: "",
     region: "",
     edId: "",
-    rdIds: [], // Plural for multi-select
+    rdIds: [],
   });
 
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -129,12 +129,10 @@ const OrganisationFormLayer = () => {
   };
 
   const getSelectedOption = (options, value) => {
-    // Value is the ID
     return options.find((option) => option.value === value) || null;
   };
 
   const getSelectedOptions = (options, values) => {
-    // values is an array of IDs
     if (!Array.isArray(values)) return [];
     return options.filter((option) => values.includes(option.value));
   };
@@ -200,7 +198,7 @@ const OrganisationFormLayer = () => {
       toast.error("Please fix the validation errors.");
       return;
     }
-
+    console.log(formData);
     if (id) {
       const payload = { ...formData, id };
       const response = await OrganisationApi.updateOrganisation(payload);
