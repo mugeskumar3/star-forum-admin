@@ -90,7 +90,7 @@ const ZoneFormLayer = () => {
 
   return (
     <div className="card h-100 p-0 radius-12">
-      <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+      <div className="card-header bg-base py-16 px-24 d-flex align-items-center justify-content-between">
         <h6 className="text-primary-600 pb-2 mb-0">Create Zone</h6>
         <div className="d-flex gap-2">
           <Link
@@ -105,94 +105,96 @@ const ZoneFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            <div className="col-md-6">
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  Country <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  options={Country.getAllCountries().map((country) => ({
-                    value: country.isoCode,
-                    label: country.name,
-                  }))}
-                  value={selectedCountry}
-                  onChange={(selectedOption) => {
-                    setSelectedCountry(selectedOption);
-                    setSelectedState(null);
-                    setFormData({
-                      ...formData,
-                      country: selectedOption ? selectedOption.label : "",
-                      state: "",
-                    });
-                    if (formErrors.country)
-                      setFormErrors({ ...formErrors, country: "" });
-                  }}
-                  placeholder="Select Country"
-                  styles={customStyles}
-                />
-                {formErrors.country && (
-                  <div className="text-danger mt-1 fontsize-14">
-                    {formErrors.country}
-                  </div>
-                )}
-              </div>
+            <div className="col-md-12">
+              <div className="row">
+                <div className="mb-4 col-md-6">
+                  <label className="form-label fw-medium">
+                    Country <span className="text-danger-600">*</span>
+                  </label>
+                  <Select
+                    options={Country.getAllCountries().map((country) => ({
+                      value: country.isoCode,
+                      label: country.name,
+                    }))}
+                    value={selectedCountry}
+                    onChange={(selectedOption) => {
+                      setSelectedCountry(selectedOption);
+                      setSelectedState(null);
+                      setFormData({
+                        ...formData,
+                        country: selectedOption ? selectedOption.label : "",
+                        state: "",
+                      });
+                      if (formErrors.country)
+                        setFormErrors({ ...formErrors, country: "" });
+                    }}
+                    placeholder="Select Country"
+                    styles={customStyles}
+                  />
+                  {formErrors.country && (
+                    <div className="text-danger mt-1 fontsize-14">
+                      {formErrors.country}
+                    </div>
+                  )}
+                </div>
 
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  State <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  options={
-                    formData.country
-                      ? State.getStatesOfCountry(
-                          Country.getAllCountries().find(
-                            (c) => c.name === formData.country,
-                          )?.isoCode,
-                        ).map((state) => ({
-                          value: state.isoCode,
-                          label: state.name,
-                        }))
-                      : []
-                  }
-                  value={selectedState}
-                  onChange={(selectedOption) => {
-                    setSelectedState(selectedOption);
-                    setFormData({
-                      ...formData,
-                      state: selectedOption ? selectedOption.label : "",
-                    });
-                    if (formErrors.state) {
-                      setFormErrors({ ...formErrors, state: "" });
+                <div className="mb-4 col-md-6">
+                  <label className="form-label fw-medium">
+                    State <span className="text-danger-600">*</span>
+                  </label>
+                  <Select
+                    options={
+                      formData.country
+                        ? State.getStatesOfCountry(
+                            Country.getAllCountries().find(
+                              (c) => c.name === formData.country,
+                            )?.isoCode,
+                          ).map((state) => ({
+                            value: state.isoCode,
+                            label: state.name,
+                          }))
+                        : []
                     }
-                  }}
-                  placeholder="Select State"
-                  isDisabled={!formData.country}
-                  styles={customStyles}
-                />
-                {formErrors.state && (
-                  <div className="text-danger mt-1 fontsize-14">
-                    {formErrors.state}
-                  </div>
-                )}
-              </div>
+                    value={selectedState}
+                    onChange={(selectedOption) => {
+                      setSelectedState(selectedOption);
+                      setFormData({
+                        ...formData,
+                        state: selectedOption ? selectedOption.label : "",
+                      });
+                      if (formErrors.state) {
+                        setFormErrors({ ...formErrors, state: "" });
+                      }
+                    }}
+                    placeholder="Select State"
+                    isDisabled={!formData.country}
+                    styles={customStyles}
+                  />
+                  {formErrors.state && (
+                    <div className="text-danger mt-1 fontsize-14">
+                      {formErrors.state}
+                    </div>
+                  )}
+                </div>
 
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  Zone Name <span className="text-danger-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  className="form-control"
-                  placeholder="Enter Zone Name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-                {formErrors.name && (
-                  <div className="text-danger mt-1 fontsize-14">
-                    {formErrors.name}
-                  </div>
-                )}
+                <div className="mb-4 col-md-6">
+                  <label className="form-label fw-medium">
+                    Zone Name <span className="text-danger-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    placeholder="Enter Zone Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                  />
+                  {formErrors.name && (
+                    <div className="text-danger mt-1 fontsize-14">
+                      {formErrors.name}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="d-flex justify-content-end gap-3 mt-4">

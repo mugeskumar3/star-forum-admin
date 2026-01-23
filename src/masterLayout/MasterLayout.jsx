@@ -488,7 +488,7 @@ const MasterLayout = ({ children }) => {
             </li>
 
             {/* ED Report */}
-            <li>
+            {/* <li>
               <NavLink
                 to="/ed-report"
                 className={(navData) => (navData.isActive ? "active-page" : "")}
@@ -496,10 +496,10 @@ const MasterLayout = ({ children }) => {
                 <i className="ri-user-star-line menu-icon" />
                 <span>ED Report</span>
               </NavLink>
-            </li>
+            </li> */}
 
             {/* RD Report */}
-            <li>
+            {/* <li>
               <NavLink
                 to="/rd-report"
                 className={(navData) => (navData.isActive ? "active-page" : "")}
@@ -507,7 +507,7 @@ const MasterLayout = ({ children }) => {
                 <i className="ri-global-line menu-icon" />
                 <span>RD Report</span>
               </NavLink>
-            </li>
+            </li> */}
 
             {/* Visitors Report */}
             <li>
