@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Production URLs
-export const IMAGE_BASE_URL = "https://star-forum-backend.onrender.com/api";
+export const IMAGE_BASE_URL = "https://star-forum-backend.onrender.com/public";
 export const BASE_URL = "https://star-forum-backend.onrender.com/api";
 export const server = "https://star-forum-backend.onrender.com/api";
 
@@ -17,7 +17,7 @@ export const server = "https://star-forum-backend.onrender.com/api";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
-//   timeout: 30000,
+  //   timeout: 30000,
 });
 
 apiClient.interceptors.request.use(
