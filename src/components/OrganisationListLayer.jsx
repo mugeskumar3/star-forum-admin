@@ -12,16 +12,24 @@ const OrganisationListLayer = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [totalRecords, setTotalRecords] = useState(0);
+
   useEffect(() => {
     fetchOrganisations();
-  }, []);
+  }, [currentPage, rowsPerPage, searchTerm]);
 
   const fetchOrganisations = async () => {
     try {
       setLoading(true);
-      const response = await OrganisationApi.getOrganisation();
+      const params = {
+        page: currentPage,
+        limit: rowsPerPage,
+        search: searchTerm,
+      };
+      const response = await OrganisationApi.getOrganisation(params);
       if (response && response.status && response.response.data) {
         setOrganisations(response.response.data);
+        setTotalRecords(response.response.total || 0);
       }
     } catch (error) {
       console.error("Error fetching organisations:", error);
@@ -41,31 +49,11 @@ const OrganisationListLayer = () => {
     }
   };
 
-  // Filter Logic
-  const filteredOrganisations = organisations.filter((org) => {
-    const search = searchTerm.toLowerCase();
-    return (
-      (org.country && org.country.toLowerCase().includes(search)) ||
-      (org.state && org.state.toLowerCase().includes(search)) ||
-      (org.zone && org.zone.toLowerCase().includes(search)) ||
-      (org.region && org.region.toLowerCase().includes(search)) ||
-      (org.ed && org.ed.toLowerCase().includes(search)) ||
-      (org.rd && org.rd.toLowerCase().includes(search))
-    );
-  });
-
-  // Pagination Logic
-  const totalRecords = filteredOrganisations.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-  const currentData = filteredOrganisations.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
     setCurrentPage(1);
@@ -127,9 +115,6 @@ const OrganisationListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   ED
                 </th>
-                <th scope="col" style={{ color: "black" }}>
-                  RD
-                </th>
                 <th
                   scope="col"
                   className="text-center"
@@ -146,8 +131,8 @@ const OrganisationListLayer = () => {
                     Loading...
                   </td>
                 </tr>
-              ) : currentData.length > 0 ? (
-                currentData.map((org, index) => (
+              ) : organisations.length > 0 ? (
+                organisations.map((org, index) => (
                   <tr key={org.id || index}>
                     <td className="text-center">
                       {(currentPage - 1) * rowsPerPage + index + 1}
@@ -164,7 +149,7 @@ const OrganisationListLayer = () => {
                     </td>
                     <td>
                       <span className="text-md mb-0 fw-normal text-secondary-light">
-                        {org.zone}
+                        {org.zoneName}
                       </span>
                     </td>
                     <td>
@@ -174,14 +159,10 @@ const OrganisationListLayer = () => {
                     </td>
                     <td>
                       <span className="text-md mb-0 fw-normal text-secondary-light">
-                        {org.ed}
+                        {org.edName}
                       </span>
                     </td>
-                    <td>
-                      <span className="text-md mb-0 fw-normal text-secondary-light">
-                        {org.rd}
-                      </span>
-                    </td>
+
                     <td className="text-center">
                       <div className="d-flex align-items-center justify-content-center gap-2">
                         <Link

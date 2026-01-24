@@ -25,10 +25,18 @@ class OrganisationApi {
     }
   }
 
-  async getOrganisation(id) {
+  async getOrganisation(params = {}) {
     try {
-      const url = id ? `/region/${id}` : "/region";
-      const response = await apiClient.get(url);
+      const url = params.id ? `/region/${params.id}` : "/region";
+      const config = {
+        params: {
+          page: params.page,
+          limit: params.limit,
+          search: params.search,
+        },
+      };
+
+      const response = await apiClient.get(url, config);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }

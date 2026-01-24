@@ -110,7 +110,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
     <div className="card-header border-bottom bg-base py-16 px-24">
       <div className="d-flex align-items-center justify-content-between mb-24">
         <div className="d-flex align-items-center gap-3">
-          <h6 className="text-primary-600 pb-2 mb-0">Attendance Filter</h6>
+          <h6 className="text-primary-600 pb-2 mb-0">Attendance List</h6>
         </div>
       </div>
 

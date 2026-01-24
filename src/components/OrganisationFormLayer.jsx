@@ -69,13 +69,15 @@ const OrganisationFormLayer = () => {
 
       // Normalize rd data (ensure array)
       let normalizedRdIds = [];
-      if (Array.isArray(data.rd)) {
-        normalizedRdIds = data.rd.map((r) =>
+      const rdData = data.rd || data.rdIds; // Check both rd and rdIds
+
+      if (Array.isArray(rdData)) {
+        normalizedRdIds = rdData.map((r) =>
           typeof r === "object" ? r._id : r,
         );
-      } else if (data.rd) {
+      } else if (rdData) {
         // Handle case where it might be a single value erroneously or just one check
-        normalizedRdIds = [typeof data.rd === "object" ? data.rd._id : data.rd];
+        normalizedRdIds = [typeof rdData === "object" ? rdData._id : rdData];
       }
 
       // Normalize data to ensure we have IDs for select fields if API returns populated objects
