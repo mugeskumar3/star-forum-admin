@@ -63,7 +63,7 @@ const OrganisationFormLayer = () => {
   };
 
   const getOrganisationById = async (id) => {
-    const response = await OrganisationApi.getOrganisation(id);
+    const response = await OrganisationApi.getOrganisation({ id });
     if (response && response.status && response.response.data) {
       const data = response.response.data;
 

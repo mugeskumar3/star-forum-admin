@@ -135,7 +135,7 @@ const OrganisationListLayer = () => {
                 organisations.map((org, index) => (
                   <tr key={org.id || index}>
                     <td className="text-center">
-                      {(currentPage - 1) * rowsPerPage + index + 1}
+                      {(currentPage) * rowsPerPage + index + 1}
                     </td>
                     <td>
                       <span className="text-md mb-0 fw-normal text-secondary-light">
