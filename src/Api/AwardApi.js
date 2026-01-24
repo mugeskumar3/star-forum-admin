@@ -4,7 +4,7 @@ import ShowNotifications from "../helper/ShowNotifications";
 class AwardApi {
   async createAward(data) {
     try {
-      const response = await apiClient.post("/admin/award", data);
+      const response = await apiClient.post("/award", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Award created successfully!",
@@ -27,7 +27,7 @@ class AwardApi {
   }
   async getAward(id) {
     try {
-      const url = id ? `/admin/award/${id}` : "/admin/award";
+      const url = id ? `/award/${id}` : "/award";
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
@@ -46,7 +46,7 @@ class AwardApi {
   }
   async updateAward(data) {
     try {
-      const response = await apiClient.put(`/admin/award/${data.id}`, data);
+      const response = await apiClient.put(`/award/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Award updated successfully!",
@@ -69,7 +69,7 @@ class AwardApi {
   }
   async deleteAward(id) {
     try {
-      const response = await apiClient.delete(`/admin/award/${id}`);
+      const response = await apiClient.delete(`/award/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Award deleted successfully!",
