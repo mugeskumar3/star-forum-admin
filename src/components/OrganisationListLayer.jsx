@@ -8,7 +8,7 @@ import TablePagination from "./TablePagination";
 const OrganisationListLayer = () => {
   const [organisations, setOrganisations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -135,7 +135,7 @@ const OrganisationListLayer = () => {
                 organisations.map((org, index) => (
                   <tr key={org.id || index}>
                     <td className="text-center">
-                      {(currentPage - 1) * rowsPerPage + index + 1}
+                      {(currentPage) * rowsPerPage + index + 1}
                     </td>
                     <td>
                       <span className="text-md mb-0 fw-normal text-secondary-light">
