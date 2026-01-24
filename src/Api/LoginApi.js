@@ -4,7 +4,7 @@ import ShowNotifications from "../helper/ShowNotifications";
 class LoginApi {
   async login(credentials) {
     try {
-      const response = await apiClient.post("/admin/auth/login", credentials);
+      const response = await apiClient.post("/auth/login", credentials);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Login successful!",

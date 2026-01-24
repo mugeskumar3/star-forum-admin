@@ -4,7 +4,7 @@ import ShowNotifications from "../helper/ShowNotifications";
 class BadgeApi {
   async createBadge(data) {
     try {
-      const response = await apiClient.post("/admin/badge", data);
+      const response = await apiClient.post("/badge", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Badge created successfully!",
@@ -27,7 +27,7 @@ class BadgeApi {
   }
   async getBadge(id) {
     try {
-      const url = id ? `/admin/badge/${id}` : "/admin/badge";
+      const url = id ? `/badge/${id}` : "/badge";
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
@@ -46,7 +46,7 @@ class BadgeApi {
   }
   async updateBadge(data) {
     try {
-      const response = await apiClient.put(`/admin/badge/${data.id}`, data);
+      const response = await apiClient.put(`/badge/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Badge updated successfully!",
@@ -69,7 +69,7 @@ class BadgeApi {
   }
   async deleteBadge(id) {
     try {
-      const response = await apiClient.delete(`/admin/badge/${id}`);
+      const response = await apiClient.delete(`/badge/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Badge deleted successfully!",
