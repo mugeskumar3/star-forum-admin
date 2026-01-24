@@ -52,6 +52,8 @@ import LogReportPage from "./pages/LogReportPage";
 import ShopListPage from "./pages/ShopListPage";
 import ShopCreatePage from "./pages/ShopCreatePage";
 import ShopFormPage from "./pages/ShopFormPage";
+import ShopCategoryListPage from "./pages/ShopCategoryListPage";
+import ShopCategoryFormPage from "./pages/ShopCategoryFormPage";
 import OrdersPage from "./pages/OrdersPage";
 import TrainingListPage from "./pages/TrainingListPage";
 import TrainingFormPage from "./pages/TrainingFormPage";
@@ -317,6 +319,11 @@ function App() {
         <Route exact path="/shop-create" element={<ShopCreatePage />} />
         <Route exact path="/shop-add" element={<ShopFormPage />} />
         <Route exact path="/shop-edit/:id" element={<ShopFormPage />} />
+
+        {/* Shop Category */}
+        <Route exact path="/shop-category-list" element={<ShopCategoryListPage />} />
+        <Route exact path="/shop-category-create" element={<ShopCategoryFormPage />} />
+        <Route exact path="/shop-category-edit/:id" element={<ShopCategoryFormPage />} />
 
         {/* Orders */}
         <Route exact path="/orders" element={<OrdersPage />} />

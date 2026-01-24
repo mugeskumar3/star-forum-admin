@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
 import ProductApi from "../Api/ProductApi";
 import ImageUploadApi from "../Api/ImageUploadApi";
-import BusinessCategoryApi from "../Api/BusinessCategoryApi";
+import ShopCategoryApi from "../Api/ShopCategoryApi";
 import ShowNotifications from "../helper/ShowNotifications";
 import { IMAGE_BASE_URL } from "../Config/Index";
 
@@ -28,18 +28,15 @@ const ShopFormLayer = () => {
   // Fetch Categories
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await BusinessCategoryApi.getBusinessCategory();
-      if (response && response.status && response.response) {
-        // Assuming response.response.data is the array or response.response is the array
-        // Adjust based on actual API response structure. 
-        // Based on BusinessCategoryApi.js: return { status: true, response: response.data }; 
-        // Typically response.data is the array or an object with data property.
-        // Let's assume response.response is the array or has data.
-        const categories = response.response.data || response.response;
+      const response = await ShopCategoryApi.getShopCategories();
+      console.log(response, "response");
+
+      if (response && response.status) {
+        const categories = response.data.data || response.data;
         if (Array.isArray(categories)) {
           const options = categories.map((cat) => ({
             value: cat._id,
-            label: cat.name || cat.categoryName, // Adjust property name
+            label: cat.name,
           }));
           setCategoryOptions(options);
         }
