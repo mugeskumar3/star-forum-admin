@@ -188,6 +188,7 @@ function App() {
 
         <Route exact path="/badge" element={<BadgeCreationPage />} />
         <Route exact path="/badge/create" element={<BadgeCreateFormPage />} />
+        <Route exact path="/badge/edit/:id" element={<BadgeCreateFormPage />} />
         <Route exact path="/badge/assign" element={<BadgeAssignFormPage />} />
 
         <Route exact path="/award" element={<AwardListPage />} />

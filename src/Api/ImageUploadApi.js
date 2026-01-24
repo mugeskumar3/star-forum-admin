@@ -4,15 +4,11 @@ import ShowNotifications from "../helper/ShowNotifications";
 class ImageUploadApi {
   async uploadImage(data) {
     try {
-      const response = await apiClient.post(
-        `/admin/image/upload`,
-        data.formData,
-        {
-          params: {
-            path: data.path,
-          },
+      const response = await apiClient.post(`/image/upload`, data.formData, {
+        params: {
+          path: data.path,
         },
-      );
+      });
 
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
@@ -34,7 +30,7 @@ class ImageUploadApi {
 
   async deleteImage(data) {
     try {
-      const response = await apiClient.delete(`/admin/image/delete`, {
+      const response = await apiClient.delete(`/image/delete`, {
         params: {
           path: data.path,
         },

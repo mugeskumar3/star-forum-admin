@@ -4,7 +4,7 @@ import ShowNotifications from "../helper/ShowNotifications";
 class BusinessCategoryApi {
   async createBusinessCategory(data) {
     try {
-      const response = await apiClient.post("/admin/business-category", data);
+      const response = await apiClient.post("/business-category", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Business Category created successfully!",
@@ -26,9 +26,7 @@ class BusinessCategoryApi {
   }
   async getBusinessCategory(id) {
     try {
-      const url = id
-        ? `/admin/business-category/${id}`
-        : "/admin/business-category";
+      const url = id ? `/business-category/${id}` : "/business-category";
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
@@ -47,10 +45,7 @@ class BusinessCategoryApi {
   }
   async updateBusinessCategory(id, data) {
     try {
-      const response = await apiClient.put(
-        `/admin/business-category/${id}`,
-        data,
-      );
+      const response = await apiClient.put(`/business-category/${id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Business Category updated successfully!",
@@ -72,7 +67,7 @@ class BusinessCategoryApi {
   }
   async deleteBusinessCategory(id) {
     try {
-      const response = await apiClient.delete(`/admin/business-category/${id}`);
+      const response = await apiClient.delete(`/business-category/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Business Category deleted successfully!",

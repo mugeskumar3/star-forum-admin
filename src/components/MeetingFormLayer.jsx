@@ -20,6 +20,26 @@ const MeetingFormLayer = () => {
     location: "",
   });
 
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.topic) newErrors.topic = "Meeting Topic is required";
+    if (!formData.meetingFee) newErrors.meetingFee = "Meeting Fee is required";
+    if (!formData.visitorFee) newErrors.visitorFee = "Visitor Fee is required";
+    if (!formData.chapter) newErrors.chapter = "Chapter is required";
+    if (!formData.hotelName) newErrors.hotelName = "Hotel Name is required";
+    if (!formData.startDate)
+      newErrors.startDate = "Start Date & Time is required";
+    if (!formData.endDate) newErrors.endDate = "End Date & Time is required";
+    if (!formData.latePunchTime)
+      newErrors.latePunchTime = "Late Punch Time is required";
+    if (!formData.location) newErrors.location = "Location is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   // Google Maps Configuration
   const mapContainerStyle = {
     width: "100%",
@@ -59,6 +79,7 @@ const MeetingFormLayer = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSelectChange = (selectedOption, { name }) => {
@@ -66,6 +87,7 @@ const MeetingFormLayer = () => {
       ...formData,
       [name]: selectedOption ? selectedOption.value : "",
     });
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const onMapClick = (e) => {
@@ -73,12 +95,15 @@ const MeetingFormLayer = () => {
     const lng = e.latLng.lng();
     setMarkerPosition({ lat, lng });
     setFormData({ ...formData, location: `${lat}, ${lng}` });
+    if (errors.location) setErrors((prev) => ({ ...prev, location: "" }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    MockDataService.saveMeeting(formData);
-    navigate("/meeting-creation");
+    if (validate()) {
+      MockDataService.saveMeeting(formData);
+      navigate("/meeting-creation");
+    }
   };
 
   const chapterOptions = [
@@ -142,8 +167,10 @@ const MeetingFormLayer = () => {
                   placeholder="Enter meeting topic"
                   value={formData.topic}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.topic && (
+                  <small className="text-danger">{errors.topic}</small>
+                )}
               </div>
             </div>
 
@@ -159,8 +186,10 @@ const MeetingFormLayer = () => {
                   placeholder="Enter meeting fee"
                   value={formData.meetingFee}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.meetingFee && (
+                  <small className="text-danger">{errors.meetingFee}</small>
+                )}
               </div>
             </div>
 
@@ -176,8 +205,10 @@ const MeetingFormLayer = () => {
                   placeholder="Enter visitor fee"
                   value={formData.visitorFee}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.visitorFee && (
+                  <small className="text-danger">{errors.visitorFee}</small>
+                )}
               </div>
             </div>
 
@@ -195,8 +226,10 @@ const MeetingFormLayer = () => {
                   styles={customStyles}
                   placeholder="Select chapter..."
                   isClearable={false}
-                  required
                 />
+                {errors.chapter && (
+                  <small className="text-danger">{errors.chapter}</small>
+                )}
               </div>
             </div>
 
@@ -212,8 +245,10 @@ const MeetingFormLayer = () => {
                   placeholder="Enter hotel name"
                   value={formData.hotelName}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.hotelName && (
+                  <small className="text-danger">{errors.hotelName}</small>
+                )}
               </div>
             </div>
 
@@ -229,8 +264,10 @@ const MeetingFormLayer = () => {
                   className="form-control"
                   value={formData.startDate}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.startDate && (
+                  <small className="text-danger">{errors.startDate}</small>
+                )}
               </div>
             </div>
 
@@ -245,8 +282,10 @@ const MeetingFormLayer = () => {
                   className="form-control"
                   value={formData.endDate}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.endDate && (
+                  <small className="text-danger">{errors.endDate}</small>
+                )}
               </div>
             </div>
 
@@ -261,8 +300,10 @@ const MeetingFormLayer = () => {
                   className="form-control"
                   value={formData.latePunchTime}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.latePunchTime && (
+                  <small className="text-danger">{errors.latePunchTime}</small>
+                )}
               </div>
             </div>
 
@@ -279,8 +320,10 @@ const MeetingFormLayer = () => {
                   placeholder="Click map to select location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  required
                 />
+                {errors.location && (
+                  <small className="text-danger">{errors.location}</small>
+                )}
               </div>
             </div>
 
