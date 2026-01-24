@@ -316,6 +316,7 @@ function App() {
         <Route exact path="/shop-list" element={<ShopListPage />} />
         <Route exact path="/shop-create" element={<ShopCreatePage />} />
         <Route exact path="/shop-add" element={<ShopFormPage />} />
+        <Route exact path="/shop-edit/:id" element={<ShopFormPage />} />
 
         {/* Orders */}
         <Route exact path="/orders" element={<OrdersPage />} />
