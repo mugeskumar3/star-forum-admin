@@ -200,16 +200,16 @@ const MemberListLayer = () => {
                   S.No
                 </th>
                 <th scope="col" style={{ color: "black" }}>
-                  Member Profile
+                  Member Id
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Member Name
                 </th>
                 <th scope="col" style={{ color: "black" }}>
                   Chapter
                 </th>
                 <th scope="col" style={{ color: "black" }}>
-                  Region
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Membership ID
+                  Category
                 </th>
                 <th scope="col" style={{ color: "black" }}>
                   Type
@@ -231,6 +231,7 @@ const MemberListLayer = () => {
                 currentData.map((member, index) => (
                   <tr key={member.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{member.membershipId}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <img
@@ -253,7 +254,6 @@ const MemberListLayer = () => {
                     </td>
                     <td>{member.chapter}</td>
                     <td>{member.region}</td>
-                    <td>{member.membershipId}</td>
                     <td>
                       <span
                         className={`badge ${member.membershipType === "Platinum" ? "bg-primary-50 text-primary-600" : member.membershipType === "Gold" ? "bg-warning-50 text-warning-600" : "bg-secondary-50 text-secondary-600"} px-12 py-4 radius-4`}

@@ -290,14 +290,13 @@ const TrainingFormLayer = () => {
                 Training Registration Fee
               </label>
               <div className="input-group">
-                <span className="input-group-text bg-base">₹</span>
                 <input
                   type="number"
                   className="form-control radius-8"
                   name="trainingFee"
                   value={formData.trainingFee}
                   onChange={handleChange}
-                  placeholder="0.00"
+                  placeholder=" ₹0.00"
                 />
               </div>
             </div>
@@ -308,14 +307,13 @@ const TrainingFormLayer = () => {
                 Spot Registration Fee
               </label>
               <div className="input-group">
-                <span className="input-group-text bg-base">₹</span>
                 <input
                   type="number"
                   className="form-control radius-8"
                   name="spotFee"
                   value={formData.spotFee}
                   onChange={handleChange}
-                  placeholder="0.00"
+                  placeholder=" ₹0.00"
                 />
               </div>
             </div>

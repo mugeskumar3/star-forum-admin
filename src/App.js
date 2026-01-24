@@ -60,6 +60,8 @@ import TrainingFormPage from "./pages/TrainingFormPage";
 import UserRoleListPage from "./pages/UserRoleListPage";
 import UserRoleFormPage from "./pages/UserRoleFormPage";
 import ChiefGuestListPage from "./pages/ChiefGuestListPage";
+import ChiefGuestFormPage from "./pages/ChiefGuestFormPage";
+import ChiefGuestHistoryPage from "./pages/ChiefGuestHistoryPage";
 import GeneralUpdateListPage from "./pages/GeneralUpdateListPage";
 import PointsPage from "./pages/PointsPage";
 import AwardListPage from "./pages/AwardListPage";
@@ -68,6 +70,7 @@ import BusinessCategoryListPage from "./pages/BusinessCategoryListPage";
 import BusinessCategoryFormPage from "./pages/BusinessCategoryFormPage";
 import CompanyPage from "./pages/CompanyPage";
 import ZoneFormPage from "./pages/ZoneFormPage";
+import RenewalReportPage from "./pages/RenewalReportPage";
 function App() {
   return (
     <BrowserRouter>
@@ -103,11 +106,7 @@ function App() {
           path="/meetings-create"
           element={<FormPage title="Meeting Creation" />}
         />
-        <Route
-          exact
-          path="/renewal-report"
-          element={<FormPage title="Renewal Report" />}
-        />
+        <Route exact path="/renewal-report" element={<RenewalReportPage />} />
         <Route
           exact
           path="/ed-report"
@@ -348,6 +347,12 @@ function App() {
           exact
           path="/chief-guest-list"
           element={<ChiefGuestListPage />}
+        />
+        <Route exact path="/chief-guest-add" element={<ChiefGuestFormPage />} />
+        <Route
+          exact
+          path="/chief-guest-history"
+          element={<ChiefGuestHistoryPage />}
         />
 
         <Route exact path="*" element={<ErrorPage />} />

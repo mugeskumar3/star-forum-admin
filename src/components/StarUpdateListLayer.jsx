@@ -14,7 +14,28 @@ const StarUpdateListLayer = () => {
       details: "Looking for business partners",
       lastDate: "30-01-2026",
       location: "Chennai",
-      responses: ["Ramesh", "Suresh", "Mahesh"],
+      responses: [
+        {
+          id: 1,
+          userName: "Ramesh",
+          profileImage: "assets/images/user-list/user-list1.png",
+          chapter: "Chennai Central",
+          zone: "Zone 1",
+          edName: "ED 1",
+          region: "Region 1",
+          contactNumber: "+91 98765 43210",
+        },
+        {
+          id: 2,
+          userName: "Suresh",
+          profileImage: "assets/images/user-list/user-list2.png",
+          chapter: "Chennai South",
+          zone: "Zone 1",
+          edName: "ED 1",
+          region: "Region 1",
+          contactNumber: "+91 98765 43211",
+        },
+      ],
     },
     {
       id: 2,
@@ -25,7 +46,18 @@ const StarUpdateListLayer = () => {
       details: "Annual award ceremony",
       lastDate: "28-01-2026",
       location: "Coimbatore",
-      responses: ["Arun", "Karthik"],
+      responses: [
+        {
+          id: 3,
+          userName: "Arun",
+          profileImage: "assets/images/user-list/user-list3.png",
+          chapter: "Coimbatore East",
+          zone: "Zone 2",
+          edName: "ED 2",
+          region: "Region 2",
+          contactNumber: "+91 98765 43212",
+        },
+      ],
     },
     {
       id: 3,
@@ -36,7 +68,18 @@ const StarUpdateListLayer = () => {
       details: "Blood donation camp",
       lastDate: "25-01-2026",
       location: "Madurai",
-      responses: ["Vijay", "Sathesh", "Raj"],
+      responses: [
+        {
+          id: 4,
+          userName: "Vijay",
+          profileImage: "assets/images/user-list/user-list4.png",
+          chapter: "Madurai North",
+          zone: "Zone 3",
+          edName: "ED 3",
+          region: "Region 3",
+          contactNumber: "+91 98765 43213",
+        },
+      ],
     },
   ]);
 
@@ -272,7 +315,7 @@ const StarUpdateListLayer = () => {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="modal-dialog modal-dialog-centered"
+            className="modal-dialog modal-dialog-centered modal-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-content">
@@ -285,13 +328,48 @@ const StarUpdateListLayer = () => {
                 ></button>
               </div>
               <div className="modal-body">
-                <ul className="list-group">
-                  {selectedResponses.map((name, idx) => (
-                    <li key={idx} className="list-group-item">
-                      {name}
-                    </li>
-                  ))}
-                </ul>
+                {selectedResponses.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table bordered-table mb-0">
+                      <thead>
+                        <tr>
+                          <th scope="col">Profile</th>
+                          <th scope="col">Username</th>
+                          <th scope="col">Chapter</th>
+                          <th scope="col">Zone</th>
+                          <th scope="col">ED Name</th>
+                          <th scope="col">Region</th>
+                          <th scope="col">Contact Number</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedResponses.map((response, index) => (
+                          <tr key={index}>
+                            <td>
+                              <img
+                                src={response.profileImage}
+                                alt={response.userName}
+                                className="w-40-px h-40-px rounded-circle object-fit-cover"
+                              />
+                            </td>
+                            <td>
+                              <span className="text-primary-600 fw-semibold">
+                                {response.userName}
+                              </span>
+                            </td>
+                            <td>{response.chapter}</td>
+                            <td>{response.zone}</td>
+                            <td>{response.edName}</td>
+                            <td>{response.region}</td>
+                            <td>{response.contactNumber}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-center text-muted">No responses yet.</p>
+                )}
               </div>
               <div className="modal-footer">
                 <button

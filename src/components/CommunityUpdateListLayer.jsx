@@ -8,7 +8,7 @@ const CommunityUpdateListLayer = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showResponseModal, setShowResponseModal] = useState(false);
-  const [selectedResponseNames, setSelectedResponseNames] = useState([]);
+  const [selectedResponses, setSelectedResponses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [activeTab, setActiveTab] = useState("ask");
@@ -89,10 +89,22 @@ const CommunityUpdateListLayer = () => {
       details: `This is the detailed description for the community update regarding item ${
         startId + i
       }.`,
-      responses: Array.from(
-        { length: (i % 5) + 1 },
-        (_, j) => `Responder ${j + 1}`,
-      ),
+      responses: Array.from({ length: (i % 5) + 1 }, (_, j) => ({
+        id: j + 1,
+        userName: `Responder ${j + 1}`,
+        profileImage: `assets/images/user-list/user-list${(j % 6) + 1}.png`,
+        chapter: [
+          "Chennai Central",
+          "Mumbai South",
+          "Delhi West",
+          "Bangalore East",
+          "Hyderabad North",
+        ][j % 5],
+        zone: `Zone ${(j % 3) + 1}`,
+        edName: `ED ${j + 1}`,
+        region: `Region ${(j % 4) + 1}`,
+        contactNumber: `+91 98765 4321${j}`,
+      })),
       image: `assets/images/user-list/user-list${(i % 6) + 1}.png`,
     }));
   };
@@ -150,14 +162,14 @@ const CommunityUpdateListLayer = () => {
     setItemToDelete(null);
   };
 
-  const handleShowResponses = (names) => {
-    setSelectedResponseNames(names);
+  const handleShowResponses = (responses) => {
+    setSelectedResponses(responses);
     setShowResponseModal(true);
   };
 
   const handleCloseResponse = () => {
     setShowResponseModal(false);
-    setSelectedResponseNames([]);
+    setSelectedResponses([]);
   };
 
   return (
@@ -257,19 +269,55 @@ const CommunityUpdateListLayer = () => {
       </Modal>
 
       {/* Response Modal */}
-      <Modal show={showResponseModal} onHide={handleCloseResponse} centered>
+      <Modal
+        show={showResponseModal}
+        onHide={handleCloseResponse}
+        centered
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Responses</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {selectedResponseNames.length > 0 ? (
-            <ul className="list-group">
-              {selectedResponseNames.map((name, index) => (
-                <li key={index} className="list-group-item">
-                  {name}
-                </li>
-              ))}
-            </ul>
+          {selectedResponses.length > 0 ? (
+            <div className="table-responsive">
+              <table className="table bordered-table mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">Profile</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Chapter</th>
+                    <th scope="col">Zone</th>
+                    <th scope="col">ED Name</th>
+                    <th scope="col">Region</th>
+                    <th scope="col">Contact Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedResponses.map((response, index) => (
+                    <tr key={index}>
+                      <td>
+                        <img
+                          src={response.profileImage}
+                          alt={response.userName}
+                          className="w-40-px h-40-px rounded-circle object-fit-cover"
+                        />
+                      </td>
+                      <td>
+                        <span className="text-primary-600 fw-semibold">
+                          {response.userName}
+                        </span>
+                      </td>
+                      <td>{response.chapter}</td>
+                      <td>{response.zone}</td>
+                      <td>{response.edName}</td>
+                      <td>{response.region}</td>
+                      <td>{response.contactNumber}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
             <p className="text-center text-muted">No responses yet.</p>
           )}

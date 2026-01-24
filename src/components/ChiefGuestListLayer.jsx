@@ -5,15 +5,45 @@ import TablePagination from "./TablePagination";
 
 const ChiefGuestListLayer = () => {
   // Static Dummy Data for Chief Guests
-  const [guests, setGuests] = useState(Array.from({ length: 20 }).map((_, i) => ({
-    id: i + 1,
-    name: ['Rajesh Kumar', 'Priya Sharma', 'Amit Patel', 'Sneha Reddy', 'Vikram Singh', 'Ananya Iyer', 'Suresh Nair', 'Megha Gupta', 'Arjun Verma', 'Kavita Joshi', 'Rahul Deshmukh', 'Pooja Malhotra', 'Sandeep Bansal', 'Neha Choudhury', 'Vijay Ranganathan', 'Shilpa Kulkarni', 'Manish Tiwari', 'Divya Saxena', 'Pankaj Agarwal', 'Swati Bhattacharya'][i],
-    designation: ['CEO', 'Managing Director', 'Professor', 'Scientist', 'Founder', 'Director', 'General Manager', 'Chief Architect', 'Lead Consultant', 'Principal Engineer', 'VP Engineering', 'Executive Director', 'Chairman', 'President', 'Partner', 'Associate Director', 'Head of Ops', 'Senior Scientist', 'Advisor', 'Consultant'][i],
-    organization: ['Alpha Tech', 'Beta Solutions', 'Gamma University', 'Delta Research', 'Epsilon Labs', 'Zeta Corp', 'Sigma Industries', 'Iota Systems', 'Kappa Ventures', 'Lambda Group', 'Mu Software', 'Nu Enterprises', 'Xi Services', 'Omicron Networks', 'Pi Healthcare', 'Rho Finance', 'Sigma Media', 'Tau Education', 'Upsilon Global', 'Phi Logistics'][i],
-    contact: `98765432${20 + i}`,
-    email: `guest${i + 1}@example.com`,
-    status: i % 2 === 0 ? "Active" : "Inactive",
-  })));
+  const [guests, setGuests] = useState(
+    Array.from({ length: 20 }).map((_, i) => ({
+      id: i + 1,
+      memberId: `MEM${1000 + i}`,
+      memberName: [
+        "Rajesh Kumar",
+        "Priya Sharma",
+        "Amit Patel",
+        "Sneha Reddy",
+        "Vikram Singh",
+        "Ananya Iyer",
+        "Suresh Nair",
+        "Megha Gupta",
+        "Arjun Verma",
+        "Kavita Joshi",
+        "Rahul Deshmukh",
+        "Pooja Malhotra",
+        "Sandeep Bansal",
+        "Neha Choudhury",
+        "Vijay Ranganathan",
+        "Shilpa Kulkarni",
+        "Manish Tiwari",
+        "Divya Saxena",
+        "Pankaj Agarwal",
+        "Swati Bhattacharya",
+      ][i],
+      chapter: [
+        "Chennai Central",
+        "Mumbai South",
+        "Delhi West",
+        "Bangalore East",
+        "Hyderabad North",
+      ][i % 5],
+      region: `Region ${["A", "B", "C", "D"][i % 4]}`,
+      membershipId: `MSH${202400 + i}`,
+      status: i % 2 === 0 ? "Active" : "Inactive",
+      image: `assets/images/user-list/user-list${(i % 5) + 1}.png`,
+    })),
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,8 +51,9 @@ const ChiefGuestListLayer = () => {
 
   const filteredGuests = guests.filter(
     (guest) =>
-      guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      guest.organization.toLowerCase().includes(searchTerm.toLowerCase())
+      guest.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.memberId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.membershipId.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Pagination Logic
@@ -39,12 +70,6 @@ const ChiefGuestListLayer = () => {
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
     setCurrentPage(1);
-  };
-
-  const handleDeleteClick = (id) => {
-    if (window.confirm("Are you sure you want to delete this chief guest?")) {
-      setGuests((prev) => prev.filter((guest) => guest.id !== id));
-    }
   };
 
   return (
@@ -68,6 +93,16 @@ const ChiefGuestListLayer = () => {
             />
             <Icon icon="ion:search-outline" className="icon" />
           </form>
+          <Link
+            to="/chief-guest-add"
+            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+          >
+            <Icon
+              icon="ic:baseline-plus"
+              className="icon text-xl line-height-1"
+            />
+            Add Chief Guest
+          </Link>
         </div>
       </div>
       <div className="card-body p-24">
@@ -75,14 +110,32 @@ const ChiefGuestListLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col" style={{ color: "black" }}>S.No</th>
-                <th scope="col" style={{ color: "black" }}>Name</th>
-                <th scope="col" style={{ color: "black" }}>Designation</th>
-                <th scope="col" style={{ color: "black" }}>Organization</th>
-                <th scope="col" style={{ color: "black" }}>Contact</th>
-                <th scope="col" style={{ color: "black" }}>Email</th>
-                <th scope="col" style={{ color: "black" }}>Status</th>
-                <th scope="col" className="text-center" style={{ color: "black" }}>
+                <th scope="col" style={{ color: "black" }}>
+                  S.No
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Member ID
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Member Name
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Chapter
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Region
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Membership ID
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  className="text-center"
+                  style={{ color: "black" }}
+                >
                   Action
                 </th>
               </tr>
@@ -92,46 +145,47 @@ const ChiefGuestListLayer = () => {
                 currentData.map((guest, index) => (
                   <tr key={guest.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{guest.memberId}</td>
                     <td>
-                      <span className="text-md mb-0 fw-medium text-secondary-light">
-                        {guest.name}
-                      </span>
+                      <div className="d-flex align-items-center">
+                        <img
+                          src={guest.image}
+                          alt=""
+                          className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
+                          onError={(e) => {
+                            e.target.src = "https://placehold.co/40x40"; // Fallback
+                          }}
+                        />
+                        <span className="text-md mb-0 fw-medium text-secondary-light">
+                          {guest.memberName}
+                        </span>
+                      </div>
                     </td>
-                    <td>{guest.designation}</td>
-                    <td>{guest.organization}</td>
-                    <td>{guest.contact}</td>
-                    <td>{guest.email}</td>
+                    <td>{guest.chapter}</td>
+                    <td>{guest.region}</td>
+                    <td>{guest.membershipId}</td>
                     <td>
                       <span
-                        className={`badge radius-4 px-10 py-4 text-sm ${guest.status === "Active"
-                          ? "bg-success-focus text-success-main"
-                          : "bg-danger-focus text-danger-main"
-                          }`}
+                        className={`badge radius-4 px-10 py-4 text-sm ${
+                          guest.status === "Active"
+                            ? "bg-success-focus text-success-main"
+                            : "bg-danger-focus text-danger-main"
+                        }`}
                       >
                         {guest.status}
                       </span>
                     </td>
                     <td className="text-center">
                       <div className="d-flex align-items-center gap-10 justify-content-center">
-                        <button
-                          type="button"
+                        <Link
+                          to={`/chief-guest-history`}
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
                             icon="majesticons:eye-line"
                             className="icon text-xl"
                           />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteClick(guest.id)}
-                          className="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
-                        >
-                          <Icon
-                            icon="fluent:delete-24-regular"
-                            className="icon text-xl"
-                          />
-                        </button>
+                        </Link>
                       </div>
                     </td>
                   </tr>
