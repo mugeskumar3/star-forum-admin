@@ -4,7 +4,7 @@ import ShowNotifications from "../helper/ShowNotifications";
 class ShopCategoryApi {
     async createShopCategory(data) {
         try {
-            const response = await apiClient.post(`/admin/product-category`, data);
+            const response = await apiClient.post(`/product-category`, data);
             if (response.status === 200 || response.status === 201) {
                 ShowNotifications.showAlertNotification(
                     response.data.message || "Category created successfully!",
@@ -24,7 +24,7 @@ class ShopCategoryApi {
 
     async getShopCategories() {
         try {
-            const response = await apiClient.get(`/admin/product-category`);
+            const response = await apiClient.get(`/product-category`);
             if (response.status === 200) {
                 return { status: true, data: response.data };
             }
@@ -41,7 +41,7 @@ class ShopCategoryApi {
 
     async getShopCategoryDetails(id) {
         try {
-            const response = await apiClient.get(`/admin/product-category/${id}`);
+            const response = await apiClient.get(`/product-category/${id}`);
             if (response.status === 200) {
                 return { status: true, data: response.data };
             }
@@ -57,7 +57,7 @@ class ShopCategoryApi {
 
     async updateShopCategory(id, data) {
         try {
-            const response = await apiClient.put(`/admin/product-category/${id}`, data);
+            const response = await apiClient.put(`/product-category/${id}`, data);
             if (response.status === 200) {
                 ShowNotifications.showAlertNotification(
                     response.data.message || "Category updated successfully!",
@@ -77,7 +77,7 @@ class ShopCategoryApi {
 
     async deleteShopCategory(id) {
         try {
-            const response = await apiClient.delete(`/admin/product-category/${id}`);
+            const response = await apiClient.delete(`/product-category/${id}`);
             if (response.status === 200) {
                 ShowNotifications.showAlertNotification(
                     response.data.message || "Category deleted successfully!",

@@ -4,7 +4,7 @@ import ShowNotifications from "../helper/ShowNotifications";
 class ProductApi {
     async createProduct(data) {
         try {
-            const response = await apiClient.post(`/admin/products/create`, data);
+            const response = await apiClient.post(`/products/create`, data);
             if (response.status === 200 || response.status === 201) {
                 ShowNotifications.showAlertNotification(
                     response.data.message || "Product created successfully!",
@@ -24,7 +24,7 @@ class ProductApi {
 
     async getProducts() {
         try {
-            const response = await apiClient.get(`/admin/products/list`);
+            const response = await apiClient.get(`/products/list`);
             if (response.status === 200) {
                 return { status: true, data: response.data };
             }
@@ -40,7 +40,7 @@ class ProductApi {
 
     async getProductDetails(id) {
         try {
-            const response = await apiClient.get(`/admin/products/details/${id}`);
+            const response = await apiClient.get(`/products/details/${id}`);
             if (response.status === 200) {
                 return { status: true, data: response.data };
             }
@@ -56,7 +56,7 @@ class ProductApi {
 
     async updateProduct(id, data) {
         try {
-            const response = await apiClient.put(`/admin/products/edit/${id}`, data);
+            const response = await apiClient.put(`/products/edit/${id}`, data);
             if (response.status === 200) {
                 ShowNotifications.showAlertNotification(
                     response.data.message || "Product updated successfully!",
@@ -76,7 +76,7 @@ class ProductApi {
 
     async deleteProduct(id) {
         try {
-            const response = await apiClient.delete(`/admin/products/delete/${id}`);
+            const response = await apiClient.delete(`/products/delete/${id}`);
             if (response.status === 200) {
                 ShowNotifications.showAlertNotification(
                     response.data.message || "Product deleted successfully!",
