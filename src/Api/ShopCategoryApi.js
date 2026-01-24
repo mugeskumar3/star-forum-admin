@@ -1,13 +1,13 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class ProductApi {
-    async createProduct(data) {
+class ShopCategoryApi {
+    async createShopCategory(data) {
         try {
-            const response = await apiClient.post(`/products/create`, data);
+            const response = await apiClient.post(`/product-category`, data);
             if (response.status === 200 || response.status === 201) {
                 ShowNotifications.showAlertNotification(
-                    response.data.message || "Product created successfully!",
+                    response.data.message || "Category created successfully!",
                     true
                 );
                 return { status: true, data: response.data };
@@ -16,15 +16,15 @@ class ProductApi {
             const errorMessage =
                 error?.response?.data?.message ||
                 error?.message ||
-                "Failed to create product.";
+                "Failed to create category.";
             ShowNotifications.showAlertNotification(errorMessage, false);
             return { status: false, error: errorMessage };
         }
     }
 
-    async getProducts() {
+    async getShopCategories() {
         try {
-            const response = await apiClient.get(`/products/list`);
+            const response = await apiClient.get(`/product-category`);
             if (response.status === 200) {
                 return { status: true, data: response.data };
             }
@@ -32,15 +32,16 @@ class ProductApi {
             const errorMessage =
                 error?.response?.data?.message ||
                 error?.message ||
-                "Failed to fetch products.";
+                "Failed to fetch categories.";
+            // Only show error if needed, listing sometimes silences error if empty
             console.error(errorMessage);
             return { status: false, error: errorMessage };
         }
     }
 
-    async getProductDetails(id) {
+    async getShopCategoryDetails(id) {
         try {
-            const response = await apiClient.get(`/products/details/${id}`);
+            const response = await apiClient.get(`/product-category/${id}`);
             if (response.status === 200) {
                 return { status: true, data: response.data };
             }
@@ -48,18 +49,18 @@ class ProductApi {
             const errorMessage =
                 error?.response?.data?.message ||
                 error?.message ||
-                "Failed to fetch product details.";
+                "Failed to fetch category details.";
             ShowNotifications.showAlertNotification(errorMessage, false);
             return { status: false, error: errorMessage };
         }
     }
 
-    async updateProduct(id, data) {
+    async updateShopCategory(id, data) {
         try {
-            const response = await apiClient.put(`/products/edit/${id}`, data);
+            const response = await apiClient.put(`/product-category/${id}`, data);
             if (response.status === 200) {
                 ShowNotifications.showAlertNotification(
-                    response.data.message || "Product updated successfully!",
+                    response.data.message || "Category updated successfully!",
                     true
                 );
                 return { status: true, data: response.data };
@@ -68,18 +69,18 @@ class ProductApi {
             const errorMessage =
                 error?.response?.data?.message ||
                 error?.message ||
-                "Failed to update product.";
+                "Failed to update category.";
             ShowNotifications.showAlertNotification(errorMessage, false);
             return { status: false, error: errorMessage };
         }
     }
 
-    async deleteProduct(id) {
+    async deleteShopCategory(id) {
         try {
-            const response = await apiClient.delete(`/products/delete/${id}`);
+            const response = await apiClient.delete(`/product-category/${id}`);
             if (response.status === 200) {
                 ShowNotifications.showAlertNotification(
-                    response.data.message || "Product deleted successfully!",
+                    response.data.message || "Category deleted successfully!",
                     true
                 );
                 return { status: true, data: response.data };
@@ -88,11 +89,11 @@ class ProductApi {
             const errorMessage =
                 error?.response?.data?.message ||
                 error?.message ||
-                "Failed to delete product.";
+                "Failed to delete category.";
             ShowNotifications.showAlertNotification(errorMessage, false);
             return { status: false, error: errorMessage };
         }
     }
 }
 
-export default new ProductApi();
+export default new ShopCategoryApi();
