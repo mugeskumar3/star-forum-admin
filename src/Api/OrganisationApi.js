@@ -4,7 +4,7 @@ import ShowNotifications from "../helper/ShowNotifications";
 class OrganisationApi {
   async createOrganisation(data) {
     try {
-      const response = await apiClient.post("/admin/region", data);
+      const response = await apiClient.post("/region", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Organisation created successfully!",
@@ -27,7 +27,7 @@ class OrganisationApi {
 
   async getOrganisation(id) {
     try {
-      const url = id ? `/admin/region/${id}` : "/admin/region";
+      const url = id ? `/region/${id}` : "/region";
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
@@ -47,7 +47,7 @@ class OrganisationApi {
 
   async updateOrganisation(data) {
     try {
-      const response = await apiClient.put(`/admin/region/${data.id}`, data);
+      const response = await apiClient.put(`/region/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Organisation updated successfully!",
@@ -70,7 +70,7 @@ class OrganisationApi {
 
   async deleteOrganisation(id) {
     try {
-      const response = await apiClient.delete(`/admin/region/${id}`);
+      const response = await apiClient.delete(`/region/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Organisation deleted successfully!",
