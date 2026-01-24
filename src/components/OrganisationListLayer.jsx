@@ -8,7 +8,7 @@ import TablePagination from "./TablePagination";
 const OrganisationListLayer = () => {
   const [organisations, setOrganisations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
