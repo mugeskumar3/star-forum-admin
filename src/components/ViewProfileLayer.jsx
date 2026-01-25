@@ -11,9 +11,10 @@ const ViewProfileLayer = () => {
 
     // States for "Show More" logic
     const [asksLimit, setAsksLimit] = useState(4);
-    const [givesLimit, setGivesLimit] = useState(3);
+    const [givesLimit, setGivesLimit] = useState(4);
     const [showFullAsksModal, setShowFullAsksModal] = useState(false);
     const [showFullGivesModal, setShowFullGivesModal] = useState(false);
+
 
     // Member Data
     const member = {
@@ -90,17 +91,26 @@ const ViewProfileLayer = () => {
     };
 
     const handleShowMoreGives = () => {
-        if (givesLimit === 3) {
+        if (givesLimit === 4) {
             setGivesLimit(10);
         } else if (member.myGives.length > 10) {
             setShowFullGivesModal(true);
         }
     };
 
+
+
     return (
         <div className="container-fluid p-0">
             {/* Top Bar with Back Button */}
-            <div className="d-flex align-items-center gap-3 mb-24">
+            <div className="d-flex align-items-center justify-content-between mb-24">
+
+                {/* LEFT : Heading */}
+                <h6 className="text-primary-600 mb-0 ms-2">
+                    Member Profile Details
+                </h6>
+
+                {/* RIGHT : Back button */}
                 <button
                     onClick={() => navigate(-1)}
                     className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2 radius-8 px-16 py-10 shadow-sm transition-2 hover-bg-neutral-50"
@@ -108,9 +118,9 @@ const ViewProfileLayer = () => {
                     <Icon icon="solar:arrow-left-bold" />
                     <span className="fw-bold text-xs uppercase-font">Back to List</span>
                 </button>
-                <div className="vr h-24-px opacity-25"></div>
-                <h6 className="mb-0 text-dark fw-bold text-sm">Member Profile Details</h6>
+
             </div>
+
 
             <div className="row gy-4">
                 {/* Left Sidebar Profile Section */}
@@ -267,7 +277,10 @@ const ViewProfileLayer = () => {
                             <div className="row g-4 mb-24">
                                 <div className="col-md-6">
                                     <div className="card radius-16 border-0 shadow-sm p-24 bg-white h-100 border-start border-4 border-danger-100">
-                                        <h6 className="fw-bold text-danger-600 mb-20" style={{ fontSize: '14px' }}>My Ask</h6>
+                                        <div className="d-flex justify-content-between align-items-center mb-20">
+                                            <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '14px' }}>My Ask</h6>
+
+                                        </div>
                                         <div className="d-flex flex-column gap-10">
                                             {member.myAsks.slice(0, asksLimit).map((ask, idx) => (
                                                 <div key={idx} className="d-flex gap-2 align-items-center">
@@ -276,18 +289,40 @@ const ViewProfileLayer = () => {
                                                 </div>
                                             ))}
                                         </div>
-                                        <button
-                                            onClick={handleShowMoreAsks}
-                                            className="btn p-0 text-danger-600 text-xxs mt-16 fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
-                                        >
-                                            {asksLimit < 10 ? 'Show More' : member.myAsks.length > 10 ? 'View All List' : ''}
-                                            {asksLimit <= 10 && member.myAsks.length > asksLimit && <Icon icon="solar:double-alt-arrow-down-bold" />}
-                                        </button>
+                                        <div className="d-flex justify-content-between align-items-center mt-16">
+
+                                            {/* LEFT BUTTON */}
+                                            {member.myAsks.length > asksLimit && (
+                                                <button
+                                                    onClick={handleShowMoreAsks}
+                                                    className="btn p-0 text-danger-600 text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
+                                                >
+                                                    {asksLimit === 4 ? 'View More' : 'View All List'}
+                                                    <Icon icon="solar:double-alt-arrow-down-bold" />
+                                                </button>
+                                            )}
+
+                                            {/* RIGHT BUTTON */}
+                                            {asksLimit > 4 && (
+                                                <button
+                                                    onClick={() => setAsksLimit(4)}
+                                                    className="btn p-0 text-danger-600 text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1 ms-auto"
+                                                >
+                                                    View Less
+                                                    <Icon icon="solar:double-alt-arrow-up-bold" />
+                                                </button>
+                                            )}
+
+                                        </div>
+
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <div className="card radius-16 border-0 shadow-sm p-24 bg-white h-100 border-start border-4 border-success-100">
-                                        <h6 className="fw-bold text-danger-600 mb-20" style={{ fontSize: '14px' }}>My Give</h6>
+                                        <div className="d-flex justify-content-between align-items-center mb-20">
+                                            <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '14px' }}>My Give</h6>
+
+                                        </div>
                                         <div className="d-flex flex-column gap-10">
                                             {member.myGives.slice(0, givesLimit).map((give, idx) => (
                                                 <div key={idx} className="d-flex gap-2 align-items-center">
@@ -296,13 +331,34 @@ const ViewProfileLayer = () => {
                                                 </div>
                                             ))}
                                         </div>
-                                        <button
-                                            onClick={handleShowMoreGives}
-                                            className="btn p-0 text-success-main text-xxs mt-16 fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
-                                        >
-                                            {givesLimit < 10 ? 'Show More' : member.myGives.length > 10 ? 'View All List' : ''}
-                                            {givesLimit <= 10 && member.myGives.length > givesLimit && <Icon icon="solar:double-alt-arrow-down-bold" />}
-                                        </button>
+                                        <div className="d-flex justify-content-between align-items-center mt-16">
+
+                                            {/* LEFT */}
+                                            {member.myGives.length > givesLimit && (
+                                                <button
+                                                    onClick={handleShowMoreGives}
+                                                    className="btn p-0 text-success-main text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
+                                                >
+                                                    {givesLimit === 4 ? 'View More' : 'View All List'}
+                                                    <Icon icon="solar:double-alt-arrow-down-bold" />
+                                                </button>
+                                            )}
+
+                                            {/* RIGHT */}
+                                            {givesLimit > 4 && (
+                                                <button
+                                                    onClick={() => setGivesLimit(4)}
+                                                    className="btn p-0 text-success-main text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
+                                                >
+                                                    View Less
+                                                    <Icon icon="solar:double-alt-arrow-up-bold" />
+                                                </button>
+                                            )}
+
+                                        </div>
+
+
+
                                     </div>
                                 </div>
                             </div>
