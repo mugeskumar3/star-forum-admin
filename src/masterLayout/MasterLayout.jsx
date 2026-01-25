@@ -143,6 +143,7 @@ const MasterLayout = ({ children }) => {
   const timeStr = new Intl.DateTimeFormat("en-US", {
     hour: "2-digit",
     minute: "2-digit",
+    second: "2-digit",
     hour12: true,
     timeZone: "Asia/Kolkata",
   }).format(currentTime);
@@ -524,17 +525,6 @@ const MasterLayout = ({ children }) => {
               </NavLink>
             </li> */}
 
-            {/* Visitors Report */}
-            <li>
-              <NavLink
-                to="/visitors-report"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
-              >
-                <i className="ri-group-line menu-icon" />
-                <span>Visitors Report</span>
-              </NavLink>
-            </li>
-
             {/* Chapter Activity Report */}
             <li className="dropdown">
               <Link to="#">
@@ -550,18 +540,40 @@ const MasterLayout = ({ children }) => {
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    121 Note
+                    121's Report
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
-                    to="/referral-note"
+                    to="/referral-report"
                     className={(navData) =>
                       navData.isActive ? "active-page" : ""
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Referral Note
+                    Referral's Report
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/visitors-report"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Visitor's Report
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/chief-guest-report"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Chief Guest's Report
                   </NavLink>
                 </li>
                 <li>
@@ -619,20 +631,6 @@ const MasterLayout = ({ children }) => {
               >
                 <i className="ri-map-pin-line menu-icon" />
                 <span>Locations</span>
-              </NavLink>
-            </li>
-
-            {/* 121's Report */}
-            <li>
-              <NavLink
-                to="/note-121"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
-              >
-                <Icon
-                  icon="fluent:people-chat-20-regular"
-                  className="menu-icon"
-                />
-                <span>121's Report</span>
               </NavLink>
             </li>
           </ul>
@@ -826,9 +824,13 @@ const MasterLayout = ({ children }) => {
                     <div className="text-center py-12 px-16">
                       <Link
                         to="#"
-                        className="text-primary-600 fw-semibold text-md"
+                        className="text-primary-600 fw-semibold text-md hover-text-primary d-flex justify-content-center align-items-center gap-2"
                       >
-                        See All Notification
+                        See All Notifications
+                        <Icon
+                          icon="solar:arrow-right-linear"
+                          className="icon"
+                        />
                       </Link>
                     </div>
                   </div>
@@ -843,72 +845,50 @@ const MasterLayout = ({ children }) => {
                   >
                     <img
                       src="/assets/images/user.png"
-                      alt="image_user"
+                      alt="image"
                       className="w-40-px h-40-px object-fit-cover rounded-circle"
                     />
                   </button>
-                  <div className="dropdown-menu to-top dropdown-menu-sm">
-                    <div className="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
-                      <div>
-                        <h6 className="text-lg text-primary-light fw-semibold mb-2">
-                          Shaidul Islam
-                        </h6>
-                        <span className="text-secondary-light fw-medium text-sm">
-                          Admin
-                        </span>
-                      </div>
-                      <button type="button" className="hover-text-danger">
-                        <Icon
-                          icon="radix-icons:cross-1"
-                          className="icon text-xl"
-                        />
-                      </button>
+                  <div className="dropdown-menu to-top dropdown-menu-sm p-0">
+                    <div className="p-16 px-24 border-bottom">
+                      <h6 className="text-lg fw-semibold text-primary-light mb-0">
+                        Administrator
+                      </h6>
+                      <span className="text-secondary-light text-sm">
+                        Admin
+                      </span>
                     </div>
-                    <ul className="to-top-list">
+                    <ul className="p-16">
                       <li>
                         <Link
-                          className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
                           to="/view-profile"
+                          className="d-flex align-items-center gap-3 hover-bg-primary-50 text-secondary-light radius-8 px-12 py-12"
                         >
                           <Icon
-                            icon="solar:user-linear"
+                            icon="solar:user-circle-outline"
                             className="icon text-xl"
-                          />{" "}
+                          />
                           My Profile
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                          to="/email"
+                        <button
+                          onClick={() => {
+                            if (
+                              window.confirm("Are you sure you want to logout?")
+                            ) {
+                              localStorage.clear();
+                              window.location.href = "/sign-in";
+                            }
+                          }}
+                          className="d-flex align-items-center gap-3 hover-bg-primary-50 text-secondary-light radius-8 px-12 py-12 border-0 bg-transparent w-100"
                         >
                           <Icon
-                            icon="tabler:message-check"
-                            className="icon text-xl"
-                          />{" "}
-                          Inbox
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                          to="/company"
-                        >
-                          <Icon
-                            icon="icon-park-outline:setting-two"
+                            icon="solar:logout-2-outline"
                             className="icon text-xl"
                           />
-                          Setting
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
-                          to="#"
-                        >
-                          <Icon icon="lucide:power" className="icon text-xl" />{" "}
                           Log Out
-                        </Link>
+                        </button>
                       </li>
                     </ul>
                   </div>

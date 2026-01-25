@@ -63,7 +63,6 @@ const ZoneFormLayer = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      toast.error("Please fix the validation errors.");
       return;
     }
 

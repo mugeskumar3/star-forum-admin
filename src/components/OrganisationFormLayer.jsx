@@ -197,7 +197,6 @@ const OrganisationFormLayer = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      toast.error("Please fix the validation errors.");
       return;
     }
     console.log(formData);
@@ -218,7 +217,7 @@ const OrganisationFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-        <h6 className="text-primary-600 pb-2 mb-0">Create Organisation</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">{id ? "Edit" : "Create"} Organisation</h6>
         <div className="d-flex gap-2">
           <Link to="/zone/add" className="btn btn-primary btn-sm">
             <Icon icon="ic:baseline-plus" className="text-xl me-1" />
@@ -233,7 +232,6 @@ const OrganisationFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Row 1: Country & State */}
             <div className="col-md-6">
               <label className="form-label fw-medium">
                 Country <span className="text-danger-600">*</span>
@@ -250,7 +248,7 @@ const OrganisationFormLayer = () => {
                     ...formData,
                     country: selectedOption ? selectedOption.label : "",
                     state: "",
-                    zoneId: "", // Reset zoneId
+                    zoneId: "",
                   });
                   if (formErrors.country) {
                     setFormErrors({ ...formErrors, country: "" });
@@ -311,7 +309,6 @@ const OrganisationFormLayer = () => {
               )}
             </div>
 
-            {/* Row 2: Zone & Region */}
             <div className="col-md-6">
               <label className="form-label fw-medium">
                 Zone <span className="text-danger-600">*</span>
@@ -319,7 +316,7 @@ const OrganisationFormLayer = () => {
               <Select
                 name="zoneId"
                 options={filteredZones.map((z) => ({
-                  value: z._id, // Updated to _id
+                  value: z._id,
                   label: z.name,
                 }))}
                 value={
@@ -364,17 +361,16 @@ const OrganisationFormLayer = () => {
               )}
             </div>
 
-            {/* Row 3: RD & ED */}
             <div className="col-md-6">
               <label className="form-label fw-medium">
-                RD (Regional Director){" "}
+                Regional Director (RD){" "}
                 <span className="text-danger-600">*</span>
               </label>
               <Select
                 isMulti
                 name="rdIds"
                 options={rdOptions}
-                value={getSelectedOptions(rdOptions, formData.rdIds)} // Values are IDs
+                value={getSelectedOptions(rdOptions, formData.rdIds)} 
                 onChange={handleMultiSelectChange}
                 styles={customStyles}
                 placeholder="Select RD Names"
@@ -390,7 +386,7 @@ const OrganisationFormLayer = () => {
 
             <div className="col-md-6">
               <label className="form-label fw-medium">
-                ED (Executive Director){" "}
+                Executive Director (ED){" "}
                 <span className="text-danger-600">*</span>
               </label>
               <Select

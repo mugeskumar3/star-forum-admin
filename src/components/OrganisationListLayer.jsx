@@ -43,7 +43,6 @@ const OrganisationListLayer = () => {
     if (window.confirm("Are you sure you want to delete this organisation?")) {
       const response = await OrganisationApi.deleteOrganisation(id);
       if (response && response.status) {
-        toast.success("Organisation deleted successfully");
         fetchOrganisations();
       }
     }
@@ -135,7 +134,7 @@ const OrganisationListLayer = () => {
                 organisations.map((org, index) => (
                   <tr key={org.id || index}>
                     <td className="text-center">
-                      {(currentPage) * rowsPerPage + index + 1}
+                      {currentPage * rowsPerPage + index + 1}
                     </td>
                     <td>
                       <span className="text-md mb-0 fw-normal text-secondary-light">

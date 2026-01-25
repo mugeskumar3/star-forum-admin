@@ -3,19 +3,18 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
 import TablePagination from "./TablePagination";
 
-const VisitorsReportLayer = () => {
+const ChiefGuestReportLayer = () => {
   // Mock Data
-  const [visitors, setVisitors] = useState(
+  const [guests, setGuests] = useState(
     Array.from({ length: 20 }).map((_, i) => ({
       id: i + 1,
-      visitorName: `Visitor ${i + 1}`,
-      company: `Company ${i + 1}`,
-      category: `Category ${i + 1}`,
-      phone: `98765432${i < 10 ? "0" + i : i}`,
-      visitDate: "2025-01-25T10:30:00",
-      chapterName: ["Star Chapter", "Galaxy Chapter"][i % 2],
-      email: `visitor${i + 1}@example.com`,
+      chiefGuestName: `Chief Guest ${i + 1}`,
+      contactNumber: `98765432${i < 10 ? "0" + i : i}`,
+      businessCategory: `Category ${i + 1}`,
+      businessName: `Business ${i + 1}`,
+      sourceOfEvent: ["Social Media", "Referral", "Website", "Direct"][i % 4],
       invitedBy: `Member ${i + 1}`,
+      chapter: ["Star Chapter", "Galaxy Chapter"][i % 2],
       zone: ["Zone 1", "Zone 2"][i % 2],
       ed: ["ED 1", "ED 2"][i % 2],
       rd: ["RD 1", "RD 2"][i % 2],
@@ -68,30 +67,28 @@ const VisitorsReportLayer = () => {
   };
 
   // Filtering logic
-  const filteredVisitors = visitors.filter((visitor) => {
+  const filteredGuests = guests.filter((guest) => {
     const matchesSearch =
-      visitor.visitorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      visitor.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      visitor.invitedBy.toLowerCase().includes(searchTerm.toLowerCase());
+      guest.chiefGuestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.invitedBy.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesChapter = selectedChapter
-      ? visitor.chapterName === selectedChapter.value
+      ? guest.chapter === selectedChapter.value
       : true;
-    const matchesZone = selectedZone
-      ? visitor.zone === selectedZone.value
-      : true;
-    const matchesEd = selectedEd ? visitor.ed === selectedEd.value : true;
-    const matchesRd = selectedRd ? visitor.rd === selectedRd.value : true;
+    const matchesZone = selectedZone ? guest.zone === selectedZone.value : true;
+    const matchesEd = selectedEd ? guest.ed === selectedEd.value : true;
+    const matchesRd = selectedRd ? guest.rd === selectedRd.value : true;
 
     return (
       matchesSearch && matchesChapter && matchesZone && matchesEd && matchesRd
     );
   });
 
-  const totalRecords = filteredVisitors.length;
+  const totalRecords = filteredGuests.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
-  const currentData = filteredVisitors.slice(
+  const currentData = filteredGuests.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
@@ -103,27 +100,18 @@ const VisitorsReportLayer = () => {
     setCurrentPage(1);
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
         <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
-          <h6 className="text-primary-600 pb-2 mb-0">Visitor's Report</h6>
+          <h6 className="text-primary-600 pb-2 mb-0">Chief Guest's Report</h6>
           <div className="d-flex align-items-center flex-wrap gap-3">
             <form className="navbar-search">
               <input
                 type="text"
                 className="bg-base h-40-px w-auto"
                 name="search"
-                placeholder="Search Visitor, Company or Member"
+                placeholder="Search Chief Guest, Business or Member"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -182,36 +170,32 @@ const VisitorsReportLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">Visitor Name</th>
-                <th scope="col">Company</th>
-                <th scope="col">Category</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Visit Date</th>
-                <th scope="col">Chapter Name</th>
-                <th scope="col">Email</th>
+                <th scope="col">Sl.No</th>
+                <th scope="col">Chief Guest Name</th>
+                <th scope="col">Contact Number</th>
+                <th scope="col">Business Category</th>
+                <th scope="col">Business Name</th>
+                <th scope="col">Source of event</th>
                 <th scope="col">Invited By</th>
               </tr>
             </thead>
             <tbody>
               {currentData.length > 0 ? (
-                currentData.map((visitor, index) => (
-                  <tr key={visitor.id}>
+                currentData.map((guest, index) => (
+                  <tr key={guest.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
-                    <td>{visitor.visitorName}</td>
-                    <td>{visitor.company}</td>
-                    <td>{visitor.category}</td>
-                    <td>{visitor.phone}</td>
-                    <td>{formatDate(visitor.visitDate)}</td>
-                    <td>{visitor.chapterName}</td>
-                    <td>{visitor.email}</td>
-                    <td>{visitor.invitedBy}</td>
+                    <td>{guest.chiefGuestName}</td>
+                    <td>{guest.contactNumber}</td>
+                    <td>{guest.businessCategory}</td>
+                    <td>{guest.businessName}</td>
+                    <td>{guest.sourceOfEvent}</td>
+                    <td>{guest.invitedBy}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" className="text-center py-4">
-                    No visitors found.
+                  <td colSpan="7" className="text-center py-4">
+                    No reports found.
                   </td>
                 </tr>
               )}
@@ -232,4 +216,4 @@ const VisitorsReportLayer = () => {
   );
 };
 
-export default VisitorsReportLayer;
+export default ChiefGuestReportLayer;
