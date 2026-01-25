@@ -158,13 +158,22 @@ const Note121Layer = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString('en-IN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
     }).toUpperCase();
+  };
+
+  const handleClearFilters = () => {
+    setSelectedChapter(null);
+    setSelectedZone(null);
+    setSelectedEd(null);
+    setSelectedRd(null);
+    setSearchTerm("");
+    setCurrentPage(1);
   };
 
   return (
@@ -188,46 +197,57 @@ const Note121Layer = () => {
         </div>
 
         {/* Filters */}
-        <div className="row g-3">
-          <div className="col-md-3">
+        <div className="row g-3 align-items-end">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={chapterOptions}
               value={selectedChapter}
               onChange={setSelectedChapter}
-              placeholder="Select Chapter"
+              placeholder="Chapter"
               styles={customStyles}
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={zoneOptions}
               value={selectedZone}
               onChange={setSelectedZone}
-              placeholder="Select Zone"
+              placeholder="Zone"
               styles={customStyles}
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={edOptions}
               value={selectedEd}
               onChange={setSelectedEd}
-              placeholder="Select ED"
+              placeholder="ED"
               styles={customStyles}
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={rdOptions}
               value={selectedRd}
               onChange={setSelectedRd}
-              placeholder="Select RD"
+              placeholder="RD"
               styles={customStyles}
               isClearable
             />
+          </div>
+          <div className="col-xl-auto col-md-4 col-sm-6 d-flex align-items-end">
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="btn btn-outline-danger d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap w-100"
+              title="Clear All Filters"
+            >
+              <Icon icon="solar:filter-remove-bold-duotone" fontSize={20} />
+              Clear Filter
+            </button>
           </div>
         </div>
       </div>
@@ -291,32 +311,32 @@ const Note121Layer = () => {
         />
       </div>
 
-       {/* Selfie Modal */}
-       <Modal
-          centered
-          show={showImageModal}
-          onHide={() => setShowImageModal(false)}
+      {/* Selfie Modal */}
+      <Modal
+        centered
+        show={showImageModal}
+        onHide={() => setShowImageModal(false)}
       >
-          <Modal.Header closeButton>
+        <Modal.Header closeButton>
           <Modal.Title className="text-lg fw-semibold">
-              View Selfie
+            View Selfie
           </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="text-center p-0">
-              {selectedImage && (
-                  <img
-                      src={selectedImage}
-                      alt="Selfie"
-                      className="img-fluid w-100"
-                      style={{ maxHeight: '80vh', objectFit: 'contain' }}
-                  />
-              )}
-          </Modal.Body>
-          <Modal.Footer>
+        </Modal.Header>
+        <Modal.Body className="text-center p-0">
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Selfie"
+              className="img-fluid w-100"
+              style={{ maxHeight: '80vh', objectFit: 'contain' }}
+            />
+          )}
+        </Modal.Body>
+        <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowImageModal(false)}>
-              Close
+            Close
           </Button>
-          </Modal.Footer>
+        </Modal.Footer>
       </Modal>
     </div>
   );

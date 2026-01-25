@@ -8803,9 +8803,9 @@ h6,
 }
 
 .btn-primary-600:hover {
-  background-color: var(--primary-700);
+  background-color: #e02b31;
   color: #fff !important;
-  border-color: var(--primary-700);
+  /* border-color: var(--primary-700); */
 }
 
 .btn-primary-600:active,
@@ -12619,6 +12619,10 @@ textarea:active {
   margin-bottom: 0;
   padding-left: 0;
   gap: 12px;
+  display: flex;
+  /* align-content: center; */
+  flex-direction: row;
+  align-items: center;
 }
 
 .form-check.style-check .form-check-input::before {

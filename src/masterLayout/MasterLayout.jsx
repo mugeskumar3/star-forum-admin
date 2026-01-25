@@ -277,6 +277,17 @@ const MasterLayout = ({ children }) => {
                     Business Category
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="/points"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Points
+                  </NavLink>
+                </li>
               </ul>
             </li>
 
@@ -286,7 +297,7 @@ const MasterLayout = ({ children }) => {
                 to="/chapter-creation"
                 className={(navData) =>
                   navData.isActive ||
-                  location.pathname.startsWith("/chapter-view")
+                    location.pathname.startsWith("/chapter-view")
                     ? "active-page"
                     : ""
                 }
@@ -324,8 +335,8 @@ const MasterLayout = ({ children }) => {
                 to="/attendance-report"
                 className={(navData) =>
                   navData.isActive ||
-                  location.pathname.startsWith("/meeting-attendance") ||
-                  location.pathname.startsWith("/member-history")
+                    location.pathname.startsWith("/meeting-attendance") ||
+                    location.pathname.startsWith("/member-history")
                     ? "active-page"
                     : ""
                 }
@@ -375,17 +386,6 @@ const MasterLayout = ({ children }) => {
                     Star Update
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink
-                    to="/points"
-                    className={(navData) =>
-                      navData.isActive ? "active-page" : ""
-                    }
-                  >
-                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Points
-                  </NavLink>
-                </li>
               </ul>
             </li>
 
@@ -395,10 +395,10 @@ const MasterLayout = ({ children }) => {
                 to="/training"
                 className={(navData) =>
                   navData.isActive ||
-                  location.pathname === "/training-list" ||
-                  location.pathname === "/training-create" ||
-                  location.pathname.startsWith("/training-edit") ||
-                  location.pathname.startsWith("/training-view")
+                    location.pathname === "/training-list" ||
+                    location.pathname === "/training-create" ||
+                    location.pathname.startsWith("/training-edit") ||
+                    location.pathname.startsWith("/training-view")
                     ? "active-page"
                     : ""
                 }
@@ -421,8 +421,8 @@ const MasterLayout = ({ children }) => {
                     to="/shop-category-list"
                     className={(navData) =>
                       navData.isActive ||
-                      location.pathname === "/shop-category-create" ||
-                      location.pathname.startsWith("/shop-category-edit")
+                        location.pathname === "/shop-category-create" ||
+                        location.pathname.startsWith("/shop-category-edit")
                         ? "active-page"
                         : ""
                     }
@@ -496,12 +496,34 @@ const MasterLayout = ({ children }) => {
             <li>
               <NavLink
                 to="/chapter-report"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
+                className={(navData) =>
+                  navData.isActive ||
+                    location.pathname.startsWith("/chapter-report-list")
+                    ? "active-page"
+                    : ""
+                }
               >
                 <i className="ri-building-line menu-icon" />
                 <span>Chapter Report</span>
               </NavLink>
             </li>
+
+            {/* Visitors Report */}
+            {/* <li>
+              <NavLink
+                to="/visitors-report"
+                className={(navData) =>
+                  navData.isActive ||
+                    location.pathname.startsWith("/visitors-report/") ||
+                    location.pathname.startsWith("/visitors-form")
+                    ? "active-page"
+                    : ""
+                }
+              >
+                <i className="ri-group-line menu-icon" />
+                <span>Visitors Report</span>
+              </NavLink>
+            </li> */}
 
             {/* ED Report */}
             {/* <li>
@@ -558,11 +580,15 @@ const MasterLayout = ({ children }) => {
                   <NavLink
                     to="/visitors-report"
                     className={(navData) =>
-                      navData.isActive ? "active-page" : ""
+                      navData.isActive ||
+                        location.pathname.startsWith("/visitors-report/") ||
+                        location.pathname.startsWith("/visitors-form")
+                        ? "active-page"
+                        : ""
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Visitor's Report
+                    <span>Visitors Report</span>
                   </NavLink>
                 </li>
                 <li>
@@ -576,7 +602,7 @@ const MasterLayout = ({ children }) => {
                     Chief Guest's Report
                   </NavLink>
                 </li>
-                <li>
+                {/* <li>
                   <NavLink
                     to="/thank-you-slip"
                     className={(navData) =>
@@ -585,6 +611,17 @@ const MasterLayout = ({ children }) => {
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
                     Thank you Slip
+                  </NavLink>
+                </li> */}
+                <li>
+                  <NavLink
+                    to="/thank-you-slip-report"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Thank you slip Report
                   </NavLink>
                 </li>
                 <li>
@@ -600,13 +637,50 @@ const MasterLayout = ({ children }) => {
                 </li>
                 <li>
                   <NavLink
-                    to="/testimonials"
+                    to="/trainings-report"
+                    className={(navData) =>
+                      navData.isActive || location.pathname.startsWith("/trainings-report/")
+                        ? "active-page"
+                        : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Training's Report
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/chapter-member-list"
+                    className={(navData) =>
+                      navData.isActive || location.pathname === "/view-profile"
+                        ? "active-page"
+                        : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Member's list
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/testimonials-report"
                     className={(navData) =>
                       navData.isActive ? "active-page" : ""
                     }
                   >
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Testimonials
+                    Testimonials Report
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/member-points-report"
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
+                    Member Points Report
                   </NavLink>
                 </li>
               </ul>

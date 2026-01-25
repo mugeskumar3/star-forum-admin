@@ -47,8 +47,15 @@ import ChapterReportPage from "./pages/ChapterReportPage";
 import Note121Page from "./pages/Note121Page";
 import ReferralNotePage from "./pages/ReferralNotePage";
 import ThankYouSlipPage from "./pages/ThankYouSlipPage";
+import PowerDateReportPage from "./pages/PowerDateReportPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import VisitorsReportPage from "./pages/VisitorsReportPage";
+import VisitorsFormPage from "./pages/VisitorsFormPage";
+import TrainingsReportPage from "./pages/TrainingsReportPage";
+import InterestedMembersPage from "./pages/InterestedMembersPage";
+import ChapterMemberListPage from "./pages/ChapterMemberListPage";
+import ThankYouSlipReportDetailedPage from "./pages/ThankYouSlipReportDetailedPage";
+import TestimonialsReportDetailedPage from "./pages/TestimonialsReportDetailedPage";
 import LogReportPage from "./pages/LogReportPage";
 import ShopListPage from "./pages/ShopListPage";
 import ShopCreatePage from "./pages/ShopCreatePage";
@@ -66,6 +73,7 @@ import ChiefGuestFormPage from "./pages/ChiefGuestFormPage";
 import ChiefGuestHistoryPage from "./pages/ChiefGuestHistoryPage";
 import GeneralUpdateListPage from "./pages/GeneralUpdateListPage";
 import PointsPage from "./pages/PointsPage";
+import ChapterReportListPage from "./pages/ChapterReportListPage";
 import AwardListPage from "./pages/AwardListPage";
 import AwardFormPage from "./pages/AwardFormPage";
 import BusinessCategoryListPage from "./pages/BusinessCategoryListPage";
@@ -74,6 +82,7 @@ import CompanyPage from "./pages/CompanyPage";
 import ZoneFormPage from "./pages/ZoneFormPage";
 import RenewalReportPage from "./pages/RenewalReportPage";
 import LocationListPage from "./pages/LocationListPage";
+import MemberPointsReportPage from "./pages/MemberPointsReportPage";
 function App() {
   return (
     <BrowserRouter>
@@ -93,6 +102,51 @@ function App() {
           <Route exact path="/email" element={<EmailPage />} />
           <Route exact path="/view-profile" element={<ViewProfilePage />} />
           <Route exact path="/company" element={<CompanyPage />} />
+          {/* Dynamic Forms using FormPage */}
+          <Route
+            exact
+            path="/chapter-badge"
+            element={<FormPage title="Chapter Badge" />}
+          />
+          <Route
+            exact
+            path="/member-badge"
+            element={<FormPage title="Member Badge" />}
+          />
+          <Route
+            exact
+            path="/meetings-create"
+            element={<FormPage title="Meeting Creation" />}
+          />
+          <Route exact path="/renewal-report" element={<RenewalReportPage />} />
+          <Route
+            exact
+            path="/ed-report"
+            element={<FormPage title="ED Report" />}
+          />
+          <Route
+            exact
+            path="/rd-report"
+            element={<FormPage title="RD Report" />}
+          />
+          <Route exact path="/power-date" element={<PowerDateReportPage />} />
+          <Route
+            exact
+            path="/present-update"
+            element={<FormPage title="Present Update" />}
+          />
+          <Route
+            exact
+            path="/roles-permissions"
+            element={<FormPage title="Roles & Permissions" />}
+          />
+          <Route
+            exact
+            path="/office-location"
+            element={<FormPage title="Office Location" />}
+          />
+          <Route exact path="/location-list" element={<LocationListPage />} />
+          <Route exact path="/form" element={<FormPage />} />
 
           {/* Dynamic Forms using FormPage */}
           <Route
@@ -374,6 +428,29 @@ function App() {
 
           {/* Chapter Report */}
           <Route exact path="/chapter-report" element={<ChapterReportPage />} />
+          {/* Chapter Report */}
+          <Route exact path="/chapter-report" element={<ChapterReportPage />} />
+          <Route exact path="/chapter-report-list/:id" element={<ChapterReportListPage />} />
+          <Route exact path="/member-points-report" element={<MemberPointsReportPage />} />
+
+          {/* Visitors Report */}
+          <Route exact path="/visitors-report" element={<VisitorsReportPage />} />
+          <Route exact path="/visitors-form" element={<VisitorsFormPage />} />
+          <Route exact path="/visitors-form/add" element={<VisitorsFormPage />} />
+          <Route exact path="/visitors-form/edit/:id" element={<VisitorsFormPage />} />
+          <Route exact path="/visitors-form/view/:id" element={<VisitorsFormPage />} />
+
+          {/* Chapter Activity Report */}
+          <Route exact path="/note-121" element={<Note121Page />} />
+          <Route exact path="/referral-note" element={<ReferralNotePage />} />
+          <Route exact path="/thank-you-slip" element={<ThankYouSlipPage />} />
+          <Route exact path="/thank-you-slip-report" element={<ThankYouSlipReportDetailedPage />} />
+          <Route exact path="/power-date" element={<PowerDateReportPage />} />
+          <Route exact path="/trainings-report" element={<TrainingsReportPage />} />
+          <Route exact path="/trainings-report/interested-members/:id" element={<InterestedMembersPage />} />
+          <Route exact path="/chapter-member-list" element={<ChapterMemberListPage />} />
+          <Route exact path="/testimonials" element={<TestimonialsPage />} />
+          <Route exact path="/testimonials-report" element={<TestimonialsReportDetailedPage />} />
 
           {/* Visitors Report */}
           <Route
