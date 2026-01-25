@@ -62,6 +62,10 @@ const ChapterReportListLayer = () => {
         <div className="card h-100 p-0 radius-12">
             <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                 <div className="d-flex align-items-center flex-wrap gap-3">
+
+                    <h6 className="text-primary-600 mb-0 ms-2">{chapterName} Chapter Report</h6>
+                </div>
+                <div className="d-flex align-items-center flex-wrap gap-3">
                     <button
                         onClick={() => navigate(-1)}
                         className="btn btn-outline-primary-600 d-flex align-items-center gap-2 radius-8 px-12 py-8"
@@ -70,30 +74,6 @@ const ChapterReportListLayer = () => {
                         <Icon icon="ion:arrow-back-outline" />
                         Back
                     </button>
-                    <h6 className="text-primary-600 mb-0 ms-2">{chapterName} Chapter Report</h6>
-                </div>
-                <div className="d-flex align-items-center flex-wrap gap-3">
-                    <form className="navbar-search">
-                        {/* <input
-                            type="text"
-                            className="bg-base h-40-px w-auto"
-                            name="search"
-                            placeholder="Search Member"
-                            value={searchTerm}
-                            onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                        /> */}
-                        <Icon icon="ion:search-outline" className="icon" />
-                    </form>
-                    {/* <button
-                        onClick={() => navigate('/member-points-report')}
-                        className="btn btn-primary-600 d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap"
-                    >
-                        <Icon icon="solar:chart-2-bold-duotone" fontSize={20} />
-                        Member Points Report
-                    </button> */}
                 </div>
             </div>
             <div className="card-body p-24">
