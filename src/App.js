@@ -139,6 +139,7 @@ function App() {
           element={<FormPage title="Office Location" />}
         />
         <Route exact path="/location-list" element={<LocationListPage />} />
+        <Route exact path="/note-121" element={<Note121Page />} />
         <Route exact path="/form" element={<FormPage />} />
 
         {/* Master Creation */}

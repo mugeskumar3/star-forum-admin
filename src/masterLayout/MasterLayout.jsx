@@ -621,6 +621,20 @@ const MasterLayout = ({ children }) => {
                 <span>Locations</span>
               </NavLink>
             </li>
+
+            {/* 121's Report */}
+            <li>
+              <NavLink
+                to="/note-121"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
+                <Icon
+                  icon="fluent:people-chat-20-regular"
+                  className="menu-icon"
+                />
+                <span>121's Report</span>
+              </NavLink>
+            </li>
           </ul>
         </div>
       </aside>

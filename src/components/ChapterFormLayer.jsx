@@ -16,7 +16,7 @@ const ChapterFormLayer = () => {
     zone: "",
     region: "", // Renamed from religion
     executiveDirector: "",
-    regionalDirector: [], // Multi-select
+    regionalDirector: "", // Single select
     createdDate: new Date().toISOString().split("T")[0], // Default to current date
     meetingDateTime: "",
     location: "",
@@ -40,7 +40,7 @@ const ChapterFormLayer = () => {
     if (!formData.region) newErrors.region = "Region is required";
     if (!formData.executiveDirector)
       newErrors.executiveDirector = "Executive Director is required";
-    if (!formData.regionalDirector || formData.regionalDirector.length === 0)
+    if (!formData.regionalDirector)
       newErrors.regionalDirector = "Regional Director is required";
     if (!formData.meetingType)
       newErrors.meetingType = "Meeting Type is required";
@@ -60,7 +60,7 @@ const ChapterFormLayer = () => {
         zone: "Zone 1",
         region: "South Region", // Renamed from religion
         executiveDirector: "John Doe",
-        regionalDirector: ["Jane Smith", "Bob Wilson"],
+        regionalDirector: "Jane Smith",
         createdDate: "2025-01-01",
         meetingDateTime: "2025-01-01T10:00",
         location: "Chennai",
@@ -326,14 +326,13 @@ const ChapterFormLayer = () => {
                 Regional Director <span className="text-danger">*</span>
               </label>
               <Select
-                isMulti
                 name="regionalDirector"
                 options={regionalDirectorOptions}
-                value={regionalDirectorOptions.filter((option) =>
-                  formData.regionalDirector.includes(option.value),
+                value={regionalDirectorOptions.find(
+                  (option) => option.value === formData.regionalDirector,
                 )}
-                onChange={handleMultiSelectChange}
-                placeholder="Select Regional Directors"
+                onChange={handleSelectChange}
+                placeholder="Select Regional Director"
                 styles={customStyles}
               />
               {errors.regionalDirector && (
