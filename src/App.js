@@ -71,6 +71,7 @@ import BusinessCategoryFormPage from "./pages/BusinessCategoryFormPage";
 import CompanyPage from "./pages/CompanyPage";
 import ZoneFormPage from "./pages/ZoneFormPage";
 import RenewalReportPage from "./pages/RenewalReportPage";
+import LocationListPage from "./pages/LocationListPage";
 function App() {
   return (
     <BrowserRouter>
@@ -137,6 +138,7 @@ function App() {
           path="/office-location"
           element={<FormPage title="Office Location" />}
         />
+        <Route exact path="/location-list" element={<LocationListPage />} />
         <Route exact path="/form" element={<FormPage />} />
 
         {/* Master Creation */}
@@ -320,9 +322,21 @@ function App() {
         <Route exact path="/shop-edit/:id" element={<ShopFormPage />} />
 
         {/* Shop Category */}
-        <Route exact path="/shop-category-list" element={<ShopCategoryListPage />} />
-        <Route exact path="/shop-category-create" element={<ShopCategoryFormPage />} />
-        <Route exact path="/shop-category-edit/:id" element={<ShopCategoryFormPage />} />
+        <Route
+          exact
+          path="/shop-category-list"
+          element={<ShopCategoryListPage />}
+        />
+        <Route
+          exact
+          path="/shop-category-create"
+          element={<ShopCategoryFormPage />}
+        />
+        <Route
+          exact
+          path="/shop-category-edit/:id"
+          element={<ShopCategoryFormPage />}
+        />
 
         {/* Orders */}
         <Route exact path="/orders" element={<OrdersPage />} />

@@ -203,7 +203,6 @@ const MasterLayout = ({ children }) => {
               </NavLink>
             </li>
 
-
             {/* Master Creation */}
             <li className="dropdown">
               <Link to="#">
@@ -285,7 +284,8 @@ const MasterLayout = ({ children }) => {
               <NavLink
                 to="/chapter-creation"
                 className={(navData) =>
-                  navData.isActive || location.pathname.startsWith("/chapter-view")
+                  navData.isActive ||
+                  location.pathname.startsWith("/chapter-view")
                     ? "active-page"
                     : ""
                 }
@@ -323,8 +323,8 @@ const MasterLayout = ({ children }) => {
                 to="/attendance-report"
                 className={(navData) =>
                   navData.isActive ||
-                    location.pathname.startsWith("/meeting-attendance") ||
-                    location.pathname.startsWith("/member-history")
+                  location.pathname.startsWith("/meeting-attendance") ||
+                  location.pathname.startsWith("/member-history")
                     ? "active-page"
                     : ""
                 }
@@ -394,10 +394,10 @@ const MasterLayout = ({ children }) => {
                 to="/training"
                 className={(navData) =>
                   navData.isActive ||
-                    location.pathname === "/training-list" ||
-                    location.pathname === "/training-create" ||
-                    location.pathname.startsWith("/training-edit") ||
-                    location.pathname.startsWith("/training-view")
+                  location.pathname === "/training-list" ||
+                  location.pathname === "/training-create" ||
+                  location.pathname.startsWith("/training-edit") ||
+                  location.pathname.startsWith("/training-view")
                     ? "active-page"
                     : ""
                 }
@@ -419,7 +419,9 @@ const MasterLayout = ({ children }) => {
                   <NavLink
                     to="/shop-category-list"
                     className={(navData) =>
-                      navData.isActive || location.pathname === "/shop-category-create" || location.pathname.startsWith("/shop-category-edit")
+                      navData.isActive ||
+                      location.pathname === "/shop-category-create" ||
+                      location.pathname.startsWith("/shop-category-edit")
                         ? "active-page"
                         : ""
                     }
@@ -609,26 +611,15 @@ const MasterLayout = ({ children }) => {
               </NavLink>
             </li>
 
-
             {/* Locations */}
-            <li className="dropdown">
-              <Link to="#">
+            <li>
+              <NavLink
+                to="/location-list"
+                className={(navData) => (navData.isActive ? "active-page" : "")}
+              >
                 <i className="ri-map-pin-line menu-icon" />
                 <span>Locations</span>
-              </Link>
-              <ul className="sidebar-submenu">
-                <li>
-                  <NavLink
-                    to="/office-location"
-                    className={(navData) =>
-                      navData.isActive ? "active-page" : ""
-                    }
-                  >
-                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
-                    Office
-                  </NavLink>
-                </li>
-              </ul>
+              </NavLink>
             </li>
           </ul>
         </div>
