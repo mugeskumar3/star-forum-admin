@@ -1,64 +1,19 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Link } from "react-router-dom";
 import Select from "react-select";
-import { Modal, Button } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 
-const Note121Layer = () => {
+const ChiefGuestReportLayer = () => {
   // Mock Data
-  const [reports, setReports] = useState(
+  const [guests, setGuests] = useState(
     Array.from({ length: 20 }).map((_, i) => ({
       id: i + 1,
-      dateTime: "2025-01-25T10:30:00", // Changed to ISO format for better parsing
-      memberName: [
-        "Rajesh Kumar",
-        "Priya Sharma",
-        "Amit Patel",
-        "Sneha Reddy",
-        "Vikram Singh",
-        "Ananya Iyer",
-        "Suresh Nair",
-        "Megha Gupta",
-        "Arjun Verma",
-        "Kavita Joshi",
-        "Rahul Deshmukh",
-        "Pooja Malhotra",
-        "Sandeep Bansal",
-        "Neha Choudhury",
-        "Vijay Ranganathan",
-        "Shilpa Kulkarni",
-        "Manish Tiwari",
-        "Divya Saxena",
-        "Pankaj अग्रवाल",
-        "Swati Bhattacharya",
-      ][i],
-      metWith: [
-        "John Doe",
-        "Jane Smith",
-        "Robert Brown",
-        "Emily Davis",
-        "Michael Wilson",
-        "Sarah Miller",
-        "David Moore",
-        "Jessica Taylor",
-        "Richard Anderson",
-        "Karen Thomas",
-        "Lisa Jackson",
-        "Kevin White",
-        "Brian Harris",
-        "Ashley Martin",
-        "Steven Thompson",
-        "Mary Garcia",
-        "Daniel Martinez",
-        "Patricia Robinson",
-        "Paul Clark",
-        "Jennifer Rodriguez",
-      ][i],
-      initiatedBy: i % 2 === 0 ? "Member" : "Met With",
-      location: ["Chennai", "Mumbai", "Delhi", "Bangalore", "Hyderabad"][i % 5],
-      topics: "Business Growth, Referrals, Networking",
-      selfie: "https://placehold.co/600x400",
+      chiefGuestName: `Chief Guest ${i + 1}`,
+      contactNumber: `98765432${i < 10 ? "0" + i : i}`,
+      businessCategory: `Category ${i + 1}`,
+      businessName: `Business ${i + 1}`,
+      sourceOfEvent: ["Social Media", "Referral", "Website", "Direct"][i % 4],
+      invitedBy: `Member ${i + 1}`,
       chapter: ["Star Chapter", "Galaxy Chapter"][i % 2],
       zone: ["Zone 1", "Zone 2"][i % 2],
       ed: ["ED 1", "ED 2"][i % 2],
@@ -69,10 +24,6 @@ const Note121Layer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Modal State
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
 
   // Filter States
   const [selectedChapter, setSelectedChapter] = useState(null);
@@ -116,29 +67,28 @@ const Note121Layer = () => {
   };
 
   // Filtering logic
-  const filteredReports = reports.filter((report) => {
+  const filteredGuests = guests.filter((guest) => {
     const matchesSearch =
-      report.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.metWith.toLowerCase().includes(searchTerm.toLowerCase());
+      guest.chiefGuestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.invitedBy.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesChapter = selectedChapter
-      ? report.chapter === selectedChapter.value
+      ? guest.chapter === selectedChapter.value
       : true;
-    const matchesZone = selectedZone
-      ? report.zone === selectedZone.value
-      : true;
-    const matchesEd = selectedEd ? report.ed === selectedEd.value : true;
-    const matchesRd = selectedRd ? report.rd === selectedRd.value : true;
+    const matchesZone = selectedZone ? guest.zone === selectedZone.value : true;
+    const matchesEd = selectedEd ? guest.ed === selectedEd.value : true;
+    const matchesRd = selectedRd ? guest.rd === selectedRd.value : true;
 
     return (
       matchesSearch && matchesChapter && matchesZone && matchesEd && matchesRd
     );
   });
 
-  const totalRecords = filteredReports.length;
+  const totalRecords = filteredGuests.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
-  const currentData = filteredReports.slice(
+  const currentData = filteredGuests.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
@@ -148,23 +98,6 @@ const Note121Layer = () => {
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
     setCurrentPage(1);
-  };
-
-  const handleViewImage = (image) => {
-    setSelectedImage(image);
-    setShowImageModal(true);
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-IN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    }).toUpperCase();
   };
 
   const handleClearFilters = () => {
@@ -180,14 +113,14 @@ const Note121Layer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
         <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
-          <h6 className="text-primary-600 pb-2 mb-0">121's Report</h6>
+          <h6 className="text-primary-600 pb-2 mb-0">Chief Guest's Report</h6>
           <div className="d-flex align-items-center flex-wrap gap-3">
             <form className="navbar-search">
               <input
                 type="text"
                 className="bg-base h-40-px w-auto"
                 name="search"
-                placeholder="Search Member or Met With"
+                placeholder="Search Chief Guest, Business or Member"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -257,42 +190,31 @@ const Note121Layer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">Date & Time</th>
-                <th scope="col">Member Name</th>
-                <th scope="col">Met with</th>
-                <th scope="col">Initiated by</th>
-                <th scope="col">Location</th>
-                <th scope="col">Topics</th>
-                <th scope="col" className="text-center">
-                  Selfi (View)
-                </th>
+                <th scope="col">Sl.No</th>
+                <th scope="col">Chief Guest Name</th>
+                <th scope="col">Contact Number</th>
+                <th scope="col">Business Category</th>
+                <th scope="col">Business Name</th>
+                <th scope="col">Source of event</th>
+                <th scope="col">Invited By</th>
               </tr>
             </thead>
             <tbody>
               {currentData.length > 0 ? (
-                currentData.map((report, index) => (
-                  <tr key={report.id}>
+                currentData.map((guest, index) => (
+                  <tr key={guest.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
-                    <td>{formatDate(report.dateTime)}</td>
-                    <td>{report.memberName}</td>
-                    <td>{report.metWith}</td>
-                    <td>{report.initiatedBy}</td>
-                    <td>{report.location}</td>
-                    <td>{report.topics}</td>
-                    <td className="text-center">
-                      <button
-                        onClick={() => handleViewImage(report.selfie)}
-                        className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
-                      >
-                        <Icon icon="majesticons:eye-line" /> View
-                      </button>
-                    </td>
+                    <td>{guest.chiefGuestName}</td>
+                    <td>{guest.contactNumber}</td>
+                    <td>{guest.businessCategory}</td>
+                    <td>{guest.businessName}</td>
+                    <td>{guest.sourceOfEvent}</td>
+                    <td>{guest.invitedBy}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center py-4">
+                  <td colSpan="7" className="text-center py-4">
                     No reports found.
                   </td>
                 </tr>
@@ -310,36 +232,8 @@ const Note121Layer = () => {
           totalRecords={totalRecords}
         />
       </div>
-
-      {/* Selfie Modal */}
-      <Modal
-        centered
-        show={showImageModal}
-        onHide={() => setShowImageModal(false)}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title className="text-lg fw-semibold">
-            View Selfie
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center p-0">
-          {selectedImage && (
-            <img
-              src={selectedImage}
-              alt="Selfie"
-              className="img-fluid w-100"
-              style={{ maxHeight: '80vh', objectFit: 'contain' }}
-            />
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowImageModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };
 
-export default Note121Layer;
+export default ChiefGuestReportLayer;

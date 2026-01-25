@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import BadgeApi from "../Api/BadgeApi"; // Imported BadgeApi
 import TablePagination from "./TablePagination";
+import { IMAGE_BASE_URL } from "../Config/Index";
 
 const BadgeListLayer = () => {
   const [data, setData] = useState([]);
@@ -19,7 +20,7 @@ const BadgeListLayer = () => {
   const loadData = async () => {
     const response = await BadgeApi.getBadge();
     if (response.status) {
-      setData(response.response.data); // Assuming response.data is the array
+      setData(response.response.data); 
     }
   };
 
@@ -115,9 +116,9 @@ const BadgeListLayer = () => {
                     <td>{item.name}</td>
                     <td>
                       <div className="w-40-px h-40-px rounded-circle overflow-hidden">
-                        {item.badgeImage?.imagePath ? (
+                        {item.badgeImage ? (
                           <img
-                            src={item.badgeImage.imagePath}
+                            src={`${IMAGE_BASE_URL}/${item.badgeImage.path}`}
                             alt="badge"
                             className="w-100 h-100 object-fit-cover"
                           />

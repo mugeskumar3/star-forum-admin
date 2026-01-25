@@ -1,123 +1,300 @@
-import React from 'react';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import './ThankYouSlipLayer.css';
+import React, { useState } from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import TablePagination from "./TablePagination";
 
 const VisitorsReportLayer = () => {
-    const visitorsData = {
-        chapters: [
-            {
-                id: 1,
-                name: 'ARAM Chapter',
-                count: 60,
-                members: [
-                    { id: 1, name: 'Logarajan S P', company: 'e-intellisafe & Security', category: 'CCTV & Security', count: 15 },
-                    { id: 2, name: 'Mathiarasu M', company: 'TECHMAXX ENGINEERING', category: 'Fire & Safety', count: 12 },
-                    { id: 3, name: 'Mano Neelamegam', company: 'WUDFE INC', category: 'Interior Designer', count: 18 },
-                    { id: 4, name: 'Kumar Raj S', company: 'Insure Tech Serv', category: 'General Insurance', count: 15 }
-                ]
-            },
-            {
-                id: 2,
-                name: 'Arni Chapter',
-                count: 77,
-                members: [
-                    { id: 5, name: 'Ramesh Kumar', company: 'Auto Solutions', category: 'Automobile', count: 25 },
-                    { id: 6, name: 'Priya Lakshmi', company: 'Fashion Trends', category: 'Retail', count: 30 },
-                    { id: 7, name: 'Vijay S', company: 'Tech Innovations', category: 'IT Services', count: 22 }
-                ]
-            },
-            {
-                id: 3,
-                name: 'Salem Chapter',
-                count: 45,
-                members: [
-                    { id: 8, name: 'Anbu Selvan', company: 'Textile Hub', category: 'Manufacturing', count: 25 },
-                    { id: 9, name: 'Revathi S', company: 'Organic Foods', category: 'FMCG', count: 20 }
-                ]
-            },
-            {
-                id: 4,
-                name: 'Coimbatore Chapter',
-                count: 112,
-                members: [
-                    { id: 11, name: 'Murugan G', company: 'Pump Works', category: 'Industry', count: 60 },
-                    { id: 12, name: 'Santhosh M', company: 'Jewels & Co', category: 'Retail', count: 52 }
-                ]
-            }
-        ]
-    };
+  const navigate = useNavigate();
+
+  // Mock Data
+  const [visitors, setVisitors] = useState(
+    Array.from({ length: 20 }).map((_, i) => ({
+      id: i + 1,
+      visitorName: `Visitor ${i + 1}`,
+      company: `Company ${i + 1}`,
+      category: `Category ${i + 1}`,
+      phone: `98765432${i < 10 ? "0" + i : i}`,
+      visitDate: "2025-01-25T10:30:00",
+      chapterName: ["Star Chapter", "Galaxy Chapter"][i % 2],
+      email: `visitor${i + 1}@example.com`,
+      invitedBy: `Member ${i + 1}`,
+      sourceOfEvent: ["Social Media", "Referral", "Website", "Direct"][i % 4],
+      status: ["Yes", "May be", "No"][i % 3],
+      zone: ["Zone 1", "Zone 2"][i % 2],
+      ed: ["ED 1", "ED 2"][i % 2],
+      rd: ["RD 1", "RD 2"][i % 2],
+    })),
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter States
+  const [selectedChapter, setSelectedChapter] = useState(null);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [selectedEd, setSelectedEd] = useState(null);
+  const [selectedRd, setSelectedRd] = useState(null);
+
+  // Options
+  const chapterOptions = [
+    { value: "Star Chapter", label: "Star Chapter" },
+    { value: "Galaxy Chapter", label: "Galaxy Chapter" },
+  ];
+  const zoneOptions = [
+    { value: "Zone 1", label: "Zone 1" },
+    { value: "Zone 2", label: "Zone 2" },
+  ];
+  const edOptions = [
+    { value: "ED 1", label: "ED 1" },
+    { value: "ED 2", label: "ED 2" },
+  ];
+  const rdOptions = [
+    { value: "RD 1", label: "RD 1" },
+    { value: "RD 2", label: "RD 2" },
+  ];
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "40px",
+      borderRadius: "8px",
+      border: "1px solid #dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        border: "1px solid #dee2e6",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 9999,
+    }),
+  };
+
+  // Filtering logic
+  const filteredVisitors = visitors.filter((visitor) => {
+    const matchesSearch =
+      visitor.visitorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      visitor.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      visitor.invitedBy.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesChapter = selectedChapter
+      ? visitor.chapterName === selectedChapter.value
+      : true;
+    const matchesZone = selectedZone
+      ? visitor.zone === selectedZone.value
+      : true;
+    const matchesEd = selectedEd ? visitor.ed === selectedEd.value : true;
+    const matchesRd = selectedRd ? visitor.rd === selectedRd.value : true;
 
     return (
-        <div className="d-flex flex-column gap-4">
-            {/* Header section */}
-            <div className="d-flex align-items-center justify-content-between mb-24 px-12">
-                <div className="d-flex align-items-center">
-                    <div className="bg-danger-600 radius-2" style={{ width: '4px', height: '32px' }}></div>
-                    <div className="ms-12">
-                        <h5 className="fw-bold mb-0" style={{ color: '#101828' }}>Visitors Report</h5>
-                        <p className="text-sm text-secondary-light mb-0">Chapter-wise visitor details</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Grid of Chapter Slips */}
-            <div className="row gy-3 px-12">
-                {visitorsData.chapters.map(chapter => (
-                    <div key={chapter.id} className="col-xl-3 col-lg-4 col-md-6 col-12">
-                        <div className="card h-100 p-0 radius-12 shadow-hover-sm transition-2 overflow-hidden border-0">
-                            {/* Chapter Header with Primary Gradient */}
-                            <div className="p-12 bg-primary-600 text-white">
-                                <div className="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 className="fw-bold mb-0 text-white text-truncate" style={{ maxWidth: '140px' }}>{chapter.name}</h6>
-                                    <div className="w-28-px h-28-px rounded-circle bg-white-20 d-flex align-items-center justify-content-center">
-                                        <Icon icon="solar:user-rounded-outline" fontSize={16} />
-                                    </div>
-                                </div>
-                                <div className="mt-8">
-                                    <span className="text-xxs opacity-75 text-uppercase spacing-1 d-block">Total Visitors</span>
-                                    <h5 className="fw-bolder mb-0 text-white">{chapter.count}</h5>
-                                </div>
-                            </div>
-
-                            {/* Members List */}
-                            <div className="card-body p-12 bg-base">
-                                <h6 className="text-xxs fw-bold text-secondary-light text-uppercase spacing-1 mb-12">Visitor Breakdown</h6>
-                                <div className="d-flex flex-column gap-2">
-                                    {chapter.members.map(member => (
-                                        <div
-                                            key={member.id}
-                                            className="p-10 radius-8 border transition-2 hover-bg-neutral-50"
-                                            style={{ borderColor: '#f5f5f5' }}
-                                        >
-                                            <div className="d-flex justify-content-between align-items-start gap-1">
-                                                <div className="flex-grow-1 overflow-hidden">
-                                                    <h6 className="text-sm fw-bold mb-0 text-dark text-truncate">{member.name}</h6>
-                                                    <span className="text-xxs text-secondary-light d-block text-truncate">
-                                                        {member.category}
-                                                    </span>
-                                                </div>
-                                                <div className="text-end">
-                                                    <span className="text-primary-600 fw-bold text-sm d-block">{member.count}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card Footer Action */}
-                            <div className="card-footer bg-neutral-50 border-top-0 p-8 text-center">
-                                <button type="button" className="btn p-0 text-primary-600 fw-bold text-xs hover-text-primary-700 d-flex align-items-center gap-1 mx-auto">
-                                    View Full List
-                                    <Icon icon="solar:arrow-right-outline" fontSize={12} />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+      matchesSearch && matchesChapter && matchesZone && matchesEd && matchesRd
     );
+  });
+
+  const totalRecords = filteredVisitors.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredVisitors.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
+  );
+
+  const handlePageChange = (page) => setCurrentPage(page);
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const handleClearFilters = () => {
+    setSelectedChapter(null);
+    setSelectedZone(null);
+    setSelectedEd(null);
+    setSelectedRd(null);
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
+  return (
+    <div className="card h-100 p-0 radius-12">
+      <div className="card-header border-bottom bg-base py-16 px-24">
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+          <h6 className="text-primary-600 pb-2 mb-0">Visitor's Report</h6>
+          <div className="d-flex align-items-center flex-wrap gap-3">
+            <form className="navbar-search">
+              <input
+                type="text"
+                className="bg-base h-40-px w-auto"
+                name="search"
+                placeholder="Search Visitor, Company or Member"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Icon icon="ion:search-outline" className="icon" />
+            </form>
+            <button
+              type="button"
+              onClick={() => navigate('/visitors-form')}
+              className="btn btn-primary-600 d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap"
+            >
+              <Icon icon="solar:add-circle-bold-duotone" fontSize={20} />
+              Add Visitor
+            </button>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="row g-3 align-items-end">
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">Chapter</label>
+            <Select
+              options={chapterOptions}
+              value={selectedChapter}
+              onChange={setSelectedChapter}
+              placeholder="Select Chapter"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">Zone</label>
+            <Select
+              options={zoneOptions}
+              value={selectedZone}
+              onChange={setSelectedZone}
+              placeholder="Select Zone"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">ED</label>
+            <Select
+              options={edOptions}
+              value={selectedEd}
+              onChange={setSelectedEd}
+              placeholder="Select ED"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">RD</label>
+            <Select
+              options={rdOptions}
+              value={selectedRd}
+              onChange={setSelectedRd}
+              placeholder="Select RD"
+              styles={customStyles} y
+              isClearable
+            />
+          </div>
+          <div className="col-xl-auto col-md-4 col-sm-6 d-flex align-items-end">
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="btn btn-outline-danger d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap w-100"
+              title="Clear All Filters"
+            >
+              <Icon icon="solar:filter-remove-bold-duotone" fontSize={20} />
+              Clear Filter
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card-body p-24">
+        <div className="table-responsive scroll-sm">
+          <table className="table bordered-table sm-table mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Sl.No</th>
+                <th scope="col">Visitors Name</th>
+                <th scope="col">Contact Number</th>
+                <th scope="col">Business Category</th>
+                <th scope="col">Source of event</th>
+                <th scope="col">Invited By</th>
+                <th scope="col">Status</th>
+                <th scope="col" className="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.length > 0 ? (
+                currentData.map((visitor, index) => (
+                  <tr key={visitor.id}>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{visitor.visitorName}</td>
+                    <td>{visitor.phone}</td>
+                    <td>{visitor.category}</td>
+                    <td>{visitor.sourceOfEvent}</td>
+                    <td>{visitor.invitedBy}</td>
+                    <td>
+                      <span
+                        className={`badge radius-4 px-10 py-4 text-sm ${visitor.status === "Yes"
+                          ? "bg-success-focus text-success-main"
+                          : visitor.status === "May be"
+                            ? "bg-warning-focus text-warning-main"
+                            : "bg-danger-focus text-danger-main"
+                          }`}
+                      >
+                        {visitor.status}
+                      </span>
+                    </td>
+                    <td className="text-center">
+                      <div className="d-flex justify-content-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/visitors-form/view/${visitor.id}`)}
+                          className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
+                          title="View Details"
+                        >
+                          <Icon icon="majesticons:eye-line" className="icon text-xl" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/visitors-form/edit/${visitor.id}`)}
+                          className="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
+                          title="Edit Details"
+                        >
+                          <Icon icon="lucide:edit" className="icon text-xl" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center py-4">
+                    No visitors found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default VisitorsReportLayer;

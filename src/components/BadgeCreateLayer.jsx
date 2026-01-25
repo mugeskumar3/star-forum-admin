@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import ImageUploadApi from "../Api/ImageUploadApi";
 import BadgeApi from "../Api/BadgeApi";
 import ShowNotifications from "../helper/ShowNotifications";
+import { IMAGE_BASE_URL } from "../Config/Index";
 
 const BadgeCreateLayer = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const BadgeCreateLayer = () => {
   const [preview, setPreview] = useState(null);
   const [imagePath, setImagePath] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [type, setType] = useState("");
   const [name, setName] = useState("");
@@ -28,10 +30,11 @@ const BadgeCreateLayer = () => {
       const data = response.response.data;
       setName(data.name);
       setType(data.type);
-      // Accessing nested image path
-      const imgPath = data.badgeImage?.imagePath || "";
-      setImagePath(imgPath);
-      setPreview(imgPath);
+
+      if (data.badgeImage && data.badgeImage.path) {
+        setImagePath(data.badgeImage.path);
+        setPreview(`${IMAGE_BASE_URL}/${data.badgeImage.path}`);
+      }
     }
   };
 
@@ -63,11 +66,33 @@ const BadgeCreateLayer = () => {
     }
   };
 
+  const validate = () => {
+    let tempErrors = {};
+    let isValid = true;
+
+    if (!type) {
+      tempErrors.type = "Type is required";
+      isValid = false;
+    }
+
+    if (!name.trim()) {
+      tempErrors.name = "Badge Name is required";
+      isValid = false;
+    }
+
+    if (!imagePath && !selectedFile) {
+      tempErrors.image = "Badge Image is required";
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!imagePath && !selectedFile) {
-      ShowNotifications.showAlertNotification("Please upload an image.", false);
+    if (!validate()) {
       return;
     }
 
@@ -85,7 +110,7 @@ const BadgeCreateLayer = () => {
         });
 
         if (uploadResponse.status) {
-          finalImagePath = uploadResponse.response.data.path;
+          finalImagePath = uploadResponse.response.data;
         } else {
           setIsUploading(false);
           return;
@@ -99,7 +124,7 @@ const BadgeCreateLayer = () => {
     const badgeData = {
       type,
       name,
-      image: finalImagePath,
+      badgeImage: finalImagePath,
     };
 
     let response;
@@ -132,9 +157,11 @@ const BadgeCreateLayer = () => {
               </label>
               <select
                 className="form-select"
-                required
                 value={type}
-                onChange={(e) => setType(e.target.value)}
+                onChange={(e) => {
+                  setType(e.target.value);
+                  setErrors({ ...errors, type: "" });
+                }}
               >
                 <option value="" disabled>
                   Select Type
@@ -142,6 +169,9 @@ const BadgeCreateLayer = () => {
                 <option value="Chapter">Chapter</option>
                 <option value="Member">Member</option>
               </select>
+              {errors.type && (
+                <p className="text-danger-600 text-sm mt-1">{errors.type}</p>
+              )}
             </div>
 
             <div className="col-12">
@@ -152,10 +182,15 @@ const BadgeCreateLayer = () => {
                 type="text"
                 className="form-control"
                 placeholder="Enter Badge Name"
-                required
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setErrors({ ...errors, name: "" });
+                }}
               />
+              {errors.name && (
+                <p className="text-danger-600 text-sm mt-1">{errors.name}</p>
+              )}
             </div>
 
             <div className="col-12">
@@ -169,9 +204,16 @@ const BadgeCreateLayer = () => {
                     type="file"
                     className="form-control"
                     accept="image/*"
-                    onChange={handleFileChange}
-                    required={!id}
+                    onChange={(e) => {
+                      handleFileChange(e);
+                      setErrors({ ...errors, image: "" });
+                    }}
                   />
+                  {errors.image && (
+                    <p className="text-danger-600 text-sm mt-1">
+                      {errors.image}
+                    </p>
+                  )}
                 </div>
               )}
 
