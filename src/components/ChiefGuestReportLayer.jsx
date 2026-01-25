@@ -100,6 +100,15 @@ const ChiefGuestReportLayer = () => {
     setCurrentPage(1);
   };
 
+  const handleClearFilters = () => {
+    setSelectedChapter(null);
+    setSelectedZone(null);
+    setSelectedEd(null);
+    setSelectedRd(null);
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -121,46 +130,57 @@ const ChiefGuestReportLayer = () => {
         </div>
 
         {/* Filters */}
-        <div className="row g-3">
-          <div className="col-md-3">
+        <div className="row g-3 align-items-end">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={chapterOptions}
               value={selectedChapter}
               onChange={setSelectedChapter}
-              placeholder="Select Chapter"
+              placeholder="Chapter"
               styles={customStyles}
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={zoneOptions}
               value={selectedZone}
               onChange={setSelectedZone}
-              placeholder="Select Zone"
+              placeholder="Zone"
               styles={customStyles}
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={edOptions}
               value={selectedEd}
               onChange={setSelectedEd}
-              placeholder="Select ED"
+              placeholder="ED"
               styles={customStyles}
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
             <Select
               options={rdOptions}
               value={selectedRd}
               onChange={setSelectedRd}
-              placeholder="Select RD"
+              placeholder="RD"
               styles={customStyles}
               isClearable
             />
+          </div>
+          <div className="col-xl-auto col-md-4 col-sm-6 d-flex align-items-end">
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="btn btn-outline-danger d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap w-100"
+              title="Clear All Filters"
+            >
+              <Icon icon="solar:filter-remove-bold-duotone" fontSize={20} />
+              Clear Filter
+            </button>
           </div>
         </div>
       </div>

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import TablePagination from "./TablePagination";
 
 const VisitorsReportLayer = () => {
+  const navigate = useNavigate();
+
   // Mock Data
   const [visitors, setVisitors] = useState(
     Array.from({ length: 20 }).map((_, i) => ({
@@ -16,6 +19,8 @@ const VisitorsReportLayer = () => {
       chapterName: ["Star Chapter", "Galaxy Chapter"][i % 2],
       email: `visitor${i + 1}@example.com`,
       invitedBy: `Member ${i + 1}`,
+      sourceOfEvent: ["Social Media", "Referral", "Website", "Direct"][i % 4],
+      status: ["Yes", "May be", "No"][i % 3],
       zone: ["Zone 1", "Zone 2"][i % 2],
       ed: ["ED 1", "ED 2"][i % 2],
       rd: ["RD 1", "RD 2"][i % 2],
@@ -112,6 +117,15 @@ const VisitorsReportLayer = () => {
     });
   };
 
+  const handleClearFilters = () => {
+    setSelectedChapter(null);
+    setSelectedZone(null);
+    setSelectedEd(null);
+    setSelectedRd(null);
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -129,12 +143,21 @@ const VisitorsReportLayer = () => {
               />
               <Icon icon="ion:search-outline" className="icon" />
             </form>
+            <button
+              type="button"
+              onClick={() => navigate('/visitors-form')}
+              className="btn btn-primary-600 d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap"
+            >
+              <Icon icon="solar:add-circle-bold-duotone" fontSize={20} />
+              Add Visitor
+            </button>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="row g-3">
-          <div className="col-md-3">
+        <div className="row g-3 align-items-end">
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">Chapter</label>
             <Select
               options={chapterOptions}
               value={selectedChapter}
@@ -144,7 +167,8 @@ const VisitorsReportLayer = () => {
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">Zone</label>
             <Select
               options={zoneOptions}
               value={selectedZone}
@@ -154,7 +178,8 @@ const VisitorsReportLayer = () => {
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">ED</label>
             <Select
               options={edOptions}
               value={selectedEd}
@@ -164,15 +189,27 @@ const VisitorsReportLayer = () => {
               isClearable
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-xl col-md-4 col-sm-6">
+            <label className="form-label fw-bold text-secondary-light">RD</label>
             <Select
               options={rdOptions}
               value={selectedRd}
               onChange={setSelectedRd}
               placeholder="Select RD"
-              styles={customStyles}
+              styles={customStyles} y
               isClearable
             />
+          </div>
+          <div className="col-xl-auto col-md-4 col-sm-6 d-flex align-items-end">
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="btn btn-outline-danger d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap w-100"
+              title="Clear All Filters"
+            >
+              <Icon icon="solar:filter-remove-bold-duotone" fontSize={20} />
+              Clear Filter
+            </button>
           </div>
         </div>
       </div>
@@ -182,15 +219,14 @@ const VisitorsReportLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">S.No</th>
-                <th scope="col">Visitor Name</th>
-                <th scope="col">Company</th>
-                <th scope="col">Category</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Visit Date</th>
-                <th scope="col">Chapter Name</th>
-                <th scope="col">Email</th>
+                <th scope="col">Sl.No</th>
+                <th scope="col">Visitors Name</th>
+                <th scope="col">Contact Number</th>
+                <th scope="col">Business Category</th>
+                <th scope="col">Source of event</th>
                 <th scope="col">Invited By</th>
+                <th scope="col">Status</th>
+                <th scope="col" className="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -199,18 +235,47 @@ const VisitorsReportLayer = () => {
                   <tr key={visitor.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>{visitor.visitorName}</td>
-                    <td>{visitor.company}</td>
-                    <td>{visitor.category}</td>
                     <td>{visitor.phone}</td>
-                    <td>{formatDate(visitor.visitDate)}</td>
-                    <td>{visitor.chapterName}</td>
-                    <td>{visitor.email}</td>
+                    <td>{visitor.category}</td>
+                    <td>{visitor.sourceOfEvent}</td>
                     <td>{visitor.invitedBy}</td>
+                    <td>
+                      <span
+                        className={`badge radius-4 px-10 py-4 text-sm ${visitor.status === "Yes"
+                          ? "bg-success-focus text-success-main"
+                          : visitor.status === "May be"
+                            ? "bg-warning-focus text-warning-main"
+                            : "bg-danger-focus text-danger-main"
+                          }`}
+                      >
+                        {visitor.status}
+                      </span>
+                    </td>
+                    <td className="text-center">
+                      <div className="d-flex justify-content-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/visitors-form/view/${visitor.id}`)}
+                          className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
+                          title="View Details"
+                        >
+                          <Icon icon="majesticons:eye-line" className="icon text-xl" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/visitors-form/edit/${visitor.id}`)}
+                          className="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
+                          title="Edit Details"
+                        >
+                          <Icon icon="lucide:edit" className="icon text-xl" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" className="text-center py-4">
+                  <td colSpan="8" className="text-center py-4">
                     No visitors found.
                   </td>
                 </tr>
