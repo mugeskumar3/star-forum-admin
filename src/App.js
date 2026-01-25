@@ -185,11 +185,7 @@ function App() {
             path="/present-update"
             element={<FormPage title="Present Update" />}
           />
-          <Route
-            exact
-            path="/roles-permissions"
-            element={<FormPage title="Roles & Permissions" />}
-          />
+
           <Route
             exact
             path="/office-location"
