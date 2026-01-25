@@ -8,6 +8,8 @@ const TrainingFormLayer = () => {
   const navigate = useNavigate();
   const isEditMode = !!id;
 
+  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     chapters: [],
     title: "",
@@ -75,14 +77,59 @@ const TrainingFormLayer = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSelectChange = (selectedOption, actionMeta) => {
     setFormData((prev) => ({ ...prev, [actionMeta.name]: selectedOption }));
+    // Clear error on selection
+    if (errors[actionMeta.name]) {
+      setErrors((prev) => ({ ...prev, [actionMeta.name]: "" }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.chapters || formData.chapters.length === 0) {
+      newErrors.chapters = "Please select at least one chapter.";
+    }
+    if (!formData.title.trim()) {
+      newErrors.title = "Training title is required.";
+    }
+    if (!formData.trainers || formData.trainers.length === 0) {
+      newErrors.trainers = "Please select at least one trainer.";
+    }
+    if (!formData.duration.trim()) {
+      newErrors.duration = "Duration is required.";
+    }
+    if (!formData.trainingDateTime) {
+      newErrors.trainingDateTime = "Training date & time is required.";
+    }
+    if (!formData.lastDateForApply) {
+      newErrors.lastDateForApply = "Last date for apply is required.";
+    }
+    if (!formData.mode) {
+      newErrors.mode = "Please select a mode.";
+    }
+    if (!formData.location.trim()) {
+      newErrors.location = "Location/Link is required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     console.log("Training Form Submitted:", formData);
     navigate("/training-list");
   };
@@ -145,8 +192,10 @@ const TrainingFormLayer = () => {
                 onChange={handleSelectChange}
                 styles={customStyles}
                 placeholder="Select Chapters..."
-                required={!isEditMode} // Basic required validation logic
               />
+              {errors.chapters && (
+                <small className="text-danger">{errors.chapters}</small>
+              )}
             </div>
 
             {/* Training Title */}
@@ -161,8 +210,10 @@ const TrainingFormLayer = () => {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="Enter Training Title"
-                required
               />
+              {errors.title && (
+                <small className="text-danger">{errors.title}</small>
+              )}
             </div>
 
             {/* Trainer Name - Multi Select */}
@@ -179,6 +230,9 @@ const TrainingFormLayer = () => {
                 styles={customStyles}
                 placeholder="Select Trainers..."
               />
+              {errors.trainers && (
+                <small className="text-danger">{errors.trainers}</small>
+              )}
             </div>
 
             {/* Duration */}
@@ -193,8 +247,10 @@ const TrainingFormLayer = () => {
                 value={formData.duration}
                 onChange={handleChange}
                 placeholder="e.g. 2 Hours"
-                required
               />
+              {errors.duration && (
+                <small className="text-danger">{errors.duration}</small>
+              )}
             </div>
 
             {/* Training Date & Time */}
@@ -210,6 +266,9 @@ const TrainingFormLayer = () => {
                 onChange={handleChange}
                 required
               />
+              {errors.trainingDateTime && (
+                <small className="text-danger">{errors.trainingDateTime}</small>
+              )}
             </div>
 
             {/* Last Date For Apply */}
@@ -223,8 +282,10 @@ const TrainingFormLayer = () => {
                 name="lastDateForApply"
                 value={formData.lastDateForApply}
                 onChange={handleChange}
-                required
               />
+              {errors.lastDateForApply && (
+                <small className="text-danger">{errors.lastDateForApply}</small>
+              )}
             </div>
 
             {/* Mode */}
@@ -240,6 +301,9 @@ const TrainingFormLayer = () => {
                 styles={customStyles}
                 placeholder="Select Mode"
               />
+              {errors.mode && (
+                <small className="text-danger">{errors.mode}</small>
+              )}
             </div>
 
             {/* Location / Meeting Link */}
@@ -254,8 +318,10 @@ const TrainingFormLayer = () => {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="Enter Location or Link"
-                required
               />
+              {errors.location && (
+                <small className="text-danger">{errors.location}</small>
+              )}
             </div>
 
             {/* Max Allowed */}

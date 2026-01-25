@@ -12,11 +12,13 @@ const ShopCreateLayer = () => {
     image: null,
   });
 
+  const [errors, setErrors] = useState({});
   const [previewImage, setPreviewImage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSelectChange = (selectedOption, { name }) => {
@@ -24,6 +26,7 @@ const ShopCreateLayer = () => {
       ...prev,
       [name]: selectedOption ? selectedOption.value : "",
     }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleImageChange = (e) => {
@@ -35,11 +38,38 @@ const ShopCreateLayer = () => {
         setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
+      setErrors((prev) => ({ ...prev, image: "" }));
     }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({ ...prev, image: null }));
+    setPreviewImage(null);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.productName.trim()) {
+      newErrors.productName = "Product name is required.";
+    }
+    if (!formData.price) {
+      newErrors.price = "Price is required.";
+    }
+    if (!formData.category) {
+      newErrors.category = "Category is required.";
+    }
+    if (!formData.image) {
+      newErrors.image = "Product Image is required.";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     console.log("Form Submitted:", formData);
     // Static UI only, so no API call
   };
@@ -96,8 +126,10 @@ const ShopCreateLayer = () => {
                 value={formData.productName}
                 onChange={handleChange}
                 placeholder="Enter product name"
-                required
               />
+              {errors.productName && (
+                <small className="text-danger">{errors.productName}</small>
+              )}
             </div>
 
             {/* Price */}
@@ -116,9 +148,11 @@ const ShopCreateLayer = () => {
                   value={formData.price}
                   onChange={handleChange}
                   placeholder="0.00"
-                  required
                 />
               </div>
+              {errors.price && (
+                <small className="text-danger">{errors.price}</small>
+              )}
             </div>
 
             {/* Category */}
@@ -134,8 +168,10 @@ const ShopCreateLayer = () => {
                 styles={customStyles}
                 placeholder="Select Category"
                 isClearable={false}
-                required
               />
+              {errors.category && (
+                <small className="text-danger">{errors.category}</small>
+              )}
             </div>
 
             {/* Image Upload */}
@@ -143,20 +179,55 @@ const ShopCreateLayer = () => {
               <label className="form-label fw-semibold">
                 Product Image <span className="text-danger">*</span>
               </label>
-              <input
-                type="file"
-                className="form-control radius-8"
-                accept="image/*"
-                onChange={handleImageChange}
-                required
-              />
-              {previewImage && (
-                <div className="mt-3">
-                  <img
-                    src={previewImage}
-                    alt="Preview"
-                    className="w-120-px h-120-px object-fit-cover radius-8 border"
+
+              {!previewImage && (
+                <div className="position-relative">
+                  <input
+                    type="file"
+                    className="form-control radius-8"
+                    accept="image/*"
+                    onChange={handleImageChange}
                   />
+                  {errors.image && (
+                    <small className="text-danger">{errors.image}</small>
+                  )}
+                </div>
+              )}
+
+              {previewImage && (
+                <div className="d-flex align-items-center justify-content-between p-3 border rounded bg-light-600">
+                  <div className="d-flex align-items-center gap-3">
+                    <div className="w-100-px h-100-px rounded-8 overflow-hidden border">
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="w-100 h-100 object-fit-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-primary-600 mb-0 fw-medium">
+                        New Image Selected
+                      </p>
+                      <p
+                        className="text-secondary-400 text-sm mb-0 text-truncate"
+                        style={{ maxWidth: "200px" }}
+                      >
+                        {formData.image?.name}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-icon btn-danger-100 text-danger-600 rounded-circle"
+                    onClick={handleRemoveImage}
+                    title="Delete Image"
+                  >
+                    <Icon
+                      icon="mingcute:delete-2-line"
+                      width="24"
+                      height="24"
+                    />
+                  </button>
                 </div>
               )}
             </div>

@@ -9,30 +9,57 @@ const UserRoleFormLayer = () => {
 
   const [formData, setFormData] = useState({
     roleName: "",
-    description: "",
-    status: "Active",
     permissions: [],
   });
 
-  // Dummy Permissions List
-  const availableModules = [
+  // Features List matching Sidebar
+  const features = [
     { id: "dashboard", label: "Dashboard" },
-    { id: "chapter_management", label: "Chapter Management" },
-    { id: "member_management", label: "Member Management" },
-    { id: "training_module", label: "Training Module" },
-    { id: "user_roles", label: "User Roles" },
-    { id: "reports", label: "Reports" },
-    { id: "settings", label: "Settings" },
+    { id: "roles_permissions", label: "Roles & Permissions" },
+    { id: "admin_registration", label: "Admin Registration" },
+    { id: "organisation", label: "Organisation" },
+    { id: "badge_creation", label: "Badge Creation" },
+    { id: "award", label: "Award" },
+    { id: "business_category", label: "Business Category" },
+    { id: "zone_creation", label: "Zone Creation" },
+    { id: "chapter_creation", label: "Chapter Creation" },
+    { id: "members_registration", label: "Members Registration" },
+    { id: "meeting_creation", label: "Meeting Creation" },
+    { id: "attendance_list", label: "Attendance List" },
+    { id: "general_update", label: "General Update" },
+    { id: "community_update", label: "Community Update" },
+    { id: "star_update", label: "Star Update" },
+    { id: "points", label: "Points" },
+    { id: "training", label: "Training" },
+    { id: "shop_category", label: "Shop Category" },
+    { id: "shop_product", label: "Shop Product" },
+    { id: "shop_order", label: "Shop Order" },
+    { id: "log_report", label: "Log Report" },
+    { id: "renewal_report", label: "Renewal Report" },
+    { id: "chapter_report", label: "Chapter Report" },
+    { id: "report_121", label: "121's Report" },
+    { id: "report_referral", label: "Referral's Report" },
+    { id: "report_visitor", label: "Visitor's Report" },
+    { id: "report_chief_guest", label: "Chief Guest's Report" },
+    { id: "thank_you_slip", label: "Thank you Slip" },
+    { id: "power_date", label: "Power Date" },
+    { id: "testimonials", label: "Testimonials" },
+    { id: "chief_guest_list", label: "Chief Guest List" },
+    { id: "locations", label: "Locations" },
   ];
 
-  // Dummy Data for Edit Mode Simulation
+  const actions = [
+    { id: "view", label: "View" },
+    { id: "add", label: "Add" },
+    { id: "edit", label: "Edit" },
+    { id: "delete", label: "Delete" },
+  ];
+
   useEffect(() => {
     if (isEditMode) {
       setFormData({
         roleName: "Chapter Admin",
-        description: "Manage specific chapter operations and members.",
-        status: "Active",
-        permissions: ["chapter_management", "member_management", "reports"],
+        permissions: ["dashboard_view", "chapters_view", "chapters_edit"],
       });
     }
   }, [isEditMode]);
@@ -49,17 +76,44 @@ const UserRoleFormLayer = () => {
     }));
   };
 
-  const handlePermissionChange = (e) => {
-    const { value, checked } = e.target;
+  const togglePermission = (featureId, actionId) => {
+    const permissionKey = `${featureId}_${actionId}`;
     setFormData((prev) => {
-      if (checked) {
-        return { ...prev, permissions: [...prev.permissions, value] };
+      const hasPermission = prev.permissions.includes(permissionKey);
+      let newPermissions;
+      if (hasPermission) {
+        newPermissions = prev.permissions.filter((p) => p !== permissionKey);
       } else {
-        return {
-          ...prev,
-          permissions: prev.permissions.filter((perm) => perm !== value),
-        };
+        newPermissions = [...prev.permissions, permissionKey];
       }
+      return { ...prev, permissions: newPermissions };
+    });
+  };
+
+  const toggleColumn = (actionId) => {
+    const allFeaturesSelected = features.every((feature) =>
+      formData.permissions.includes(`${feature.id}_${actionId}`),
+    );
+
+    setFormData((prev) => {
+      let newPermissions = [...prev.permissions];
+      if (allFeaturesSelected) {
+        // Uncheck all for this column
+        features.forEach((feature) => {
+          newPermissions = newPermissions.filter(
+            (p) => p !== `${feature.id}_${actionId}`,
+          );
+        });
+      } else {
+        // Check all for this column
+        features.forEach((feature) => {
+          const key = `${feature.id}_${actionId}`;
+          if (!newPermissions.includes(key)) {
+            newPermissions.push(key);
+          }
+        });
+      }
+      return { ...prev, permissions: newPermissions };
     });
   };
 
@@ -108,9 +162,8 @@ const UserRoleFormLayer = () => {
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
-          <div className="row gy-3">
-            {/* Role Name */}
-            <div className="col-12">
+          <div className="row gy-3 my-4">
+            <div className="col-md-6 mb-4">
               <label className="form-label fw-semibold">
                 Role Name <span className="text-danger">*</span>
               </label>
@@ -124,62 +177,82 @@ const UserRoleFormLayer = () => {
                 required
               />
             </div>
-
-            {/* Description */}
-            <div className="col-12">
-              <label className="form-label fw-semibold">Description</label>
-              <textarea
-                className="form-control radius-8"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows="3"
-                placeholder="Enter role description..."
-              ></textarea>
-            </div>
-
-            {/* Status */}
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Status <span className="text-danger">*</span>
-              </label>
-              <Select
-                name="status"
-                options={statusOptions}
-                value={getSelectedOption(statusOptions, formData.status)}
-                onChange={handleSelectChange}
-                styles={customStyles}
-                isClearable={false}
-                searchable={false}
-              />
-            </div>
-
-            {/* Permissions */}
-            <div className="col-12">
-              <label className="form-label fw-semibold mb-3">
-                Permissions (Module Access)
-              </label>
-              <div className="row g-3">
-                {availableModules.map((module) => (
-                  <div className="col-sm-6 col-md-4 col-lg-3" key={module.id}>
-                    <div className="form-check d-flex align-items-center gap-2">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value={module.id}
-                        id={`perm-${module.id}`}
-                        checked={formData.permissions.includes(module.id)}
-                        onChange={handlePermissionChange}
-                      />
-                      <label
-                        className="form-check-label text-secondary-light fw-medium cursor-pointer"
-                        htmlFor={`perm-${module.id}`}
+            {/* Permissions Matrix */}
+            <div className="col-12 mt-4">
+              <h6 className="fw-semibold mb-3">Role Permissions</h6>
+              <div className="table-responsive rounded-8 border border-neutral-200">
+                <table className="table bordered-table sm-table mb-0">
+                  <thead
+                    className="border-bottom border-neutral-200"
+                    style={{ backgroundColor: "#C4161C" }}
+                  >
+                    <tr>
+                      <th
+                        scope="col"
+                        className="fw-semibold text-white px-24 py-16"
                       >
-                        {module.label}
-                      </label>
-                    </div>
-                  </div>
-                ))}
+                        Feature
+                      </th>
+                      {actions.map((action) => (
+                        <th
+                          key={action.id}
+                          scope="col"
+                          className="fw-semibold text-white px-24 py-16"
+                        >
+                          <div className="d-flex align-items-center gap-2">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id={`col-${action.id}`}
+                              onChange={() => toggleColumn(action.id)}
+                              checked={features.every((feature) =>
+                                formData.permissions.includes(
+                                  `${feature.id}_${action.id}`,
+                                ),
+                              )}
+                            />
+                            <label
+                              className="cursor-pointer"
+                              htmlFor={`col-${action.id}`}
+                            >
+                              {action.label}
+                            </label>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {features.map((feature, index) => (
+                      <tr
+                        key={feature.id}
+                        className={
+                          index !== features.length - 1
+                            ? "border-bottom border-neutral-200"
+                            : ""
+                        }
+                      >
+                        <td className="px-24 py-12 fw-medium text-secondary-light">
+                          {feature.label}
+                        </td>
+                        {actions.map((action) => (
+                          <td key={action.id} className="px-24 py-12">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              checked={formData.permissions.includes(
+                                `${feature.id}_${action.id}`,
+                              )}
+                              onChange={() =>
+                                togglePermission(feature.id, action.id)
+                              }
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

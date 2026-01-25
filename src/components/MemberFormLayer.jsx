@@ -729,7 +729,7 @@ const MemberFormLayer = () => {
           <div className="row gy-4 mb-24">
             <div className="col-12">
               <h6 className="text-primary-600 pb-2 mb-3">
-                Add Training Report
+               Training Report
               </h6>
               <div className="row gy-3 gx-4 align-items-center">
                 <div className="col-md-6">
@@ -789,14 +789,6 @@ const MemberFormLayer = () => {
                       </label>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-12 text-end">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary btn-sm radius-8"
-                  >
-                    Save Training
-                  </button>
                 </div>
               </div>
             </div>

@@ -5,14 +5,37 @@ import TablePagination from "./TablePagination";
 
 const UserRoleListLayer = () => {
   // Static Dummy Data for User Roles
-  const [roles, setRoles] = useState(Array.from({ length: 20 }).map((_, i) => ({
-    id: `ROLE-0${i + 101}`,
-    name: ['Super Admin', 'Chapter Admin', 'Member', 'Guest', 'Regional Director', 'Executive Director', 'State Coordinator', 'Event Lead', 'Finance Admin', 'Membership Head', 'Chapter Lead', 'Zone Manager', 'Star Member', 'Elite Member', 'Titan Member', 'Warrior Member', 'King Member', 'Fort Admin', 'Coast Lead', 'Port Admin'][i],
-    description: `Full access to Section ${i + 1} modules and settings. Managed by ${['Rajesh', 'Priya', 'Amit', 'Sneha', 'Vikram', 'Ananya', 'Suresh', 'Megha', 'Arjun', 'Kavita', 'Rahul', 'Pooja', 'Sandeep', 'Neha', 'Vijay', 'Shilpa', 'Manish', 'Divya', 'Pankaj', 'Swati'][i]}.`,
-    activeUsers: Math.floor(Math.random() * 500),
-    createdDate: "01 Jan 2025",
-    status: i % 2 === 0 ? "Active" : "Inactive",
-  })));
+  const [roles, setRoles] = useState(
+    Array.from({ length: 20 }).map((_, i) => ({
+      id: `ROLE-0${i + 101}`,
+      name: [
+        "Super Admin",
+        "Chapter Admin",
+        "Member",
+        "Guest",
+        "Regional Director",
+        "Executive Director",
+        "State Coordinator",
+        "Event Lead",
+        "Finance Admin",
+        "Membership Head",
+        "Chapter Lead",
+        "Zone Manager",
+        "Star Member",
+        "Elite Member",
+        "Titan Member",
+        "Warrior Member",
+        "King Member",
+        "Fort Admin",
+        "Coast Lead",
+        "Port Admin",
+      ][i],
+      description: `Full access to Section ${i + 1} modules and settings. Managed by ${["Rajesh", "Priya", "Amit", "Sneha", "Vikram", "Ananya", "Suresh", "Megha", "Arjun", "Kavita", "Rahul", "Pooja", "Sandeep", "Neha", "Vijay", "Shilpa", "Manish", "Divya", "Pankaj", "Swati"][i]}.`,
+      activeUsers: Math.floor(Math.random() * 500),
+      createdDate: "01 Jan 2025",
+      status: i % 2 === 0 ? "Active" : "Inactive",
+    })),
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -21,7 +44,7 @@ const UserRoleListLayer = () => {
   const filteredRoles = roles.filter(
     (role) =>
       role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      role.description.toLowerCase().includes(searchTerm.toLowerCase())
+      role.description.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const totalRecords = filteredRoles.length;
@@ -29,7 +52,7 @@ const UserRoleListLayer = () => {
 
   const currentData = filteredRoles.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   const handlePageChange = (page) => {
@@ -62,7 +85,7 @@ const UserRoleListLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
-          <h6 className="text-primary-600 pb-2 mb-0">User Roles</h6>
+          <h6 className="text-primary-600 pb-2 mb-0">Roles & Permissions</h6>
         </div>
         <div className="d-flex align-items-center flex-wrap gap-3">
           <form className="navbar-search">
@@ -97,15 +120,33 @@ const UserRoleListLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col" style={{ color: "black" }}>Role ID</th>
-                <th scope="col" style={{ color: "black" }}>Role Name</th>
-                <th scope="col" style={{ color: "black" }}>Description</th>
-                <th scope="col" className="text-center" style={{ color: "black" }}>
+                <th scope="col" style={{ color: "black" }}>
+                  Role ID
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Role Name
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Description
+                </th>
+                <th
+                  scope="col"
+                  className="text-center"
+                  style={{ color: "black" }}
+                >
                   Active Users
                 </th>
-                <th scope="col" style={{ color: "black" }}>Created Date</th>
-                <th scope="col" style={{ color: "black" }}>Status</th>
-                <th scope="col" className="text-center" style={{ color: "black" }}>
+                <th scope="col" style={{ color: "black" }}>
+                  Created Date
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  className="text-center"
+                  style={{ color: "black" }}
+                >
                   Action
                 </th>
               </tr>
@@ -142,7 +183,7 @@ const UserRoleListLayer = () => {
                     <td>
                       <span
                         className={`badge radius-4 px-10 py-4 text-sm ${getStatusBadgeClass(
-                          role.status
+                          role.status,
                         )}`}
                       >
                         {role.status}
