@@ -1,13 +1,13 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class BusinessCategoryApi {
-  async createBusinessCategory(data) {
+class BadgeApi {
+  async createBadge(data) {
     try {
-      const response = await apiClient.post("/business-category", data);
+      const response = await apiClient.post("/badge", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Business Category created successfully!",
+          response.data.message || "Badge created successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -16,7 +16,8 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to create business category. Please try again.";
+        error?.message ||
+        "Failed to create badge. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -24,9 +25,9 @@ class BusinessCategoryApi {
       };
     }
   }
-  async getBusinessCategory(id) {
+  async getBadge(id) {
     try {
-      const url = id ? `/business-category/${id}` : "/business-category";
+      const url = id ? `/badge/${id}` : "/badge";
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
@@ -35,7 +36,7 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to get business category. Please try again.";
+        "Failed to get badge. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -43,12 +44,12 @@ class BusinessCategoryApi {
       };
     }
   }
-  async updateBusinessCategory(id, data) {
+  async updateBadge(data) {
     try {
-      const response = await apiClient.put(`/business-category/${id}`, data);
+      const response = await apiClient.put(`/badge/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Business Category updated successfully!",
+          response.data.message || "Badge updated successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -57,7 +58,8 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to update business category. Please try again.";
+        error?.message ||
+        "Failed to update badge. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -65,12 +67,12 @@ class BusinessCategoryApi {
       };
     }
   }
-  async deleteBusinessCategory(id) {
+  async deleteBadge(id) {
     try {
-      const response = await apiClient.delete(`/business-category/${id}`);
+      const response = await apiClient.delete(`/badge/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Business Category deleted successfully!",
+          response.data.message || "Badge deleted successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -79,7 +81,8 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to delete business category. Please try again.";
+        error?.message ||
+        "Failed to delete badge. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -89,4 +92,4 @@ class BusinessCategoryApi {
   }
 }
 
-export default new BusinessCategoryApi();
+export default new BadgeApi();

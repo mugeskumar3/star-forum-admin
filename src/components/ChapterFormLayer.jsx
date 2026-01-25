@@ -24,6 +24,31 @@ const ChapterFormLayer = () => {
     meetingType: "In Person",
   });
 
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.chapterName)
+      newErrors.chapterName = "Chapter Name is required";
+    if (!formData.country) newErrors.country = "Country is required";
+    if (!formData.state) newErrors.state = "State is required";
+    if (!formData.zone) newErrors.zone = "Zone is required";
+    if (!formData.createdDate)
+      newErrors.createdDate = "Chapter Created Date is required";
+    if (!formData.location) newErrors.location = "Location is required";
+    if (!formData.weekday) newErrors.weekday = "Weekday is required";
+    if (!formData.region) newErrors.region = "Region is required";
+    if (!formData.executiveDirector)
+      newErrors.executiveDirector = "Executive Director is required";
+    if (!formData.regionalDirector || formData.regionalDirector.length === 0)
+      newErrors.regionalDirector = "Regional Director is required";
+    if (!formData.meetingType)
+      newErrors.meetingType = "Meeting Type is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   // Dummy Data for Edit Mode Simulation
   useEffect(() => {
     if (isEditMode) {
@@ -74,9 +99,9 @@ const ChapterFormLayer = () => {
 
   const stateOptions = formData.country
     ? State.getStatesOfCountry(formData.country).map((state) => ({
-      value: state.isoCode,
-      label: state.name,
-    }))
+        value: state.isoCode,
+        label: state.name,
+      }))
     : [];
 
   /* Options */
@@ -126,6 +151,7 @@ const ChapterFormLayer = () => {
       country: selectedOption ? selectedOption.value : "",
       state: "", // Reset state
     }));
+    if (errors.country) setErrors((prev) => ({ ...prev, country: "" }));
   };
 
   const handleStateChange = (selectedOption) => {
@@ -133,6 +159,7 @@ const ChapterFormLayer = () => {
       ...prev,
       state: selectedOption ? selectedOption.value : "",
     }));
+    if (errors.state) setErrors((prev) => ({ ...prev, state: "" }));
   };
 
   const handleSelectChange = (selectedOption, { name }) => {
@@ -140,25 +167,30 @@ const ChapterFormLayer = () => {
       ...prev,
       [name]: selectedOption ? selectedOption.value : "",
     }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleMultiSelectChange = (selectedOptions) => {
+  const handleMultiSelectChange = (selectedOptions, { name }) => {
     const values = selectedOptions
       ? selectedOptions.map((opt) => opt.value)
       : [];
-    setFormData((prev) => ({ ...prev, regionalDirector: values }));
+    setFormData((prev) => ({ ...prev, [name]: values }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    // Add API call here
-    navigate("/chapter-creation");
+    if (validate()) {
+      console.log("Form Submitted:", formData);
+      // Add API call here
+      navigate("/chapter-creation");
+    }
   };
 
   return (
@@ -183,8 +215,10 @@ const ChapterFormLayer = () => {
                 value={formData.chapterName}
                 onChange={handleChange}
                 placeholder="Enter chapter name"
-                required
               />
+              {errors.chapterName && (
+                <small className="text-danger">{errors.chapterName}</small>
+              )}
             </div>
 
             {/* Country */}
@@ -200,8 +234,10 @@ const ChapterFormLayer = () => {
                 onChange={handleCountryChange}
                 placeholder="Select Country"
                 styles={customStyles}
-                required
               />
+              {errors.country && (
+                <small className="text-danger">{errors.country}</small>
+              )}
             </div>
 
             {/* State */}
@@ -218,8 +254,10 @@ const ChapterFormLayer = () => {
                 placeholder="Select State"
                 styles={customStyles}
                 isDisabled={!formData.country}
-                required
               />
+              {errors.state && (
+                <small className="text-danger">{errors.state}</small>
+              )}
             </div>
 
             {/* Zone */}
@@ -236,13 +274,17 @@ const ChapterFormLayer = () => {
                 onChange={handleSelectChange}
                 placeholder="Select Zone"
                 styles={customStyles}
-                required
               />
+              {errors.zone && (
+                <small className="text-danger">{errors.zone}</small>
+              )}
             </div>
 
             {/* Region (Renamed from Religion) */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Region</label>
+              <label className="form-label fw-semibold">
+                Region <span className="text-danger">*</span>
+              </label>
               <Select
                 name="region"
                 options={regionOptions}
@@ -253,11 +295,14 @@ const ChapterFormLayer = () => {
                 placeholder="Select Region"
                 styles={customStyles}
               />
+              {errors.region && (
+                <small className="text-danger">{errors.region}</small>
+              )}
             </div>
 
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Executive Director
+                Executive Director <span className="text-danger">*</span>
               </label>
               <Select
                 name="executiveDirector"
@@ -269,22 +314,31 @@ const ChapterFormLayer = () => {
                 placeholder="Select Executive Director"
                 styles={customStyles}
               />
+              {errors.executiveDirector && (
+                <small className="text-danger">
+                  {errors.executiveDirector}
+                </small>
+              )}
             </div>
 
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Regional Director
+                Regional Director <span className="text-danger">*</span>
               </label>
               <Select
+                isMulti
                 name="regionalDirector"
                 options={regionalDirectorOptions}
                 value={regionalDirectorOptions.filter((option) =>
                   formData.regionalDirector.includes(option.value),
                 )}
-                onChange={handleSelectChange}
+                onChange={handleMultiSelectChange}
                 placeholder="Select Regional Directors"
                 styles={customStyles}
               />
+              {errors.regionalDirector && (
+                <small className="text-danger">{errors.regionalDirector}</small>
+              )}
             </div>
 
             {/* Created Date */}
@@ -298,8 +352,10 @@ const ChapterFormLayer = () => {
                 name="createdDate"
                 value={formData.createdDate}
                 onChange={handleChange}
-                required
               />
+              {errors.createdDate && (
+                <small className="text-danger">{errors.createdDate}</small>
+              )}
             </div>
 
             {/* Location */}
@@ -314,8 +370,10 @@ const ChapterFormLayer = () => {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="Enter location"
-                required
               />
+              {errors.location && (
+                <small className="text-danger">{errors.location}</small>
+              )}
             </div>
 
             {/* Weekday */}
@@ -332,13 +390,17 @@ const ChapterFormLayer = () => {
                 onChange={handleSelectChange}
                 placeholder="Select Weekday"
                 styles={customStyles}
-                required
               />
+              {errors.weekday && (
+                <small className="text-danger">{errors.weekday}</small>
+              )}
             </div>
 
             {/* Meeting Type (Optional) */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Meeting Type</label>
+              <label className="form-label fw-semibold">
+                Meeting Type <span className="text-danger">*</span>
+              </label>
               <Select
                 name="meetingType"
                 options={meetingTypeOptions}
@@ -349,6 +411,9 @@ const ChapterFormLayer = () => {
                 placeholder="Select Meeting Type"
                 styles={customStyles}
               />
+              {errors.meetingType && (
+                <small className="text-danger">{errors.meetingType}</small>
+              )}
             </div>
           </div>
           <div className="d-flex justify-content-end gap-2 mt-24">

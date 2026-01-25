@@ -10,6 +10,7 @@ const BusinessCategoryFormLayer = () => {
   const [formData, setFormData] = useState({
     name: "",
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (isEditMode) {
@@ -27,10 +28,15 @@ const BusinessCategoryFormLayer = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name.trim()) {
+      setErrors({ name: "Category Name is required" });
+      return;
+    }
     if (isEditMode) {
       const payload = { ...formData, id };
       const response = await BusinessCategoryApi.updateBusinessCategory(
@@ -70,8 +76,11 @@ const BusinessCategoryFormLayer = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter category name"
-                required
+                required={false}
               />
+              {errors.name && (
+                <span className="text-danger text-sm mt-1">{errors.name}</span>
+              )}
             </div>
           </div>
           <div className="d-flex justify-content-end gap-2 mt-24">

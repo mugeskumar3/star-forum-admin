@@ -52,12 +52,16 @@ import LogReportPage from "./pages/LogReportPage";
 import ShopListPage from "./pages/ShopListPage";
 import ShopCreatePage from "./pages/ShopCreatePage";
 import ShopFormPage from "./pages/ShopFormPage";
+import ShopCategoryListPage from "./pages/ShopCategoryListPage";
+import ShopCategoryFormPage from "./pages/ShopCategoryFormPage";
 import OrdersPage from "./pages/OrdersPage";
 import TrainingListPage from "./pages/TrainingListPage";
 import TrainingFormPage from "./pages/TrainingFormPage";
 import UserRoleListPage from "./pages/UserRoleListPage";
 import UserRoleFormPage from "./pages/UserRoleFormPage";
 import ChiefGuestListPage from "./pages/ChiefGuestListPage";
+import ChiefGuestFormPage from "./pages/ChiefGuestFormPage";
+import ChiefGuestHistoryPage from "./pages/ChiefGuestHistoryPage";
 import GeneralUpdateListPage from "./pages/GeneralUpdateListPage";
 import PointsPage from "./pages/PointsPage";
 import AwardListPage from "./pages/AwardListPage";
@@ -65,7 +69,8 @@ import AwardFormPage from "./pages/AwardFormPage";
 import BusinessCategoryListPage from "./pages/BusinessCategoryListPage";
 import BusinessCategoryFormPage from "./pages/BusinessCategoryFormPage";
 import CompanyPage from "./pages/CompanyPage";
-
+import ZoneFormPage from "./pages/ZoneFormPage";
+import RenewalReportPage from "./pages/RenewalReportPage";
 function App() {
   return (
     <BrowserRouter>
@@ -101,11 +106,7 @@ function App() {
           path="/meetings-create"
           element={<FormPage title="Meeting Creation" />}
         />
-        <Route
-          exact
-          path="/renewal-report"
-          element={<FormPage title="Renewal Report" />}
-        />
+        <Route exact path="/renewal-report" element={<RenewalReportPage />} />
         <Route
           exact
           path="/ed-report"
@@ -141,6 +142,7 @@ function App() {
         {/* Master Creation */}
         <Route exact path="/user-roles" element={<UserRoleListPage />} />
         <Route exact path="/user-roles/create" element={<UserRoleFormPage />} />
+        <Route exact path="/zone/add" element={<ZoneFormPage />} />
         <Route
           exact
           path="/user-roles/edit/:id"
@@ -187,6 +189,7 @@ function App() {
 
         <Route exact path="/badge" element={<BadgeCreationPage />} />
         <Route exact path="/badge/create" element={<BadgeCreateFormPage />} />
+        <Route exact path="/badge/edit/:id" element={<BadgeCreateFormPage />} />
         <Route exact path="/badge/assign" element={<BadgeAssignFormPage />} />
 
         <Route exact path="/award" element={<AwardListPage />} />
@@ -314,6 +317,12 @@ function App() {
         <Route exact path="/shop-list" element={<ShopListPage />} />
         <Route exact path="/shop-create" element={<ShopCreatePage />} />
         <Route exact path="/shop-add" element={<ShopFormPage />} />
+        <Route exact path="/shop-edit/:id" element={<ShopFormPage />} />
+
+        {/* Shop Category */}
+        <Route exact path="/shop-category-list" element={<ShopCategoryListPage />} />
+        <Route exact path="/shop-category-create" element={<ShopCategoryFormPage />} />
+        <Route exact path="/shop-category-edit/:id" element={<ShopCategoryFormPage />} />
 
         {/* Orders */}
         <Route exact path="/orders" element={<OrdersPage />} />
@@ -338,6 +347,12 @@ function App() {
           exact
           path="/chief-guest-list"
           element={<ChiefGuestListPage />}
+        />
+        <Route exact path="/chief-guest-add" element={<ChiefGuestFormPage />} />
+        <Route
+          exact
+          path="/chief-guest-history"
+          element={<ChiefGuestHistoryPage />}
         />
 
         <Route exact path="*" element={<ErrorPage />} />

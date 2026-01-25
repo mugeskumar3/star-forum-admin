@@ -2,9 +2,27 @@ import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
 class RegionApi {
+  async getAdminUser() {
+    try {
+      const response = await apiClient.get("/adminUser");
+      if (response.status === 200 || response.status === 201) {
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to get admin user. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
   async createRegion(data) {
     try {
-      const response = await apiClient.post("/admin/region", data);
+      const response = await apiClient.post("/region", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Region created successfully!",
@@ -26,7 +44,7 @@ class RegionApi {
   }
   async getRegion() {
     try {
-      const response = await apiClient.get("/admin/region");
+      const response = await apiClient.get("/region");
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }
@@ -44,7 +62,7 @@ class RegionApi {
   }
   async updateRegion(data) {
     try {
-      const response = await apiClient.put(`/admin/region/${data.id}`, data);
+      const response = await apiClient.put(`/region/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Region updated successfully!",
@@ -66,7 +84,7 @@ class RegionApi {
   }
   async deleteRegion(id) {
     try {
-      const response = await apiClient.delete(`/admin/region/${id}`);
+      const response = await apiClient.delete(`/region/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Region deleted successfully!",

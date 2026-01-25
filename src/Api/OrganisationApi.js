@@ -1,13 +1,13 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class BusinessCategoryApi {
-  async createBusinessCategory(data) {
+class OrganisationApi {
+  async createOrganisation(data) {
     try {
-      const response = await apiClient.post("/business-category", data);
+      const response = await apiClient.post("/region", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Business Category created successfully!",
+          response.data.message || "Organisation created successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -16,7 +16,7 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to create business category. Please try again.";
+        "Failed to create organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -24,10 +24,19 @@ class BusinessCategoryApi {
       };
     }
   }
-  async getBusinessCategory(id) {
+
+  async getOrganisation(params = {}) {
     try {
-      const url = id ? `/business-category/${id}` : "/business-category";
-      const response = await apiClient.get(url);
+      const url = params.id ? `/region/${params.id}` : "/region";
+      const config = {
+        params: {
+          page: params.page,
+          limit: params.limit,
+          search: params.search,
+        },
+      };
+
+      const response = await apiClient.get(url, config);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }
@@ -35,7 +44,7 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to get business category. Please try again.";
+        "Failed to get organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -43,12 +52,13 @@ class BusinessCategoryApi {
       };
     }
   }
-  async updateBusinessCategory(id, data) {
+
+  async updateOrganisation(data) {
     try {
-      const response = await apiClient.put(`/business-category/${id}`, data);
+      const response = await apiClient.put(`/region/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Business Category updated successfully!",
+          response.data.message || "Organisation updated successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -57,7 +67,7 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to update business category. Please try again.";
+        "Failed to update organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -65,12 +75,13 @@ class BusinessCategoryApi {
       };
     }
   }
-  async deleteBusinessCategory(id) {
+
+  async deleteOrganisation(id) {
     try {
-      const response = await apiClient.delete(`/business-category/${id}`);
+      const response = await apiClient.delete(`/region/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Business Category deleted successfully!",
+          response.data.message || "Organisation deleted successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -79,7 +90,7 @@ class BusinessCategoryApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to delete business category. Please try again.";
+        "Failed to delete organisation. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -89,4 +100,4 @@ class BusinessCategoryApi {
   }
 }
 
-export default new BusinessCategoryApi();
+export default new OrganisationApi();

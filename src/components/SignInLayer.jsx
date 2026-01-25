@@ -8,6 +8,7 @@ const SignInLayer = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [pin, setPin] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({ phoneNumber: "", pin: "" });
   const pinRefs = useRef([]);
 
   const handlePinChange = (index, value) => {
@@ -15,6 +16,7 @@ const SignInLayer = () => {
     const newPin = [...pin];
     newPin[index] = value;
     setPin(newPin);
+    setErrors((prev) => ({ ...prev, pin: "" }));
 
     if (value && index < 3) {
       pinRefs.current[index + 1].focus();
@@ -28,15 +30,21 @@ const SignInLayer = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let newErrors = {};
+
     if (!phoneNumber.trim()) {
-      alert("Please enter your phone number");
-      return;
+      newErrors.phoneNumber = "Please enter your phone number";
     }
     const pinValue = pin.join("");
     if (pinValue.length !== 4) {
-      alert("Please enter a complete 4-digit PIN");
+      newErrors.pin = "Please enter a complete 4-digit PIN";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+
     setLoading(true);
     try {
       const credentials = {
@@ -137,10 +145,18 @@ const SignInLayer = () => {
                 className="form-control h-56-px bg-neutral-50 radius-12 ps-5"
                 placeholder="Enter Phone Number"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                  setErrors((prev) => ({ ...prev, phoneNumber: "" }));
+                }}
                 disabled={loading}
               />
             </div>
+            {errors.phoneNumber && (
+              <span className="text-danger text-sm mt-1">
+                {errors.phoneNumber}
+              </span>
+            )}
           </div>
 
           <div className="mb-32 text-start">
@@ -163,6 +179,9 @@ const SignInLayer = () => {
                 />
               ))}
             </div>
+            {errors.pin && (
+              <span className="text-danger text-sm mt-1">{errors.pin}</span>
+            )}
           </div>
 
           <button

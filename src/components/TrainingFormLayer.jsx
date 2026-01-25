@@ -1,59 +1,73 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import Select from "react-select";
+// import { Icon } from "@iconify/react/dist/iconify.js"; // Not strictly needed if cleaner UI uses text labels or standard icons
 
 const TrainingFormLayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
-  const dropdownRef = useRef(null);
 
   const [formData, setFormData] = useState({
-    chapter: [], // Multi-select array
-    isMultiSelectOpen: false, // UI state for dropdown
+    chapters: [],
     title: "",
-    module: "",
-    trainer: "",
-    fromDateTime: "",
-    toDateTime: "",
-    duration: "",
-    mode: "In Person",
-    location: "",
-    capacity: "",
     description: "",
-    status: "Draft",
+    trainers: [],
+    trainingDateTime: "",
+    lastDateForApply: "",
+    duration: "",
+    mode: null,
+    location: "",
+    maxAllowed: "",
+    status: null,
+    trainingFee: "",
+    spotFee: "",
   });
 
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setFormData((prev) => ({ ...prev, isMultiSelectOpen: false }));
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  // Options for Selects
+  const chapterOptions = [
+    { value: "Star Chapter", label: "Star Chapter" },
+    { value: "Global Chapter", label: "Global Chapter" },
+    { value: "Elite Chapter", label: "Elite Chapter" },
+    { value: "Sunrise Chapter", label: "Sunrise Chapter" },
+  ];
 
-  // Dummy Data for Edit Mode Simulation
+  const trainerOptions = [
+    { value: "Rajesh Kumar", label: "Rajesh Kumar (Admin)" },
+    { value: "Priya Sharma", label: "Priya Sharma (Admin)" },
+    { value: "Amit Singh", label: "Amit Singh (Admin)" },
+    { value: "Suresh Raina", label: "Suresh Raina (Admin)" },
+  ];
+
+  const modeOptions = [
+    { value: "In Person", label: "In Person" },
+    { value: "Online", label: "Online" },
+  ];
+
+  const statusOptions = [
+    { value: "Upcoming", label: "Upcoming" },
+    { value: "Planned", label: "Planned" },
+    { value: "Completed", label: "Completed" },
+  ];
+
   useEffect(() => {
     if (isEditMode) {
+      // Simulate fetching data
       setFormData({
-        chapter: ["Star Chapter", "Global Chapter"],
+        chapters: [chapterOptions[0], chapterOptions[1]],
         title: "Advanced Leadership Workshop",
-        module: "Leadership",
-        trainer: "John Doe",
-        fromDateTime: "2025-01-15T10:00",
-        toDateTime: "2025-01-15T14:00",
-        duration: "4 Hours",
-        mode: "In Person",
-        location: "Conference Hall A",
-        capacity: "50",
         description:
           "A comprehensive workshop on modern leadership strategies.",
-        status: "Active",
+        trainers: [trainerOptions[0]],
+        trainingDateTime: "2025-01-15T10:00",
+        lastDateForApply: "2025-01-10T23:59",
+        duration: "4 Hours",
+        mode: modeOptions[0],
+        location: "Conference Hall A",
+        maxAllowed: "50",
+        status: statusOptions[1], // Planned
+        trainingFee: "500",
+        spotFee: "700",
       });
     }
   }, [isEditMode]);
@@ -63,10 +77,49 @@ const TrainingFormLayer = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSelectChange = (selectedOption, actionMeta) => {
+    setFormData((prev) => ({ ...prev, [actionMeta.name]: selectedOption }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Training Form Submitted:", formData);
     navigate("/training-list");
+  };
+
+  // Custom Styles for React Select
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      borderRadius: "8px",
+      borderColor: "#dee2e6",
+      padding: "2px",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#dee2e6",
+      },
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: "#6c757d",
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      backgroundColor: "#eef2ff", // bg-primary-50 equivalent
+      borderRadius: "4px",
+    }),
+    multiValueLabel: (provided) => ({
+      ...provided,
+      color: "#4f46e5", // text-primary-600 equivalent
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: "#4f46e5",
+      ":hover": {
+        backgroundColor: "#e0e7ff",
+        color: "#4338ca",
+      },
+    }),
   };
 
   return (
@@ -79,112 +132,21 @@ const TrainingFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-3">
-            {/* Chapter Selection (Multi-Select) */}
+            {/* Chapter - Multi Select */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Chapter <span className="text-danger">*</span>
               </label>
-              <div className="dropdown w-100" ref={dropdownRef}>
-                <div
-                  className="form-select radius-8 d-flex flex-wrap align-items-center gap-2"
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      isMultiSelectOpen: !prev.isMultiSelectOpen,
-                    }))
-                  }
-                  style={{
-                    minHeight: "44px",
-                    height: "auto",
-                    cursor: "pointer",
-                    backgroundImage: "none",
-                    paddingRight: "30px",
-                    position: "relative",
-                  }}
-                >
-                  {formData.chapter.length > 0 ? (
-                    formData.chapter.map((item) => (
-                      <span
-                        key={item}
-                        className="badge bg-primary-100 text-primary-600 radius-4 px-8 py-4 d-flex align-items-center gap-1 text-sm fw-medium"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {item}
-                        <Icon
-                          icon="heroicons:x-mark"
-                          className="text-lg cursor-pointer hover-text-danger-600"
-                          onClick={() => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              chapter: prev.chapter.filter((c) => c !== item),
-                            }));
-                          }}
-                        />
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-secondary-light">
-                      Select Chapters
-                    </span>
-                  )}
-                  <Icon
-                    icon="lucide:chevron-down"
-                    className="text-xl position-absolute end-0 me-2 text-secondary-light"
-                    style={{ top: "50%", transform: "translateY(-50%)" }}
-                  />
-                </div>
-                {formData.isMultiSelectOpen && (
-                  <div
-                    className="dropdown-menu show w-100 p-2 shadow-sm border-0"
-                    style={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      zIndex: 1000,
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                  >
-                    {[
-                      "Star Chapter",
-                      "Global Chapter",
-                      "Elite Chapter",
-                      "Sunrise Chapter",
-                    ].map((option) => (
-                      <div
-                        key={option}
-                        className="dropdown-item px-3 py-2 radius-4 cursor-pointer hover-bg-base d-flex align-items-center justify-content-between"
-                        onClick={() => {
-                          setFormData((prev) => {
-                            const newSelection = prev.chapter.includes(option)
-                              ? prev.chapter.filter((item) => item !== option)
-                              : [...prev.chapter, option];
-                            return {
-                              ...prev,
-                              chapter: newSelection,
-                            };
-                          });
-                        }}
-                      >
-                        <span
-                          className={`${formData.chapter.includes(option)
-                            ? "text-primary-600 fw-medium"
-                            : "text-secondary-light"
-                            }`}
-                        >
-                          {option}
-                        </span>
-                        {formData.chapter.includes(option) && (
-                          <Icon
-                            icon="heroicons:check"
-                            className="text-primary-600 text-lg"
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Select
+                isMulti
+                name="chapters"
+                options={chapterOptions}
+                value={formData.chapters}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Chapters..."
+                required={!isEditMode} // Basic required validation logic
+              />
             </div>
 
             {/* Training Title */}
@@ -198,76 +160,24 @@ const TrainingFormLayer = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="Enter training title"
+                placeholder="Enter Training Title"
                 required
               />
             </div>
 
-            {/* Module / Topic */}
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Module / Topic <span className="text-danger">*</span>
-              </label>
-              <select
-                className="form-select radius-8"
-                name="module"
-                value={formData.module}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Module</option>
-                <option value="Leadership">Leadership</option>
-                <option value="Sales">Sales</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Finance">Finance</option>
-                <option value="Operations">Operations</option>
-                <option value="HR">HR</option>
-              </select>
-            </div>
-
-            {/* Trainer Name */}
+            {/* Trainer Name - Multi Select */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Trainer Name <span className="text-danger">*</span>
               </label>
-              <input
-                type="text"
-                className="form-control radius-8"
-                name="trainer"
-                value={formData.trainer}
-                onChange={handleChange}
-                placeholder="Enter trainer name"
-                required
-              />
-            </div>
-
-            {/* From Date & Time */}
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                From Date & Time <span className="text-danger">*</span>
-              </label>
-              <input
-                type="datetime-local"
-                className="form-control radius-8"
-                name="fromDateTime"
-                value={formData.fromDateTime}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* To Date & Time */}
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                To Date & Time <span className="text-danger">*</span>
-              </label>
-              <input
-                type="datetime-local"
-                className="form-control radius-8"
-                name="toDateTime"
-                value={formData.toDateTime}
-                onChange={handleChange}
-                required
+              <Select
+                isMulti
+                name="trainers"
+                options={trainerOptions}
+                value={formData.trainers}
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Trainers..."
               />
             </div>
 
@@ -287,25 +197,52 @@ const TrainingFormLayer = () => {
               />
             </div>
 
+            {/* Training Date & Time */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Training Date & Time <span className="text-danger">*</span>
+              </label>
+              <input
+                type="datetime-local"
+                className="form-control radius-8"
+                name="trainingDateTime"
+                value={formData.trainingDateTime}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Last Date For Apply */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Last Date For Apply <span className="text-danger">*</span>
+              </label>
+              <input
+                type="datetime-local"
+                className="form-control radius-8"
+                name="lastDateForApply"
+                value={formData.lastDateForApply}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
             {/* Mode */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Mode <span className="text-danger">*</span>
               </label>
-              <select
-                className="form-select radius-8"
+              <Select
                 name="mode"
+                options={modeOptions}
                 value={formData.mode}
-                onChange={handleChange}
-                required
-              >
-                <option value="In Person">In Person</option>
-                <option value="Online">Online</option>
-                <option value="Hybrid">Hybrid</option>
-              </select>
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Mode"
+              />
             </div>
 
-            {/* Location / Link */}
+            {/* Location / Meeting Link */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Location / Meeting Link <span className="text-danger">*</span>
@@ -316,44 +253,75 @@ const TrainingFormLayer = () => {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="Enter venue or zoom link"
+                placeholder="Enter Location or Link"
                 required
               />
             </div>
 
-            {/* Capacity */}
+            {/* Max Allowed */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Max Capacity</label>
+              <label className="form-label fw-semibold">Max Allowed</label>
               <input
                 type="number"
                 className="form-control radius-8"
-                name="capacity"
-                value={formData.capacity}
+                name="maxAllowed"
+                value={formData.maxAllowed}
                 onChange={handleChange}
-                placeholder="Enter max participants"
+                placeholder="Enter Max Participants"
               />
             </div>
 
             {/* Status */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">Status</label>
-              <select
-                className="form-select radius-8"
+              <Select
                 name="status"
+                options={statusOptions}
                 value={formData.status}
-                onChange={handleChange}
-              >
-                <option value="Draft">Draft</option>
-                <option value="Active">Active / Published</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select Status"
+              />
             </div>
 
-            {/* Description */}
+            {/* Training Registration Fee */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Training Registration Fee
+              </label>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="form-control radius-8"
+                  name="trainingFee"
+                  value={formData.trainingFee}
+                  onChange={handleChange}
+                  placeholder=" ₹0.00"
+                />
+              </div>
+            </div>
+
+            {/* Spot Registration Fee */}
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">
+                Spot Registration Fee
+              </label>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="form-control radius-8"
+                  name="spotFee"
+                  value={formData.spotFee}
+                  onChange={handleChange}
+                  placeholder=" ₹0.00"
+                />
+              </div>
+            </div>
+
+            {/* Training Description */}
             <div className="col-12">
               <label className="form-label fw-semibold">
-                Description / Agenda
+                Training Description
               </label>
               <textarea
                 className="form-control radius-8"
@@ -365,6 +333,7 @@ const TrainingFormLayer = () => {
               ></textarea>
             </div>
           </div>
+
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/training-list"

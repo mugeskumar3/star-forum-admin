@@ -1,90 +1,101 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { MockDataService } from "../helper/MockDataService";
 import Select from "react-select";
-import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
-import OrganisationApi from "../Api/ZoneApi";
+import OrganisationApi from "../Api/OrganisationApi";
+import ZoneApi from "../Api/ZoneApi";
 import RegionApi from "../Api/RegionApi";
 
 const OrganisationFormLayer = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [knownZones, setKnownZones] = useState([]);
+
   const [formData, setFormData] = useState({
-    zone: "",
-    zone: "",
-    region: "",
     country: "",
     state: "",
-    ed: "",
-    rd: "",
+    zoneId: "",
+    region: "",
+    edId: "",
+    rdIds: [],
   });
+
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [selectedState, setSelectedState] = useState(null);
-  const [filteredZones, setFilteredZones] = useState([]);
-  const [filteredRegions, setFilteredRegions] = useState([]);
-  const [knownRegions, setKnownRegions] = useState([]);
-  const [showZoneModal, setShowZoneModal] = useState(false);
-  const [newZoneName, setNewZoneName] = useState("");
-  const [newZoneCountry, setNewZoneCountry] = useState(null);
-  const [newZoneState, setNewZoneState] = useState(null);
-  const [zoneError, setZoneError] = useState("");
+  const [edOptions, setEdOptions] = useState([]);
+  const [rdOptions, setRdOptions] = useState([]);
   const [formErrors, setFormErrors] = useState({});
-  const [rdInput, setRdInput] = useState("");
-  const edOptions = [
-    { value: "ED John Doe", label: "ED John Doe" },
-    { value: "ED Jane Smith", label: "ED Jane Smith" },
-    { value: "ED Alex Wilson", label: "ED Alex Wilson" },
-  ];
-  const rdOptions = [
-    { value: "RD Michael Brown", label: "RD Michael Brown" },
-    { value: "RD Sarah Connor", label: "RD Sarah Connor" },
-    { value: "RD David Miller", label: "RD David Miller" },
-    { value: "RD Chris Evans", label: "RD Chris Evans" },
-    { value: "RD Natasha Romanoff", label: "RD Natasha Romanoff" },
-  ];
+  const [filteredZones, setFilteredZones] = useState([]);
+
   useEffect(() => {
+    fetchAdminUsers();
     if (id) {
-      const org = MockDataService.getOrganisationById(id);
-      if (org) {
-        setFormData(org);
-      }
+      getOrganisationById(id);
     }
   }, [id]);
-  /* const getZone = async () => {
-    // Removed old fetch all
-  }; */
 
   useEffect(() => {
-    if (selectedCountry && selectedState) {
-      getZonesForState(selectedState.label);
+    if (formData.state) {
+      fetchZones(formData.state);
     } else {
       setFilteredZones([]);
     }
-  }, [selectedCountry, selectedState]);
+  }, [formData.state]);
 
-  const getZonesForState = async (stateName) => {
-    const response = await OrganisationApi.getZoneByState(stateName);
+  const fetchZones = async (stateName) => {
+    const response = await ZoneApi.getZoneByState(stateName);
     if (response && response.status && response.response.data) {
       setFilteredZones(response.response.data);
-    } else {
-      setFilteredZones([]);
     }
   };
 
-  const getRegionsForZone = async (zoneName) => {
-    // Assuming RegionApi has a getRegionByZone or similar, if not we might filter locally if we fetch all.
-    // Checking RegionApi.js content first would be ideal, but let's assume standard pattern or fetch all and filter.
-    // Based on previous file list, RegionApi.js exists.
-    // Let's rely on a hypothetical getRegionByZone or just fetch all and filter.
-    // Ideally update RegionApi.js first if needed.
-    const response = await RegionApi.getRegion();
+  const fetchAdminUsers = async () => {
+    const response = await RegionApi.getAdminUser();
     if (response && response.status && response.response.data) {
-      const regions = response.response.data.filter((r) => r.zone === zoneName);
-      setFilteredRegions(regions);
+      const users = response.response.data;
+      const options = users.map((user) => ({
+        value: user._id, // Use _id
+        label: user.name,
+      }));
+      setEdOptions(options);
+      setRdOptions(options);
+    }
+  };
+
+  const getOrganisationById = async (id) => {
+    const response = await OrganisationApi.getOrganisation({ id });
+    if (response && response.status && response.response.data) {
+      const data = response.response.data;
+
+      // Normalize rd data (ensure array)
+      let normalizedRdIds = [];
+      const rdData = data.rd || data.rdIds; // Check both rd and rdIds
+
+      if (Array.isArray(rdData)) {
+        normalizedRdIds = rdData.map((r) =>
+          typeof r === "object" ? r._id : r,
+        );
+      } else if (rdData) {
+        // Handle case where it might be a single value erroneously or just one check
+        normalizedRdIds = [typeof rdData === "object" ? rdData._id : rdData];
+      }
+
+      // Normalize data to ensure we have IDs for select fields if API returns populated objects
+      const normalizedData = {
+        ...data,
+        zoneId: data.zone?._id || data.zone || data.zoneId, // handle both potential keys
+        edId: data.ed?._id || data.ed || data.edId,
+        rdIds: normalizedRdIds,
+      };
+      setFormData(normalizedData);
+
+      // Pre-populate country select
+      const countryObj = Country.getAllCountries().find(
+        (c) => c.name === data.country,
+      );
+      if (countryObj) {
+        setSelectedCountry({ value: countryObj.isoCode, label: data.country });
+      }
     }
   };
 
@@ -95,17 +106,25 @@ const OrganisationFormLayer = () => {
       setFormErrors({ ...formErrors, [name]: "" });
     }
   };
+
   const handleSelectChange = (selectedOption, { name }) => {
     setFormData({
       ...formData,
       [name]: selectedOption ? selectedOption.value : "",
-      country: selectedOption ? selectedOption.country : "",
-      state: selectedOption ? selectedOption.state : "",
     });
-    if (name === "zone") {
-      getRegionsForZone(selectedOption.value);
-      setFormData((prev) => ({ ...prev, region: "" }));
+    if (formErrors[name]) {
+      setFormErrors({ ...formErrors, [name]: "" });
     }
+  };
+
+  const handleMultiSelectChange = (selectedOptions, { name }) => {
+    const values = selectedOptions
+      ? selectedOptions.map((opt) => opt.value)
+      : [];
+    setFormData({
+      ...formData,
+      [name]: values,
+    });
     if (formErrors[name]) {
       setFormErrors({ ...formErrors, [name]: "" });
     }
@@ -113,6 +132,11 @@ const OrganisationFormLayer = () => {
 
   const getSelectedOption = (options, value) => {
     return options.find((option) => option.value === value) || null;
+  };
+
+  const getSelectedOptions = (options, values) => {
+    if (!Array.isArray(values)) return [];
+    return options.filter((option) => values.includes(option.value));
   };
 
   const customStyles = {
@@ -136,53 +160,32 @@ const OrganisationFormLayer = () => {
     }),
   };
 
-  const handleZoneModalClose = () => {
-    setShowZoneModal(false);
-    setNewZoneName("");
-    setNewZoneCountry(null);
-    setNewZoneState(null);
-    setZoneError("");
-  };
-  const handleZoneModalShow = () => setShowZoneModal(true);
-
-  const handleAddZone = async () => {
-    if (!newZoneName.trim()) {
-      setZoneError("Zone name cannot be empty");
-      return;
-    }
-    if (!newZoneCountry) {
-      setZoneError("Country is required");
-      return;
-    }
-    if (!newZoneState) {
-      setZoneError("State is required");
-      return;
-    }
-    const payload = {
-      name: newZoneName.trim(),
-      country: newZoneCountry.label,
-      state: newZoneState.label,
-    };
-    const resp = await OrganisationApi.createZone(payload);
-    if (resp && resp.status) {
-      const updatedZones = [...knownZones, newZoneName.trim()];
-      setKnownZones(updatedZones);
-      setFormData({ ...formData, zone: newZoneName.trim() });
-      // Toast handled in Api
-      handleZoneModalClose();
-    }
-  };
-
   const validateForm = () => {
     let errors = {};
     let isValid = true;
 
-    if (!formData.zone) {
-      errors.zone = "Zone is required";
+    if (!formData.country) {
+      errors.country = "Country is required";
       isValid = false;
     }
-    if (!formData.ed) {
-      errors.ed = "ED Name is required";
+    if (!formData.state) {
+      errors.state = "State is required";
+      isValid = false;
+    }
+    if (!formData.zoneId) {
+      errors.zoneId = "Zone is required";
+      isValid = false;
+    }
+    if (!formData.region) {
+      errors.region = "Region is required";
+      isValid = false;
+    }
+    if (!formData.rdIds || formData.rdIds.length === 0) {
+      errors.rdIds = "RD Name is required";
+      isValid = false;
+    }
+    if (!formData.edId) {
+      errors.edId = "ED Name is required";
       isValid = false;
     }
 
@@ -190,36 +193,37 @@ const OrganisationFormLayer = () => {
     return isValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       toast.error("Please fix the validation errors.");
       return;
     }
-
-    if (formData.zone && !knownZones.includes(formData.zone)) {
-      const newZones = [...knownZones, formData.zone];
-      setKnownZones(newZones);
+    console.log(formData);
+    if (id) {
+      const payload = { ...formData, id };
+      const response = await OrganisationApi.updateOrganisation(payload);
+      if (response && response.status) {
+        navigate("/organisation");
+      }
+    } else {
+      const response = await OrganisationApi.createOrganisation(formData);
+      if (response && response.status) {
+        navigate("/organisation");
+      }
     }
-
-    MockDataService.saveOrganisation(formData);
-
-    navigate("/organisation");
   };
 
   return (
     <div className="card h-100 p-0 radius-12">
-      <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+      <div className="card-header bg-base py-16 px-24 d-flex align-items-center justify-content-between">
         <h6 className="text-primary-600 pb-2 mb-0">Create Organisation</h6>
         <div className="d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-primary btn-sm d-flex align-items-center"
-            onClick={handleZoneModalShow}
-          >
-            <Icon icon="ic:baseline-plus" className="me-1" /> Add Zone
-          </button>
+          <Link to="/zone/add" className="btn btn-primary btn-sm">
+            <Icon icon="ic:baseline-plus" className="text-xl me-1" />
+            Add Zone
+          </Link>
           <Link to="/organisation" className="btn btn-outline-secondary btn-sm">
             Back to List
           </Link>
@@ -229,160 +233,184 @@ const OrganisationFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
+            {/* Row 1: Country & State */}
             <div className="col-md-6">
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  Country <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  options={Country.getAllCountries().map((country) => ({
-                    value: country.isoCode,
-                    label: country.name,
-                  }))}
-                  value={selectedCountry}
-                  onChange={(selectedOption) => {
-                    setSelectedCountry(selectedOption);
-                    setSelectedState(null);
-                    setFormData({
-                      ...formData,
-                      country: selectedOption ? selectedOption.label : "",
-                      state: "",
-                      zone: "",
-                      region: "",
-                    });
-                  }}
-                  placeholder="Select Country"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  State <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  options={
-                    selectedCountry
-                      ? State.getStatesOfCountry(selectedCountry.value).map(
-                          (state) => ({
-                            value: state.isoCode,
-                            label: state.name,
-                          }),
-                        )
-                      : []
+              <label className="form-label fw-medium">
+                Country <span className="text-danger-600">*</span>
+              </label>
+              <Select
+                options={Country.getAllCountries().map((country) => ({
+                  value: country.isoCode,
+                  label: country.name,
+                }))}
+                value={selectedCountry}
+                onChange={(selectedOption) => {
+                  setSelectedCountry(selectedOption);
+                  setFormData({
+                    ...formData,
+                    country: selectedOption ? selectedOption.label : "",
+                    state: "",
+                    zoneId: "", // Reset zoneId
+                  });
+                  if (formErrors.country) {
+                    setFormErrors({ ...formErrors, country: "" });
                   }
-                  value={selectedState}
-                  onChange={(selectedOption) => {
-                    setSelectedState(selectedOption);
-                    setFormData({
-                      ...formData,
-                      state: selectedOption ? selectedOption.label : "",
-                      zone: "",
-                    });
-                  }}
-                  placeholder="Select State"
-                  isDisabled={!selectedCountry}
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  Zone <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  name="zone"
-                  options={filteredZones.map((z) => ({
-                    value: z.name,
-                    label: z.name,
-                    country: z.country,
-                    state: z.state,
-                  }))}
-                  value={
-                    formData.zone
-                      ? { value: formData.zone, label: formData.zone }
-                      : null
-                  }
-                  onChange={handleSelectChange}
-                  styles={customStyles}
-                  placeholder="Select Zone"
-                  isClearable={false}
-                  error={!!formErrors.zone}
-                  isDisabled={!selectedState}
-                />
-                {formErrors.zone && (
-                  <div className="text-danger mt-1 fontsize-14">
-                    {formErrors.zone}
-                  </div>
-                )}
-                <div className="form-text">
-                  Select Country and State first to see available zones.
+                }}
+                placeholder="Select Country"
+                styles={customStyles}
+                error={formErrors.country}
+              />
+              {formErrors.country && (
+                <div className="text-danger mt-1 fontsize-14">
+                  {formErrors.country}
                 </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  ED (Executive Director){" "}
-                  <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  name="ed"
-                  options={edOptions}
-                  value={getSelectedOption(edOptions, formData.ed)}
-                  onChange={handleSelectChange}
-                  styles={customStyles}
-                  placeholder="Select ED Name"
-                  isClearable={false}
-                  required
-                />
-              </div>
+              )}
             </div>
 
-            {/* Column 2 */}
             <div className="col-md-6">
-              <div className="mb-4">
-                <label className="form-label fw-medium">
-                  Region <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  name="region"
-                  options={filteredRegions.map((r) => ({
-                    value: r.name,
-                    label: r.name,
-                  }))}
-                  value={
-                    formData.region
-                      ? { value: formData.region, label: formData.region }
-                      : null
+              <label className="form-label fw-medium">
+                State <span className="text-danger-600">*</span>
+              </label>
+              <Select
+                options={
+                  formData.country
+                    ? State.getStatesOfCountry(
+                        Country.getAllCountries().find(
+                          (c) => c.name === formData.country,
+                        )?.isoCode,
+                      ).map((state) => ({
+                        value: state.isoCode,
+                        label: state.name,
+                      }))
+                    : []
+                }
+                value={
+                  formData.state
+                    ? { value: formData.state, label: formData.state }
+                    : null
+                }
+                onChange={(selectedOption) => {
+                  setFormData({
+                    ...formData,
+                    state: selectedOption ? selectedOption.label : "",
+                    zoneId: "", // Reset zoneId
+                  });
+                  if (formErrors.state) {
+                    setFormErrors({ ...formErrors, state: "" });
                   }
-                  onChange={handleSelectChange}
-                  styles={customStyles}
-                  placeholder="Select Region"
-                  isClearable={false}
-                  isDisabled={!formData.zone}
-                  required
-                />
-              </div>
-
-              {/* RD Single Selection */}
-              <div className="mb-4" style={{ marginTop: "30px" }}>
-                <label className="form-label fw-medium">
-                  RD (Regional Director){" "}
-                  <span className="text-danger-600">*</span>
-                </label>
-                <Select
-                  name="rd"
-                  options={rdOptions}
-                  value={getSelectedOption(rdOptions, formData.rd)}
-                  onChange={handleSelectChange}
-                  styles={customStyles}
-                  placeholder="Select RD Name"
-                  isClearable={false}
-                  required
-                />
-                <div className="form-text">Select RD from the dropdown</div>
-              </div>
+                }}
+                placeholder="Select State"
+                isDisabled={!formData.country}
+                styles={customStyles}
+                error={formErrors.state}
+              />
+              {formErrors.state && (
+                <div className="text-danger mt-1 fontsize-14">
+                  {formErrors.state}
+                </div>
+              )}
             </div>
 
-            {/* Full Width Buttons */}
+            {/* Row 2: Zone & Region */}
+            <div className="col-md-6">
+              <label className="form-label fw-medium">
+                Zone <span className="text-danger-600">*</span>
+              </label>
+              <Select
+                name="zoneId"
+                options={filteredZones.map((z) => ({
+                  value: z._id, // Updated to _id
+                  label: z.name,
+                }))}
+                value={
+                  filteredZones
+                    .map((z) => ({ value: z._id, label: z.name }))
+                    .find((opt) => opt.value === formData.zoneId) || null
+                }
+                onChange={(selectedOption) =>
+                  handleSelectChange(selectedOption, { name: "zoneId" })
+                }
+                styles={customStyles}
+                placeholder="Select Zone"
+                isClearable={false}
+                isDisabled={!formData.state}
+                error={formErrors.zoneId}
+              />
+              {formErrors.zoneId && (
+                <div className="text-danger mt-1 fontsize-14">
+                  {formErrors.zoneId}
+                </div>
+              )}
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-medium">
+                Region <span className="text-danger-600">*</span>
+              </label>
+              <input
+                type="text"
+                className={`form-control radius-8 ${
+                  formErrors.region ? "border-danger" : ""
+                }`}
+                name="region"
+                value={formData.region}
+                onChange={handleInputChange}
+                placeholder="Enter Region Name"
+              />
+              {formErrors.region && (
+                <div className="text-danger mt-1 fontsize-14">
+                  {formErrors.region}
+                </div>
+              )}
+            </div>
+
+            {/* Row 3: RD & ED */}
+            <div className="col-md-6">
+              <label className="form-label fw-medium">
+                RD (Regional Director){" "}
+                <span className="text-danger-600">*</span>
+              </label>
+              <Select
+                isMulti
+                name="rdIds"
+                options={rdOptions}
+                value={getSelectedOptions(rdOptions, formData.rdIds)} // Values are IDs
+                onChange={handleMultiSelectChange}
+                styles={customStyles}
+                placeholder="Select RD Names"
+                isClearable={false}
+                error={formErrors.rdIds}
+              />
+              {formErrors.rdIds && (
+                <div className="text-danger mt-1 fontsize-14">
+                  {formErrors.rdIds}
+                </div>
+              )}
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-medium">
+                ED (Executive Director){" "}
+                <span className="text-danger-600">*</span>
+              </label>
+              <Select
+                name="edId"
+                options={edOptions}
+                value={getSelectedOption(edOptions, formData.edId)} // Value is ID
+                onChange={handleSelectChange}
+                styles={customStyles}
+                placeholder="Select ED Name"
+                isClearable={false}
+                error={formErrors.edId}
+              />
+              {formErrors.edId && (
+                <div className="text-danger mt-1 fontsize-14">
+                  {formErrors.edId}
+                </div>
+              )}
+            </div>
+
+            {/* Buttons */}
             <div className="col-12 mt-4 pt-4 border-top">
               <div className="d-flex justify-content-end gap-3">
                 <Link
@@ -399,78 +427,6 @@ const OrganisationFormLayer = () => {
           </div>
         </form>
       </div>
-
-      {/* Add Zone Modal */}
-      <Modal show={showZoneModal} onHide={handleZoneModalClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Zone</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="mb-3">
-            <label className="form-label">
-              Country <span className="text-danger">*</span>
-            </label>
-            <Select
-              options={Country.getAllCountries().map((country) => ({
-                value: country.isoCode,
-                label: country.name,
-              }))}
-              value={newZoneCountry}
-              onChange={(selectedOption) => {
-                setNewZoneCountry(selectedOption);
-                setNewZoneState(null); // Reset state when country changes
-              }}
-              placeholder="Select Country"
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">
-              State <span className="text-danger">*</span>
-            </label>
-            <Select
-              options={
-                newZoneCountry
-                  ? State.getStatesOfCountry(newZoneCountry.value).map(
-                      (state) => ({
-                        value: state.isoCode,
-                        label: state.name,
-                      }),
-                    )
-                  : []
-              }
-              value={newZoneState}
-              onChange={(selectedOption) => setNewZoneState(selectedOption)}
-              placeholder="Select State"
-              isDisabled={!newZoneCountry}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">
-              Zone Name <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              className={`form-control ${zoneError ? "is-invalid" : ""}`}
-              placeholder="Enter Zone Name"
-              value={newZoneName}
-              onChange={(e) => {
-                setNewZoneName(e.target.value);
-                if (zoneError) setZoneError("");
-              }}
-            />
-            {zoneError && <div className="invalid-feedback">{zoneError}</div>}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleZoneModalClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleAddZone}>
-            Add Zone
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };
