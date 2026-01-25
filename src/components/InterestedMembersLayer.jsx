@@ -14,16 +14,23 @@ const InterestedMembersLayer = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     // Mock Data for Interested Members
-    const [members] = useState(Array.from({ length: 15 }).map((_, i) => ({
+    const [membersData, setMembersData] = useState(Array.from({ length: 15 }).map((_, i) => ({
         id: i + 1,
         memberId: `MBR-${1000 + i}`,
         memberName: ['Rahul Sharma', 'Anjali Devi', 'Sanjay Singh', 'Kavita Iyer', 'Vikram Prabhu'][i % 5],
         chapter: ['ARAM Chapter', 'Arni Chapter', 'Salem Chapter'][i % 3],
         category: ['Architecture', 'Plumbing', 'Electrical', 'Interior Designer'][i % 4],
-        status: i % 3 === 0 ? 'Absent' : 'Present'
+        status: i % 4 === 0 ? 'Absent' : i % 4 === 1 ? 'Present' : i % 4 === 2 ? 'Not Updated' : 'Present'
     })));
 
-    const filteredMembers = members.filter(member => {
+    const [editingId, setEditingId] = useState(null);
+
+    const handleStatusChange = (id, newStatus) => {
+        setMembersData(prev => prev.map(m => m.id === id ? { ...m, status: newStatus } : m));
+        setEditingId(null);
+    };
+
+    const filteredMembers = membersData.filter(member => {
         const matchesStatus = attendanceFilter === 'All' || member.status === attendanceFilter;
         const matchesSearch = member.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             member.memberId.toLowerCase().includes(searchTerm.toLowerCase());
@@ -64,7 +71,7 @@ const InterestedMembersLayer = () => {
                     <div className="d-flex align-items-center gap-2">
                         <span className="text-secondary-light fw-bold text-sm">Attendance:</span>
                         <div className="btn-group btn-group-sm radius-8 border p-1 bg-neutral-50" role="group">
-                            {['All', 'Present', 'Absent'].map(status => (
+                            {['All', 'Present', 'Absent', 'Not Updated'].map(status => (
                                 <button
                                     key={status}
                                     type="button"
@@ -79,7 +86,7 @@ const InterestedMembersLayer = () => {
                             ))}
                         </div>
                     </div>
-                    <form className="navbar-search ms-2">
+                    {/* <form className="navbar-search ms-2">
                         <input
                             type="text"
                             className="bg-base h-40-px w-auto"
@@ -91,7 +98,7 @@ const InterestedMembersLayer = () => {
                             }}
                         />
                         <Icon icon="ion:search-outline" className="icon" />
-                    </form>
+                    </form> */}
                 </div>
             </div>
 
@@ -138,10 +145,36 @@ const InterestedMembersLayer = () => {
                                             </span>
                                         </td>
                                         <td className="text-center">
-                                            <span className={`badge radius-4 px-12 py-6 text-sm ${member.status === 'Present' ? 'bg-success-focus text-success-main' : 'bg-danger-focus text-danger-main'
-                                                }`}>
-                                                {member.status}
-                                            </span>
+                                            <div className="d-flex align-items-center justify-content-center gap-2">
+                                                {editingId === member.id ? (
+                                                    <select
+                                                        className="form-select form-select-sm w-auto"
+                                                        value={member.status}
+                                                        onChange={(e) => handleStatusChange(member.id, e.target.value)}
+                                                        autoFocus
+                                                        onBlur={() => setEditingId(null)}
+                                                    >
+                                                        <option value="Present">Present</option>
+                                                        <option value="Absent">Absent</option>
+                                                        <option value="Not Updated">Not Updated</option>
+                                                    </select>
+                                                ) : (
+                                                    <>
+                                                        <span className={`badge radius-4 px-12 py-6 text-sm ${member.status === 'Present' ? 'bg-success-focus text-success-main' :
+                                                            member.status === 'Absent' ? 'bg-danger-focus text-danger-main' : 'bg-neutral-100 text-secondary-light'
+                                                            }`}>
+                                                            {member.status}
+                                                        </span>
+                                                        <button
+                                                            className="text-primary-600 border-0 bg-transparent p-0 edit-btn shadow-none"
+                                                            onClick={() => setEditingId(member.id)}
+                                                            title="Edit Status"
+                                                        >
+                                                            <Icon icon="solar:pen-bold" className="text-lg" />
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

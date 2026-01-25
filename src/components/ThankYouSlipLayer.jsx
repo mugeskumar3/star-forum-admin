@@ -13,9 +13,9 @@ const ThankYouSlipLayer = () => {
                 name: 'ARAM Chapter',
                 amount: '₹1,34,11,533',
                 members: [
-                    { id: 1, name: 'Logarajan S P', company: 'e-intellisafe & Security', category: 'CCTV & Security', amount: '₹25,00,000' },
-                    { id: 2, name: 'Mathiarasu M', company: 'TECHMAXX ENGINEERING', category: 'Fire & Safety', amount: '₹18,50,000' },
-                    { id: 3, name: 'Mano Neelamegam', company: 'WUDFE INC', category: 'Interior Designer', amount: '₹22,00,000' }
+                    { id: 1, name: 'Logarajan S P', company: 'e-intellisafe & Security', category: 'CCTV & Security', amount: '₹25,00,000', type: 'Inside' },
+                    { id: 2, name: 'Mathiarasu M', company: 'TECHMAXX ENGINEERING', category: 'Fire & Safety', amount: '₹18,50,000', type: 'Outside' },
+                    { id: 3, name: 'Mano Neelamegam', company: 'WUDFE INC', category: 'Interior Designer', amount: '₹22,00,000', type: 'Inside' }
                 ]
             },
             {
@@ -23,9 +23,9 @@ const ThankYouSlipLayer = () => {
                 name: 'Arni Chapter',
                 amount: '₹67,29,71,600',
                 members: [
-                    { id: 4, name: 'Ramesh Kumar', company: 'Auto Solutions', category: 'Automobile', amount: '₹30,00,000' },
-                    { id: 5, name: 'Priya Lakshmi', company: 'Fashion Trends', category: 'Retail', amount: '₹15,75,000' },
-                    { id: 8, name: 'Suresh Raina', company: 'Cricket Academy', category: 'Sports', amount: '₹12,00,000' }
+                    { id: 4, name: 'Ramesh Kumar', company: 'Auto Solutions', category: 'Automobile', amount: '₹30,00,000', type: 'Outside' },
+                    { id: 5, name: 'Priya Lakshmi', company: 'Fashion Trends', category: 'Retail', amount: '₹15,75,000', type: 'Inside' },
+                    { id: 8, name: 'Suresh Raina', company: 'Cricket Academy', category: 'Sports', amount: '₹12,00,000', type: 'Outside' }
                 ]
             },
             {
@@ -33,8 +33,8 @@ const ThankYouSlipLayer = () => {
                 name: 'Salem Chapter',
                 amount: '₹45,20,000',
                 members: [
-                    { id: 9, name: 'Anbu Selvan', company: 'Textile Hub', category: 'Manufacturing', amount: '₹20,00,000' },
-                    { id: 10, name: 'Revathi S', company: 'Organic Foods', category: 'FMCG', amount: '₹25,20,000' }
+                    { id: 9, name: 'Anbu Selvan', company: 'Textile Hub', category: 'Manufacturing', amount: '₹20,00,000', type: 'Inside' },
+                    { id: 10, name: 'Revathi S', company: 'Organic Foods', category: 'FMCG', amount: '₹25,20,000', type: 'Outside' }
                 ]
             }
         ]
@@ -48,8 +48,8 @@ const ThankYouSlipLayer = () => {
                 name: 'ARAM Chapter',
                 amount: '₹95,00,000',
                 members: [
-                    { id: 6, name: 'Vijay Kumar', company: 'Tech Services', category: 'IT Solutions', amount: '₹45,00,000' },
-                    { id: 7, name: 'Anitha R', company: 'Consulting Firm', category: 'Business Consulting', amount: '₹50,00,000' }
+                    { id: 6, name: 'Vijay Kumar', company: 'Tech Services', category: 'IT Solutions', amount: '₹45,00,000', type: 'Inside' },
+                    { id: 7, name: 'Anitha R', company: 'Consulting Firm', category: 'Business Consulting', amount: '₹50,00,000', type: 'Outside' }
                 ]
             },
             {
@@ -57,8 +57,8 @@ const ThankYouSlipLayer = () => {
                 name: 'Coimbatore Chapter',
                 amount: '₹55,00,000',
                 members: [
-                    { id: 11, name: 'Murugan G', company: 'Pump Works', category: 'Industry', amount: '₹30,00,000' },
-                    { id: 12, name: 'Santhosh M', company: 'Jewels & Co', category: 'Retail', amount: '₹25,00,000' }
+                    { id: 11, name: 'Murugan G', company: 'Pump Works', category: 'Industry', amount: '₹30,00,000', type: 'Inside' },
+                    { id: 12, name: 'Santhosh M', company: 'Jewels & Co', category: 'Retail', amount: '₹25,00,000', type: 'Outside' }
                 ]
             }
         ]
@@ -137,9 +137,14 @@ const ThankYouSlipLayer = () => {
                                             <div className="d-flex justify-content-between align-items-start mb-4">
                                                 <div className="flex-grow-1 overflow-hidden">
                                                     <h6 className="text-sm fw-bold mb-2 text-dark text-truncate">{member.name}</h6>
-                                                    <span className="badge bg-neutral-100 text-secondary-light py-2 px-6 radius-4 text-xxs">
-                                                        {member.category}
-                                                    </span>
+                                                    <div className="d-flex align-items-center gap-2 mb-2">
+                                                        <span className="badge bg-neutral-100 text-secondary-light py-2 px-6 radius-4 text-xxs">
+                                                            {member.category}
+                                                        </span>
+                                                        <span className={`badge py-2 px-6 radius-4 text-xxs ${member.type === 'Inside' ? 'bg-info-focus text-info-600' : 'bg-warning-focus text-warning-main'}`}>
+                                                            {member.type}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                                 <div className="text-end">
                                                     <span className="text-success-main fw-bold text-md d-block">{member.amount}</span>

@@ -40,7 +40,7 @@ const PowerDateReportLayer = () => {
         id: i + 1,
         date: `2025-01-${(i % 25) + 1 < 10 ? '0' + ((i % 25) + 1) : (i % 25) + 1}`,
         memberName: ['Logarajan S P', 'Mathiarasu M', 'Mano Neelamegam', 'Kumar Raj S', 'Ramesh Kumar'][i % 5],
-        invitedTo: ['Elite Chapter', 'Warrior Chapter', 'Cross Chapter Members', 'Fort Admin'][i % 4],
+        invitedTo: i % 4 === 0 ? 'Rajesh, Priya' : i % 4 === 1 ? 'Amit, Sneha' : i % 4 === 2 ? 'Vikram, Arjun' : 'Megha, Suresh',
         meetingStatus: i % 2 === 0 ? 'Online' : 'In Person',
         name: ['Guest Rajesh', 'Guest Priya', 'Guest Amit', 'Guest Sneha', 'Guest Vikram'][i % 5],
         phoneNumber: `987654321${i % 10}`,
