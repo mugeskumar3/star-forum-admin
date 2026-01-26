@@ -2,12 +2,12 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import { MockDataService } from "../helper/MockDataService";
+import MeetingApi from "../Api/MeetingApi";
 import TablePagination from "./TablePagination";
 
 const MeetingListLayer = () => {
   const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
@@ -16,23 +16,35 @@ const MeetingListLayer = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [currentPage, rowsPerPage]);
 
-  const loadData = () => {
-    setData(MockDataService.getMeetings());
+  const loadData = async () => {
+    try {
+      const response = await MeetingApi.getMeeting({
+        page: currentPage,
+        limit: rowsPerPage,
+      });
+      if (response.status) {
+        setData(response.response.data || []);
+      }
+    } catch (error) {
+      console.error("Error loading meetings:", error);
+    }
   };
-
+  console.log(data,"dataaa")
   const confirmDelete = (id) => {
     setDeleteId(id);
     setShowDeleteModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deleteId) {
-      MockDataService.deleteMeeting(deleteId);
-      loadData();
-      setShowDeleteModal(false);
-      setDeleteId(null);
+      const response = await MeetingApi.deleteMeeting(deleteId);
+      if (response.status) {
+        loadData();
+        setShowDeleteModal(false);
+        setDeleteId(null);
+      }
     }
   };
 
@@ -97,22 +109,28 @@ const MeetingListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length === 0 ? (
+              {data.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="text-center">
                     No meetings found.
                   </td>
                 </tr>
               ) : (
-                currentData.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}.</td>
-                    <td>{item.topic}</td>
+                data.map((item, index) => (
+                  <tr key={item._id || item.id}>
+                    <td>{currentPage * rowsPerPage + index + 1}.</td>
+                    <td>{item.meetingTopic}</td>
                     <td>₹{item.meetingFee}</td>
-                    <td>₹{item.visitorsFee}</td>
-                    <td>{item.chapter}</td>
-                    <td>{new Date(item.startDate).toLocaleString()}</td>
-                    <td>{new Date(item.endDate).toLocaleString()}</td>
+                    <td>₹{item.visitorFee}</td>
+                    <td>
+                      {Array.isArray(item.chapters)
+                        ? item.chapters
+                            .map((chapter) => chapter.chapterName)
+                            .join(", ")
+                        : item.chapters}
+                    </td>
+                    <td>{new Date(item.startDateTime).toLocaleString()}</td>
+                    <td>{new Date(item.endDateTime).toLocaleString()}</td>
                     <td className="text-center">
                       <div className="d-flex justify-content-center">
                         <div
@@ -138,14 +156,14 @@ const MeetingListLayer = () => {
                           <Icon icon="mdi:eye-outline" className="menu-icon" />
                         </button>
                         <Link
-                          to={`/meeting-creation/edit/${item.id}`}
+                          to={`/meeting-creation/edit/${item._id || item.id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon icon="lucide:edit" className="menu-icon" />
                         </Link>
                         <button
                           type="button"
-                          onClick={() => confirmDelete(item.id)}
+                          onClick={() => confirmDelete(item._id || item.id)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -172,7 +190,6 @@ const MeetingListLayer = () => {
         />
       </div>
 
-      {/* Delete Confirmation Modal */}
       <Modal
         centered
         show={showDeleteModal}
