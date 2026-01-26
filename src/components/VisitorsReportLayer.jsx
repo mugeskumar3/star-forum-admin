@@ -20,7 +20,7 @@ const VisitorsReportLayer = () => {
       email: `visitor${i + 1}@example.com`,
       invitedBy: `Member ${i + 1}`,
       sourceOfEvent: ["Social Media", "Referral", "Website", "Direct"][i % 4],
-      status: ["Yes", "May be", "No"][i % 3],
+      status: "Pending",
       zone: ["Zone 1", "Zone 2"][i % 2],
       ed: ["ED 1", "ED 2"][i % 2],
       rd: ["RD 1", "RD 2"][i % 2],
@@ -70,6 +70,10 @@ const VisitorsReportLayer = () => {
       ...provided,
       zIndex: 9999,
     }),
+  };
+
+  const handleStatusChange = (id, newStatus) => {
+    setVisitors(prev => prev.map(v => v.id === id ? { ...v, status: newStatus } : v));
   };
 
   // Filtering logic
@@ -196,7 +200,7 @@ const VisitorsReportLayer = () => {
               value={selectedRd}
               onChange={setSelectedRd}
               placeholder="Select RD"
-              styles={customStyles} y
+              styles={customStyles}
               isClearable
             />
           </div>
@@ -219,14 +223,16 @@ const VisitorsReportLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">Sl.No</th>
-                <th scope="col">Visitors Name</th>
-                <th scope="col">Contact Number</th>
-                <th scope="col">Business Category</th>
-                <th scope="col">Source of event</th>
-                <th scope="col">Invited By</th>
-                <th scope="col">Status</th>
-                <th scope="col" className="text-center">Action</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Sl.No</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Date</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Visitors Name</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Contact Number</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Business Category</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Business Name</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Source of event</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Invited By</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Status</th>
+                {/* <th scope="col" className="text-center" style={{ color: "black", fontWeight: '600' }}>Action</th> */}
               </tr>
             </thead>
             <tbody>
@@ -234,25 +240,32 @@ const VisitorsReportLayer = () => {
                 currentData.map((visitor, index) => (
                   <tr key={visitor.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{formatDate(visitor.visitDate)}</td>
                     <td>{visitor.visitorName}</td>
                     <td>{visitor.phone}</td>
                     <td>{visitor.category}</td>
+                    <td>{visitor.company}</td>
                     <td>{visitor.sourceOfEvent}</td>
                     <td>{visitor.invitedBy}</td>
                     <td>
-                      <span
-                        className={`badge radius-4 px-10 py-4 text-sm ${visitor.status === "Yes"
-                          ? "bg-success-focus text-success-main"
-                          : visitor.status === "May be"
-                            ? "bg-warning-focus text-warning-main"
-                            : "bg-danger-focus text-danger-main"
+                      <select
+                        className={`form-select form-select-sm radius-4 fw-medium ${visitor.status === "Approved"
+                          ? "bg-success-focus text-success-main border-success-main"
+                          : visitor.status === "Rejected"
+                            ? "bg-danger-focus text-danger-main border-danger-main"
+                            : "bg-warning-focus text-warning-main border-warning-main"
                           }`}
+                        value={visitor.status}
+                        onChange={(e) => handleStatusChange(visitor.id, e.target.value)}
+                        style={{ width: '120px' }}
                       >
-                        {visitor.status}
-                      </span>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                      </select>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex justify-content-center gap-2">
+                    {/* <td className="text-center"> */}
+                    {/* <div className="d-flex justify-content-center gap-2">
                         <button
                           type="button"
                           onClick={() => navigate(`/visitors-form/view/${visitor.id}`)}
@@ -269,13 +282,13 @@ const VisitorsReportLayer = () => {
                         >
                           <Icon icon="lucide:edit" className="icon text-xl" />
                         </button>
-                      </div>
-                    </td>
+                      </div> */}
+                    {/* </td> */}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center py-4">
+                  <td colSpan="10" className="text-center py-4">
                     No visitors found.
                   </td>
                 </tr>
