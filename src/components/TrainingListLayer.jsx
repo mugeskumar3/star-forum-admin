@@ -1,34 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import TablePagination from "./TablePagination";
 import { Modal } from "react-bootstrap";
 
-const TrainingListLayer = () => {
-  const initialTrainings = Array.from({ length: 20 }, (_, i) => ({
-    id: `TRN-0${i + 1 < 10 ? "0" + (i + 1) : i + 1}`,
-    chapter:
-      i % 3 === 0
-        ? "Star Chapter"
-        : i % 3 === 1
-          ? "Global Chapter"
-          : "Elite Chapter",
-    title:
-      i % 2 === 0
-        ? "Advanced Leadership Workshop"
-        : "Digital Marketing Masterclass",
-    module: i % 2 === 0 ? "Leadership" : "Marketing",
-    date: `${10 + (i % 20)} Jan 2025`,
-    time: "10:00 AM",
-    trainer: i % 2 === 0 ? "John Doe" : "Jane Smith",
-    mode: i % 4 === 0 ? "Online" : "In Person",
-    status: i % 5 === 0 ? "Completed" : "Upcoming",
-  }));
+import TrainingApi from "../Api/TrainingApi";
 
-  const [trainings] = useState(initialTrainings);
-  const [currentPage, setCurrentPage] = useState(1);
+const TrainingListLayer = () => {
+  const [trainings, setTrainings] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState(null);
@@ -50,46 +33,40 @@ const TrainingListLayer = () => {
       contact: "9876543211",
       feeStatus: "Not Paid",
     },
-    {
-      id: 3,
-      chapter: "Elite Chapter",
-      name: "Charlie Brown",
-      category: "Member",
-      contact: "9876543212",
-      feeStatus: "Paid",
-    },
-    {
-      id: 4,
-      chapter: "Star Chapter",
-      name: "David Wilson",
-      category: "Member",
-      contact: "9876543213",
-      feeStatus: "Paid",
-    },
-    {
-      id: 5,
-      chapter: "Global Chapter",
-      name: "Eva Green",
-      category: "Guest",
-      contact: "9876543214",
-      feeStatus: "Not Paid",
-    },
   ]);
 
-  const filteredTrainings = trainings.filter(
-    (item) =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.module.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.chapter.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  useEffect(() => {
+    fetchTrainings();
+  }, [currentPage, rowsPerPage, searchTerm]);
 
-  const totalRecords = filteredTrainings.length;
+  const fetchTrainings = async () => {
+    try {
+      const response = await TrainingApi.getTraining({
+        page: currentPage,
+        limit: rowsPerPage,
+        search: searchTerm,
+      });
+      if (response && response.status && response.response.data) {
+        setTrainings(response.response.data);
+        setTotalRecords(
+          response.response.totalRecords || response.response.data.length,
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching trainings:", error);
+    }
+  };
+
+  const deleteTraining = async (id) => {
+    if (window.confirm("Are you sure you want to delete this training?")) {
+      const response = await TrainingApi.deleteTraining(id);
+      if (response && response.status) {
+        fetchTrainings();
+      }
+    }
+  };
+
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = filteredTrainings.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -101,12 +78,13 @@ const TrainingListLayer = () => {
   };
 
   const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case "Upcoming":
-        return "bg-primary-focus text-primary-main";
-      case "Completed":
+    switch (status?.toLowerCase()) {
+      case "upcoming":
+      case "planned":
+        return "bg-neutral-200 text-neutral-600";
+      case "completed":
         return "bg-success-focus text-success-main";
-      case "Cancelled":
+      case "cancelled":
         return "bg-danger-focus text-danger-main";
       default:
         return "bg-neutral-200 text-neutral-600";
@@ -134,7 +112,7 @@ const TrainingListLayer = () => {
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <h6 className="text-primary-600 pb-2 mb-0">Training List</h6>
         <div className="d-flex align-items-center flex-wrap gap-3 ms-auto">
-          <form className="navbar-search">
+          <form className="navbar-search" onSubmit={(e) => e.preventDefault()}>
             <input
               type="text"
               className="bg-base h-40-px w-auto"
@@ -166,10 +144,12 @@ const TrainingListLayer = () => {
             <thead>
               <tr>
                 <th scope="col">Training ID</th>
-                <th scope="col">Chapter</th>
-                <th scope="col">Training Title</th>
-                <th scope="col">Date & Time</th>
-                <th scope="col">Trainer</th>
+                <th scope="col" style={{ minWidth: "150px" }}>
+                  Training Title
+                </th>
+                <th scope="col" style={{ minWidth: "150px" }}>
+                  Date & Time
+                </th>
                 <th scope="col">Status</th>
                 <th scope="col" className="text-center">
                   Action
@@ -177,19 +157,15 @@ const TrainingListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((item) => (
-                  <tr key={item.id}>
+              {trainings.length > 0 ? (
+                trainings.map((item) => (
+                  <tr key={item._id || item.trainingId}>
                     <td>
                       <span className="text-md mb-0 fw-medium text-primary-600">
-                        {item.id}
+                        {item.trainingId || item._id}
                       </span>
                     </td>
-                    <td>
-                      <span className="text-md mb-0 fw-normal text-secondary-light">
-                        {item.chapter}
-                      </span>
-                    </td>
+
                     <td>
                       <span className="text-md mb-0 fw-normal text-secondary-light">
                         {item.title}
@@ -198,18 +174,27 @@ const TrainingListLayer = () => {
                     <td>
                       <div className="d-flex flex-column">
                         <span className="text-md mb-0 fw-normal text-secondary-light">
-                          {item.date}
+                          {new Date(item.trainingDateTime)
+                            .toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })
+                            .replace(/ /g, "-")}
                         </span>
                         <span className="text-xs text-secondary-light">
-                          {item.time}
+                          {new Date(item.trainingDateTime).toLocaleTimeString(
+                            "en-US",
+                            {
+                              hour: "numeric",
+                              minute: "2-digit",
+                              hour12: true,
+                            },
+                          )}
                         </span>
                       </div>
                     </td>
-                    <td>
-                      <span className="text-md mb-0 fw-normal text-secondary-light">
-                        {item.trainer}
-                      </span>
-                    </td>
+
                     <td>
                       <span
                         className={`badge radius-4 px-10 py-4 text-sm ${getStatusBadgeClass(
@@ -231,12 +216,15 @@ const TrainingListLayer = () => {
                           />
                         </button>
                         <Link
-                          to={`/training-edit/${item.id}`}
+                          to={`/training-edit/${item._id}`}
                           className="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon icon="lucide:edit" className="icon text-xl" />
                         </Link>
-                        <button className="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0">
+                        <button
+                          onClick={() => deleteTraining(item._id)}
+                          className="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
+                        >
                           <Icon
                             icon="fluent:delete-24-regular"
                             className="icon text-xl"
@@ -267,7 +255,6 @@ const TrainingListLayer = () => {
         />
       </div>
 
-      {/* View Modal */}
       {showModal && (
         <div
           className="modal fade show d-block"

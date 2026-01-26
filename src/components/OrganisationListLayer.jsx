@@ -49,7 +49,6 @@ const OrganisationListLayer = () => {
   };
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };

@@ -1,83 +1,137 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Select from "react-select";
-// import { Icon } from "@iconify/react/dist/iconify.js"; // Not strictly needed if cleaner UI uses text labels or standard icons
-
+import TrainingApi from "../Api/TrainingApi";
+import ChapterApi from "../Api/ChapterApi";
+import RegionApi from "../Api/RegionApi";
 const TrainingFormLayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    chapters: [],
+    chapterIds: [],
     title: "",
     description: "",
-    trainers: [],
+    trainerIds: [],
     trainingDateTime: "",
     lastDateForApply: "",
     duration: "",
     mode: null,
-    location: "",
+    locationOrLink: "",
     maxAllowed: "",
     status: null,
-    trainingFee: "",
-    spotFee: "",
   });
 
-  // Options for Selects
-  const chapterOptions = [
-    { value: "Star Chapter", label: "Star Chapter" },
-    { value: "Global Chapter", label: "Global Chapter" },
-    { value: "Elite Chapter", label: "Elite Chapter" },
-    { value: "Sunrise Chapter", label: "Sunrise Chapter" },
-  ];
-
-  const trainerOptions = [
-    { value: "Rajesh Kumar", label: "Rajesh Kumar (Admin)" },
-    { value: "Priya Sharma", label: "Priya Sharma (Admin)" },
-    { value: "Amit Singh", label: "Amit Singh (Admin)" },
-    { value: "Suresh Raina", label: "Suresh Raina (Admin)" },
-  ];
+  const [chapterOptions, setChapterOptions] = useState([]);
+  const [trainerOptions, setTrainerOptions] = useState([]);
 
   const modeOptions = [
-    { value: "In Person", label: "In Person" },
-    { value: "Online", label: "Online" },
+    { value: "in-person", label: "In Person" },
+    { value: "online", label: "Online" },
   ];
 
   const statusOptions = [
-    { value: "Upcoming", label: "Upcoming" },
-    { value: "Planned", label: "Planned" },
-    { value: "Completed", label: "Completed" },
+    { value: "upcoming", label: "Upcoming" },
+    { value: "planned", label: "Planned" },
+    { value: "completed", label: "Completed" },
   ];
 
   useEffect(() => {
-    if (isEditMode) {
-      // Simulate fetching data
-      setFormData({
-        chapters: [chapterOptions[0], chapterOptions[1]],
-        title: "Advanced Leadership Workshop",
-        description:
-          "A comprehensive workshop on modern leadership strategies.",
-        trainers: [trainerOptions[0]],
-        trainingDateTime: "2025-01-15T10:00",
-        lastDateForApply: "2025-01-10T23:59",
-        duration: "4 Hours",
-        mode: modeOptions[0],
-        location: "Conference Hall A",
-        maxAllowed: "50",
-        status: statusOptions[1], // Planned
-        trainingFee: "500",
-        spotFee: "700",
-      });
-    }
-  }, [isEditMode]);
+    const fetchData = async () => {
+      let chapters = [];
+      let trainers = [];
+      try {
+        const chapterRes = await ChapterApi.getChapter();
+        if (chapterRes && chapterRes.status && chapterRes.response.data) {
+          chapters = chapterRes.response.data.map((c) => ({
+            value: c._id,
+            label: c.chapterName,
+          }));
+          setChapterOptions(chapters);
+        }
+
+        const trainerRes = await RegionApi.getAdminUser();
+        if (trainerRes && trainerRes.status && trainerRes.response.data) {
+          trainers = trainerRes.response.data.map((t) => ({
+            value: t._id,
+            label: t.name,
+          }));
+          setTrainerOptions(trainers);
+        }
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
+
+      if (isEditMode) {
+        try {
+          const response = await TrainingApi.getTraining({ id });
+          if (response && response.status && response.response.data) {
+            const data = response.response.data;
+
+            const mappedChapterIds = data.chapterIds
+              ? data.chapterIds.map((c) => {
+                  if (typeof c === "object") {
+                    return { value: c._id, label: c.chapterName || c.name };
+                  }
+                  const match = chapters.find((opt) => opt.value === c);
+                  return match || { value: c, label: "Unknown Chapter" };
+                })
+              : [];
+
+            const mappedTrainerIds = data.trainerIds
+              ? data.trainerIds.map((t) => {
+                  if (typeof t === "object") {
+                    return { value: t._id, label: t.name };
+                  }
+                  const match = trainers.find((opt) => opt.value === t);
+                  return match || { value: t, label: "Unknown Trainer" };
+                })
+              : [];
+
+            setFormData({
+              chapterIds: mappedChapterIds,
+              title: data.title || "",
+              description: data.description || "",
+              trainerIds: mappedTrainerIds,
+              trainingDateTime: data.trainingDateTime
+                ? new Date(data.trainingDateTime).toISOString().slice(0, 16)
+                : "",
+              lastDateForApply: data.lastDateForApply
+                ? new Date(data.lastDateForApply).toISOString().slice(0, 16)
+                : "",
+              duration: data.duration || "",
+              mode: data.mode
+                ? modeOptions.find(
+                    (opt) => opt.value === data.mode.toLowerCase(),
+                  ) || { value: data.mode, label: data.mode }
+                : null,
+              locationOrLink: data.locationOrLink || "",
+              maxAllowed: data.maxAllowed || "",
+              status: data.status
+                ? statusOptions.find(
+                    (opt) => opt.value === data.status.toLowerCase(),
+                  ) || { value: data.status, label: data.status }
+                : null,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching training details:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [isEditMode, id]); // Added id to dependency array
+
+  // Removed separate fetchOptions and fetchTrainingDetails functions to avoid staleness issues
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -85,7 +139,6 @@ const TrainingFormLayer = () => {
 
   const handleSelectChange = (selectedOption, actionMeta) => {
     setFormData((prev) => ({ ...prev, [actionMeta.name]: selectedOption }));
-    // Clear error on selection
     if (errors[actionMeta.name]) {
       setErrors((prev) => ({ ...prev, [actionMeta.name]: "" }));
     }
@@ -94,16 +147,16 @@ const TrainingFormLayer = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.chapters || formData.chapters.length === 0) {
-      newErrors.chapters = "Please select at least one chapter.";
+    if (!formData.chapterIds || formData.chapterIds.length === 0) {
+      newErrors.chapterIds = "Please select at least one chapter.";
     }
     if (!formData.title.trim()) {
       newErrors.title = "Training title is required.";
     }
-    if (!formData.trainers || formData.trainers.length === 0) {
-      newErrors.trainers = "Please select at least one trainer.";
+    if (!formData.trainerIds || formData.trainerIds.length === 0) {
+      newErrors.trainerIds = "Please select at least one trainer.";
     }
-    if (!formData.duration.trim()) {
+    if (!formData.duration) {
       newErrors.duration = "Duration is required.";
     }
     if (!formData.trainingDateTime) {
@@ -115,26 +168,58 @@ const TrainingFormLayer = () => {
     if (!formData.mode) {
       newErrors.mode = "Please select a mode.";
     }
-    if (!formData.location.trim()) {
-      newErrors.location = "Location/Link is required.";
+    if (!formData.locationOrLink.trim()) {
+      newErrors.locationOrLink = "Location/Link is required.";
+    }
+    if (!formData.status) {
+      newErrors.status = "Status is required.";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    console.log("Training Form Submitted:", formData);
-    navigate("/training-list");
+    setLoading(true);
+
+    const payload = {
+      chapterIds: formData.chapterIds.map((c) => c.value),
+      title: formData.title,
+      description: formData.description,
+      trainerIds: formData.trainerIds.map((t) => t.value),
+      trainingDateTime: new Date(formData.trainingDateTime).toISOString(),
+      lastDateForApply: new Date(formData.lastDateForApply).toISOString(),
+      duration: Number(formData.duration),
+      mode: formData.mode.value,
+      locationOrLink: formData.locationOrLink,
+      maxAllowed: Number(formData.maxAllowed) || 0,
+      status: formData.status.value,
+    };
+
+    try {
+      let response;
+      if (isEditMode) {
+        response = await TrainingApi.updateTraining({ ...payload, id });
+      } else {
+        response = await TrainingApi.createTraining(payload);
+      }
+
+      if (response && response.status) {
+        navigate("/training-list");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Custom Styles for React Select
   const customStyles = {
     control: (provided, state) => ({
       ...provided,
@@ -152,12 +237,12 @@ const TrainingFormLayer = () => {
     }),
     multiValue: (provided) => ({
       ...provided,
-      backgroundColor: "#eef2ff", // bg-primary-50 equivalent
+      backgroundColor: "#eef2ff",
       borderRadius: "4px",
     }),
     multiValueLabel: (provided) => ({
       ...provided,
-      color: "#4f46e5", // text-primary-600 equivalent
+      color: "#4f46e5",
     }),
     multiValueRemove: (provided) => ({
       ...provided,
@@ -179,26 +264,24 @@ const TrainingFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-3">
-            {/* Chapter - Multi Select */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Chapter <span className="text-danger">*</span>
               </label>
               <Select
                 isMulti
-                name="chapters"
+                name="chapterIds"
                 options={chapterOptions}
-                value={formData.chapters}
+                value={formData.chapterIds}
                 onChange={handleSelectChange}
                 styles={customStyles}
                 placeholder="Select Chapters..."
               />
-              {errors.chapters && (
-                <small className="text-danger">{errors.chapters}</small>
+              {errors.chapterIds && (
+                <small className="text-danger">{errors.chapterIds}</small>
               )}
             </div>
 
-            {/* Training Title */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Training Title <span className="text-danger">*</span>
@@ -216,44 +299,41 @@ const TrainingFormLayer = () => {
               )}
             </div>
 
-            {/* Trainer Name - Multi Select */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Trainer Name <span className="text-danger">*</span>
               </label>
               <Select
                 isMulti
-                name="trainers"
+                name="trainerIds"
                 options={trainerOptions}
-                value={formData.trainers}
+                value={formData.trainerIds}
                 onChange={handleSelectChange}
                 styles={customStyles}
                 placeholder="Select Trainers..."
               />
-              {errors.trainers && (
-                <small className="text-danger">{errors.trainers}</small>
+              {errors.trainerIds && (
+                <small className="text-danger">{errors.trainerIds}</small>
               )}
             </div>
 
-            {/* Duration */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Duration <span className="text-danger">*</span>
+                Duration (Hours) <span className="text-danger">*</span>
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control radius-8"
                 name="duration"
                 value={formData.duration}
                 onChange={handleChange}
-                placeholder="e.g. 2 Hours"
+                placeholder="e.g. 4"
               />
               {errors.duration && (
                 <small className="text-danger">{errors.duration}</small>
               )}
             </div>
 
-            {/* Training Date & Time */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Training Date & Time <span className="text-danger">*</span>
@@ -271,7 +351,6 @@ const TrainingFormLayer = () => {
               )}
             </div>
 
-            {/* Last Date For Apply */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Last Date For Apply <span className="text-danger">*</span>
@@ -288,7 +367,6 @@ const TrainingFormLayer = () => {
               )}
             </div>
 
-            {/* Mode */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Mode <span className="text-danger">*</span>
@@ -306,7 +384,6 @@ const TrainingFormLayer = () => {
               )}
             </div>
 
-            {/* Location / Meeting Link */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Location / Meeting Link <span className="text-danger">*</span>
@@ -314,17 +391,16 @@ const TrainingFormLayer = () => {
               <input
                 type="text"
                 className="form-control radius-8"
-                name="location"
-                value={formData.location}
+                name="locationOrLink"
+                value={formData.locationOrLink}
                 onChange={handleChange}
                 placeholder="Enter Location or Link"
               />
-              {errors.location && (
-                <small className="text-danger">{errors.location}</small>
+              {errors.locationOrLink && (
+                <small className="text-danger">{errors.locationOrLink}</small>
               )}
             </div>
 
-            {/* Max Allowed */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">Max Allowed</label>
               <input
@@ -337,9 +413,10 @@ const TrainingFormLayer = () => {
               />
             </div>
 
-            {/* Status */}
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Status</label>
+              <label className="form-label fw-semibold">
+                Status <span className="text-danger">*</span>
+              </label>
               <Select
                 name="status"
                 options={statusOptions}
@@ -348,43 +425,11 @@ const TrainingFormLayer = () => {
                 styles={customStyles}
                 placeholder="Select Status"
               />
+              {errors.status && (
+                <small className="text-danger">{errors.status}</small>
+              )}
             </div>
 
-            {/* Training Registration Fee */}
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Training Registration Fee
-              </label>
-              <div className="input-group">
-                <input
-                  type="number"
-                  className="form-control radius-8"
-                  name="trainingFee"
-                  value={formData.trainingFee}
-                  onChange={handleChange}
-                  placeholder=" ₹0.00"
-                />
-              </div>
-            </div>
-
-            {/* Spot Registration Fee */}
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">
-                Spot Registration Fee
-              </label>
-              <div className="input-group">
-                <input
-                  type="number"
-                  className="form-control radius-8"
-                  name="spotFee"
-                  value={formData.spotFee}
-                  onChange={handleChange}
-                  placeholder=" ₹0.00"
-                />
-              </div>
-            </div>
-
-            {/* Training Description */}
             <div className="col-12">
               <label className="form-label fw-semibold">
                 Training Description
@@ -410,8 +455,9 @@ const TrainingFormLayer = () => {
             <button
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
+              disabled={loading}
             >
-              Save Training
+              {loading ? "Saving..." : "Save Training"}
             </button>
           </div>
         </form>

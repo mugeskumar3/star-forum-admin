@@ -45,7 +45,9 @@ class ZoneApi {
 
   async getZoneByState(state) {
     try {
-      const response = await apiClient.get(`/zone/by-state/${state}`);
+      const response = await apiClient.get(
+        `/zone/by-state/${encodeURIComponent(state)}`,
+      );
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }

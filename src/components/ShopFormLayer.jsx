@@ -11,6 +11,8 @@ import { IMAGE_BASE_URL } from "../Config/Index";
 const ShopFormLayer = () => {
   const { id } = useParams(); // Get ID from URL for edit mode
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     productName: "",
     price: "",
@@ -63,13 +65,13 @@ const ShopFormLayer = () => {
 
           if (product.productImage) {
             setExistingImage(product.productImage);
-            // If imagePath is relative, you might need a base URL. 
+            // If imagePath is relative, you might need a base URL.
             // Assuming existingImage.imagePath or similar helps construct URL.
             // For preview, we might assume a base URL if it's just a path.
-            // But usually API returns full URL or we use a helper. 
-            // Let's assume we can display it. 
+            // But usually API returns full URL or we use a helper.
+            // Let's assume we can display it.
             // The user example had "imagePath": "uploads/products". This is not a URL.
-            // We probably need a base URL for images. 
+            // We probably need a base URL for images.
             // For now, I'll try to show it using a likely path or just the name if full path missing.
             // Actually, the list view used `product.image`.
             // I'll assume we can use `http://localhost:5000/` + path + / + imageName as a guess or just use what works.
@@ -87,6 +89,9 @@ const ShopFormLayer = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSelectChange = (selectedOption) => {
@@ -94,6 +99,9 @@ const ShopFormLayer = () => {
       ...prev,
       categoryId: selectedOption ? selectedOption.value : "",
     }));
+    if (errors.categoryId) {
+      setErrors((prev) => ({ ...prev, categoryId: "" }));
+    }
   };
 
   const handleImageChange = (e) => {
@@ -105,11 +113,51 @@ const ShopFormLayer = () => {
         setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
+      if (errors.image) {
+        setErrors((prev) => ({ ...prev, image: "" }));
+      }
     }
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+    let isValid = true;
+
+    if (!formData.productName.trim()) {
+      newErrors.productName = "Product Name is required";
+      isValid = false;
+    }
+
+    if (!formData.price) {
+      newErrors.price = "Price is required";
+      isValid = false;
+    } else if (Number(formData.price) <= 0) {
+      newErrors.price = "Price must be greater than 0";
+      isValid = false;
+    }
+
+    if (!formData.categoryId) {
+      newErrors.categoryId = "Category is required";
+      isValid = false;
+    }
+
+    // Image validation: required if no existing image and no new image selected
+    if (!existingImage && !imageFile && !previewImage) {
+      newErrors.image = "Product Image is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     let finalImage = existingImage;
@@ -118,7 +166,7 @@ const ShopFormLayer = () => {
     if (imageFile) {
       // If editing and replacing image, delete old one
       if (id && existingImage && existingImage.imageName) {
-        // Construct path for delete. User said: path=uploads/image_... 
+        // Construct path for delete. User said: path=uploads/image_...
         // But existingImage has imagePath and imageName.
         // Let's try to match user's delete query.
         // user said: `.../delete?path=uploads/image_1769080574306.png`
@@ -190,7 +238,9 @@ const ShopFormLayer = () => {
     // Case 2: Removing an existing server image
     if (existingImage) {
       if (window.confirm("Are you sure you want to delete this image?")) {
-        const response = await ImageUploadApi.deleteImage({ path: existingImage.path });
+        const response = await ImageUploadApi.deleteImage({
+          path: existingImage.path,
+        });
         if (response.status) {
           setExistingImage(null);
           setPreviewImage(null);
@@ -200,18 +250,30 @@ const ShopFormLayer = () => {
   };
 
   const getSelectedOption = () => {
-    return categoryOptions.find((opt) => opt.value === formData.categoryId) || null;
+    return (
+      categoryOptions.find((opt) => opt.value === formData.categoryId) || null
+    );
   };
 
   const customStyles = {
-    control: (provided) => ({
+    control: (provided, state) => ({
       ...provided,
       minHeight: "40px",
       borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
+      borderColor: state.isFocused
+        ? "#86b7fe"
+        : errors.categoryId
+          ? "#dc3545"
+          : "#dee2e6",
+      boxShadow: state.isFocused
+        ? "0 0 0 0.25rem rgba(13, 110, 253, 0.25)"
+        : "none",
       "&:hover": {
-        borderColor: "#dee2e6",
+        borderColor: state.isFocused
+          ? "#86b7fe"
+          : errors.categoryId
+            ? "#dc3545"
+            : "#dee2e6",
       },
     }),
     singleValue: (provided) => ({
@@ -227,7 +289,9 @@ const ShopFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
-        <h6 className="text-primary-600 pb-2 mb-0">{id ? "Edit Product" : "Add New Product"}</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">
+          {id ? "Edit Product" : "Add New Product"}
+        </h6>
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
@@ -239,13 +303,15 @@ const ShopFormLayer = () => {
               </label>
               <input
                 type="text"
-                className="form-control radius-8"
+                className={`form-control radius-8 ${errors.productName ? "is-invalid" : ""}`}
                 name="productName"
                 value={formData.productName}
                 onChange={handleChange}
                 placeholder="Enter product name"
-                required
               />
+              {errors.productName && (
+                <div className="invalid-feedback">{errors.productName}</div>
+              )}
             </div>
 
             {/* Price */}
@@ -254,18 +320,17 @@ const ShopFormLayer = () => {
                 Price <span className="text-danger">*</span>
               </label>
               <div className="input-group">
-                <span className="input-group-text bg-base text-secondary-light radius-8 border-end-0">
-                  ₹
-                </span>
                 <input
                   type="number"
-                  className="form-control radius-8"
+                  className={`form-control radius-8 ${errors.price ? "is-invalid" : ""}`}
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
-                  placeholder="0.00"
-                  required
+                  placeholder="Enter price"
                 />
+                {errors.price && (
+                  <div className="invalid-feedback">{errors.price}</div>
+                )}
               </div>
             </div>
 
@@ -280,39 +345,77 @@ const ShopFormLayer = () => {
                 value={getSelectedOption()}
                 onChange={handleSelectChange}
                 styles={customStyles}
-                placeholder={categoryOptions.length > 0 ? "Select Category" : "Loading Categories..."}
+                placeholder={
+                  categoryOptions.length > 0
+                    ? "Select Category"
+                    : "Loading Categories..."
+                }
                 isClearable={false}
-                required
               />
+              {errors.categoryId && (
+                <small className="text-danger">{errors.categoryId}</small>
+              )}
             </div>
 
             {/* Image Upload */}
-            <div className="col-md-6">
+            <div className="col-12">
               <label className="form-label fw-semibold">
                 Product Image <span className="text-danger">*</span>
               </label>
-              <input
-                type="file"
-                className="form-control radius-8"
-                accept="image/*"
-                onChange={handleImageChange}
-                required={!id && !previewImage} // Required only on create or if no image
-              />
-              {previewImage && (
-                <div className="mt-3 position-relative d-inline-block">
-                  <img
-                    src={previewImage}
-                    alt="Preview"
-                    className="w-120-px h-120-px object-fit-cover radius-8 border"
-                    onError={(e) => e.target.style.display = 'none'}
+
+              {!previewImage && !imageFile && !loading && (
+                <div className="position-relative">
+                  <input
+                    type="file"
+                    className={`form-control radius-8 ${errors.image ? "is-invalid" : ""}`}
+                    accept="image/*"
+                    onChange={handleImageChange}
                   />
+                  {errors.image && (
+                    <div className="invalid-feedback">{errors.image}</div>
+                  )}
+                </div>
+              )}
+
+              {(previewImage || imageFile) && (
+                <div className="d-flex align-items-center justify-content-between p-3 border rounded bg-light-600">
+                  <div className="d-flex align-items-center gap-3">
+                    <div className="w-100-px h-100-px rounded-8 overflow-hidden border">
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="w-100 h-100 object-fit-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://placehold.co/100x100?text=Error";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-primary-600 mb-0 fw-medium">
+                        {imageFile ? "New Image Selected" : "Current Image"}
+                      </p>
+                      <p
+                        className="text-secondary-400 text-sm mb-0 text-truncate"
+                        style={{ maxWidth: "200px" }}
+                      >
+                        {imageFile
+                          ? imageFile.name
+                          : existingImage?.imageName || "product-image.png"}
+                      </p>
+                    </div>
+                  </div>
                   <button
                     type="button"
+                    className="btn btn-icon btn-danger-100 text-danger-600 rounded-circle"
                     onClick={handleRemoveImage}
-                    className="position-absolute top-0 start-100 translate-middle btn btn-danger rounded-circle p-0 d-flex align-items-center justify-content-center"
-                    style={{ width: '24px', height: '24px', border: '2px solid white' }}
+                    title="Delete Image"
                   >
-                    <Icon icon="ic:round-close" width="16" height="16" />
+                    <Icon
+                      icon="mingcute:delete-2-line"
+                      width="24"
+                      height="24"
+                    />
                   </button>
                 </div>
               )}
