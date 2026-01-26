@@ -10,50 +10,18 @@ const Note121Layer = () => {
   const [reports, setReports] = useState(
     Array.from({ length: 20 }).map((_, i) => ({
       id: i + 1,
-      dateTime: "2025-01-25T10:30:00", // Changed to ISO format for better parsing
+      dateTime: "2025-01-25T10:30:00",
       memberName: [
-        "Rajesh Kumar",
-        "Priya Sharma",
-        "Amit Patel",
-        "Sneha Reddy",
-        "Vikram Singh",
-        "Ananya Iyer",
-        "Suresh Nair",
-        "Megha Gupta",
-        "Arjun Verma",
-        "Kavita Joshi",
-        "Rahul Deshmukh",
-        "Pooja Malhotra",
-        "Sandeep Bansal",
-        "Neha Choudhury",
-        "Vijay Ranganathan",
-        "Shilpa Kulkarni",
-        "Manish Tiwari",
-        "Divya Saxena",
-        "Pankaj अग्रवाल",
-        "Swati Bhattacharya",
+        "Rajesh Kumar", "Priya Sharma", "Amit Patel", "Sneha Reddy", "Vikram Singh",
+        "Ananya Iyer", "Suresh Nair", "Megha Gupta", "Arjun Verma", "Kavita Joshi",
+        "Rahul Deshmukh", "Pooja Malhotra", "Sandeep Bansal", "Neha Choudhury", "Vijay Ranganathan",
+        "Shilpa Kulkarni", "Manish Tiwari", "Divya Saxena", "Pankaj अग्रवाल", "Swati Bhattacharya",
       ][i],
       metWith: [
-        "John Doe",
-        "Jane Smith",
-        "Robert Brown",
-        "Emily Davis",
-        "Michael Wilson",
-        "Sarah Miller",
-        "David Moore",
-        "Jessica Taylor",
-        "Richard Anderson",
-        "Karen Thomas",
-        "Lisa Jackson",
-        "Kevin White",
-        "Brian Harris",
-        "Ashley Martin",
-        "Steven Thompson",
-        "Mary Garcia",
-        "Daniel Martinez",
-        "Patricia Robinson",
-        "Paul Clark",
-        "Jennifer Rodriguez",
+        "John Doe", "Jane Smith", "Robert Brown", "Emily Davis", "Michael Wilson",
+        "Sarah Miller", "David Moore", "Jessica Taylor", "Richard Anderson", "Karen Thomas",
+        "Lisa Jackson", "Kevin White", "Brian Harris", "Ashley Martin", "Steven Thompson",
+        "Mary Garcia", "Daniel Martinez", "Patricia Robinson", "Paul Clark", "Jennifer Rodriguez",
       ][i],
       initiatedBy: i % 2 === 0 ? "Member" : "Met With",
       location: ["Chennai", "Mumbai", "Delhi", "Bangalore", "Hyderabad"][i % 5],
@@ -72,7 +40,7 @@ const Note121Layer = () => {
 
   // Modal State
   const [showImageModal, setShowImageModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedReport, setSelectedReport] = useState(null);
 
   // Filter States
   const [selectedChapter, setSelectedChapter] = useState(null);
@@ -150,8 +118,8 @@ const Note121Layer = () => {
     setCurrentPage(1);
   };
 
-  const handleViewImage = (image) => {
-    setSelectedImage(image);
+  const handleViewImage = (report) => {
+    setSelectedReport(report);
     setShowImageModal(true);
   };
 
@@ -279,10 +247,12 @@ const Note121Layer = () => {
                     <td>{report.metWith}</td>
                     <td>{report.initiatedBy}</td>
                     <td>{report.location}</td>
-                    <td>{report.topics}</td>
+                    <td style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={report.topics}>
+                      {report.topics}
+                    </td>
                     <td className="text-center">
                       <button
-                        onClick={() => handleViewImage(report.selfie)}
+                        onClick={() => handleViewImage(report)}
                         className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
                       >
                         <Icon icon="majesticons:eye-line" /> View
@@ -319,17 +289,29 @@ const Note121Layer = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title className="text-lg fw-semibold">
-            View Selfie
+            121's Details
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="text-center p-0">
-          {selectedImage && (
-            <img
-              src={selectedImage}
-              alt="Selfie"
-              className="img-fluid w-100"
-              style={{ maxHeight: '80vh', objectFit: 'contain' }}
-            />
+        <Modal.Body className="p-24">
+          {selectedReport && (
+            <div className="d-flex flex-column gap-3">
+              <div
+                className="p-16 radius-8 bg-neutral-100 border"
+                style={{ maxHeight: '150px', overflowY: 'auto' }}
+              >
+                <h6 className="mb-8 fw-bold text-dark text-sm">Meeting Topic:</h6>
+                <p className="mb-0 text-secondary-light">{selectedReport.topics}</p>
+              </div>
+              <div className="text-center mt-2">
+                <h6 className="mb-12 fw-bold text-dark text-sm text-start">Shared Selfie:</h6>
+                <img
+                  src={selectedReport.selfie}
+                  alt="Selfie"
+                  className="img-fluid radius-12 shadow-sm"
+                  style={{ maxHeight: '300px', objectFit: 'contain' }}
+                />
+              </div>
+            </div>
           )}
         </Modal.Body>
         <Modal.Footer>

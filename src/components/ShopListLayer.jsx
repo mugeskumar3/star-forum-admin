@@ -188,7 +188,7 @@ const ShopListLayer = () => {
                 value={getSelectedOption(chapterOptions, formData.chapter)}
                 onChange={handleSelectChange}
                 styles={customStyles}
-                placeholder="Select Chapter"
+                placeholder="Chapter"
                 isClearable={false}
                 required
               />

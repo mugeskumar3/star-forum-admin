@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Select from "react-select";
+import { Modal, Button } from "react-bootstrap";
 import TablePagination from './TablePagination';
 
 const PowerDateReportLayer = () => {
@@ -10,6 +11,10 @@ const PowerDateReportLayer = () => {
     const [selectedEd, setSelectedEd] = useState(null);
     const [selectedRd, setSelectedRd] = useState(null);
     const [selectedChapter, setSelectedChapter] = useState(null);
+
+    // Modal State
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
 
     // Options mapping for react-select
     const regionOptions = ['Tamil Nadu', 'Kerala', 'Karnataka', 'Andhra Pradesh'].map(r => ({ value: r, label: r }));
@@ -99,6 +104,11 @@ const PowerDateReportLayer = () => {
         setCurrentPage(1);
     };
 
+    const handleViewDetails = (item) => {
+        setSelectedItem(item);
+        setShowViewModal(true);
+    };
+
     return (
         <div className="card h-100 p-0 radius-12 overflow-hidden">
             <div className="card-header border-bottom bg-base py-16 px-24">
@@ -110,7 +120,7 @@ const PowerDateReportLayer = () => {
                                 type="text"
                                 className="bg-base h-40-px w-auto"
                                 name="search"
-                                placeholder="Search Member or Referral To"
+                                placeholder="Search Member"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -169,7 +179,7 @@ const PowerDateReportLayer = () => {
                             options={chapterOptions}
                             value={selectedChapter}
                             onChange={setSelectedChapter}
-                            placeholder="Select Chapter"
+                            placeholder="Chapter"
                             styles={customStyles}
                             isClearable
                         />
@@ -198,11 +208,9 @@ const PowerDateReportLayer = () => {
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Invited to</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Meeting Status</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Name</th>
-                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Phone Number</th>
-                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Email</th>
-                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Address</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Comments</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Referral Temp</th>
+                                <th scope="col" className="text-center" style={{ color: "black", fontWeight: '600' }}>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -236,21 +244,6 @@ const PowerDateReportLayer = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <span className="text-md mb-0 fw-normal text-secondary-light">
-                                                {item.phoneNumber}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className="text-md mb-0 fw-normal text-secondary-light">
-                                                {item.email}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div className="text-md mb-0 fw-normal text-secondary-light" style={{ maxWidth: '150px' }}>
-                                                {item.address}
-                                            </div>
-                                        </td>
-                                        <td>
                                             <div className="text-md mb-0 fw-normal text-secondary-light" style={{ maxWidth: '200px' }}>
                                                 {item.comments}
                                             </div>
@@ -263,11 +256,19 @@ const PowerDateReportLayer = () => {
                                                 {item.referralTemp}
                                             </span>
                                         </td>
+                                        <td className="text-center">
+                                            <button
+                                                className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+                                                onClick={() => handleViewDetails(item)}
+                                            >
+                                                <Icon icon="majesticons:eye-line" /> View
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="10" className="text-center py-4">
+                                    <td colSpan="8" className="text-center py-4">
                                         No data found.
                                     </td>
                                 </tr>
@@ -285,6 +286,44 @@ const PowerDateReportLayer = () => {
                     totalRecords={totalRecords}
                 />
             </div>
+
+            {/* View Details Modal */}
+            <Modal
+                centered
+                show={showViewModal}
+                onHide={() => setShowViewModal(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title className="text-lg fw-semibold">
+                        Contact Details
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="p-24">
+                    {selectedItem && (
+                        <div className="d-flex flex-column gap-3">
+                            <div className="p-16 radius-8 bg-neutral-100 border">
+                                <div className="mb-12">
+                                    <h6 className="mb-4 fw-bold text-dark text-sm">Phone Number:</h6>
+                                    <p className="mb-0 text-secondary-light">{selectedItem.phoneNumber}</p>
+                                </div>
+                                <div className="mb-12">
+                                    <h6 className="mb-4 fw-bold text-dark text-sm">Email:</h6>
+                                    <p className="mb-0 text-secondary-light">{selectedItem.email}</p>
+                                </div>
+                                <div>
+                                    <h6 className="mb-4 fw-bold text-dark text-sm">Address:</h6>
+                                    <p className="mb-0 text-secondary-light">{selectedItem.address}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowViewModal(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

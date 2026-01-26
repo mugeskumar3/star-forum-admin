@@ -86,9 +86,8 @@ const CommunityUpdateListLayer = () => {
         "Vikram Singh",
       ][i % 5],
       title: `Community Update Title ${startId + i}`,
-      details: `This is the detailed description for the community update regarding item ${
-        startId + i
-      }.`,
+      details: `This is the detailed description for the community update regarding item ${startId + i
+        }.`,
       responses: Array.from({ length: (i % 5) + 1 }, (_, j) => ({
         id: j + 1,
         userName: `Responder ${j + 1}`,
@@ -181,7 +180,7 @@ const CommunityUpdateListLayer = () => {
           </div>
           <div className="d-flex align-items-center gap-3">
             <Select
-              placeholder="Select Chapter"
+              placeholder="Chapter"
               options={chapterOptions}
               value={filters.chapter}
               onChange={(opt) => handleFilterChange("chapter", opt)}

@@ -186,15 +186,15 @@ const MemberPointsReportLayer = () => {
                             <tr>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Sl.No</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Name</th>
+                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Total Points</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>121's</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Referral's</th>
-                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Weekly Meetings</th>
+                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Meetings</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Thank You Notes</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Visitor's</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Chief Guest's</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Power date's</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Inductions</th>
-                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Total Points</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -209,6 +209,11 @@ const MemberPointsReportLayer = () => {
                                         <td>
                                             <span className="text-md mb-0 fw-medium text-primary-600">
                                                 {item.name}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className="text-md mb-0 fw-bold text-success-main">
+                                                {calculateTotalPoints(item)}
                                             </span>
                                         </td>
                                         <td>
@@ -251,11 +256,7 @@ const MemberPointsReportLayer = () => {
                                                 {item.inductions}
                                             </span>
                                         </td>
-                                        <td>
-                                            <span className="text-md mb-0 fw-bold text-success-main">
-                                                {calculateTotalPoints(item)}
-                                            </span>
-                                        </td>
+
                                     </tr>
                                 ))
                             ) : (

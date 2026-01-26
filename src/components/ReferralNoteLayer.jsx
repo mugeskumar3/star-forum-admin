@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { Modal, Button } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 
 const ReferralNoteLayer = () => {
@@ -29,6 +30,10 @@ const ReferralNoteLayer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Modal State
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedReferral, setSelectedReferral] = useState(null);
 
   // Filter States
   const [selectedChapter, setSelectedChapter] = useState(null);
@@ -150,6 +155,11 @@ const ReferralNoteLayer = () => {
     setCurrentPage(1);
   };
 
+  const handleViewDetails = (referral) => {
+    setSelectedReferral(referral);
+    setShowViewModal(true);
+  };
+
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -237,11 +247,9 @@ const ReferralNoteLayer = () => {
                 <th scope="col">Type</th>
                 <th scope="col">Status</th>
                 <th scope="col">Referral Name</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Email</th>
-                <th scope="col">Address</th>
                 <th scope="col">Temp</th>
                 <th scope="col">Comments</th>
+                <th scope="col" className="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -266,20 +274,25 @@ const ReferralNoteLayer = () => {
                       </span>
                     </td>
                     <td>{item.name}</td>
-                    <td>{item.phone}</td>
-                    <td>{item.email}</td>
-                    <td style={{ minWidth: "150px" }}>{item.address}</td>
                     <td className="fw-bold">
                       <span className={getTempColor(item.temp)}>
                         {item.temp}
                       </span>
                     </td>
                     <td style={{ minWidth: "200px" }}>{item.comments}</td>
+                    <td className="text-center">
+                      <button
+                        className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+                        onClick={() => handleViewDetails(item)}
+                      >
+                        <Icon icon="majesticons:eye-line" /> View
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="11" className="text-center py-4">
+                  <td colSpan="9" className="text-center py-4">
                     No referrals found.
                   </td>
                 </tr>
@@ -297,6 +310,44 @@ const ReferralNoteLayer = () => {
           totalRecords={totalRecords}
         />
       </div>
+
+      {/* View Details Modal */}
+      <Modal
+        centered
+        show={showViewModal}
+        onHide={() => setShowViewModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="text-lg fw-semibold">
+            Referral Contact Details
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-24">
+          {selectedReferral && (
+            <div className="d-flex flex-column gap-3">
+              <div className="p-16 radius-8 bg-neutral-100 border">
+                <div className="mb-12">
+                  <h6 className="mb-4 fw-bold text-dark text-sm">Phone:</h6>
+                  <p className="mb-0 text-secondary-light">{selectedReferral.phone}</p>
+                </div>
+                <div className="mb-12">
+                  <h6 className="mb-4 fw-bold text-dark text-sm">Email:</h6>
+                  <p className="mb-0 text-secondary-light">{selectedReferral.email}</p>
+                </div>
+                <div>
+                  <h6 className="mb-4 fw-bold text-dark text-sm">Address:</h6>
+                  <p className="mb-0 text-secondary-light">{selectedReferral.address}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowViewModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

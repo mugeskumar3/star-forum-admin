@@ -381,7 +381,7 @@ const MemberFormLayer = () => {
                         )}
                         onChange={handleSelectChange}
                         styles={customStyles}
-                        placeholder="Select Chapter"
+                        placeholder="Chapter"
                         isClearable={false}
                       />
                       {errors.chapter && (
@@ -729,7 +729,7 @@ const MemberFormLayer = () => {
           <div className="row gy-4 mb-24">
             <div className="col-12">
               <h6 className="text-primary-600 pb-2 mb-3">
-               Training Report
+                Training Report
               </h6>
               <div className="row gy-3 gx-4 align-items-center">
                 <div className="col-md-6">

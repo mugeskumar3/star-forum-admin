@@ -47,16 +47,16 @@ const BadgeAssignLayer = () => {
                              Or if 'Chapter' implies 'All Chapters', maybe not needed. 
                              But user said "drop dwon chapter , member if iclick member another input list the memebrs"
                              This implies if Chapter is picked, maybe we select a specific chapter too? 
-                             I'll add a generic "Select Chapter" for completeness if type is Chapter, 
+                             I'll add a generic "Chapter" for completeness if type is Chapter, 
                              but the prompt specifically emphasized the 'Member' conditional.
                              I'll stick to the user's specific request: "if i click member another input list the members".
                          */}
 
                         {assignType === 'Chapter' && (
                             <div className="col-12">
-                                <label className="form-label">Select Chapter <span className="text-danger-600">*</span></label>
+                                <label className="form-label">Chapter <span className="text-danger-600">*</span></label>
                                 <select className="form-select" required>
-                                    <option value="" disabled selected>Select Chapter</option>
+                                    <option value="" disabled selected>Chapter</option>
                                     <option value="1">Chapter Alpha</option>
                                     <option value="2">Chapter Beta</option>
                                 </select>
