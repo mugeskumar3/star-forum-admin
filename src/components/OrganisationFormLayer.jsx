@@ -199,7 +199,6 @@ const OrganisationFormLayer = () => {
     if (!validateForm()) {
       return;
     }
-    console.log(formData);
     if (id) {
       const payload = { ...formData, id };
       const response = await OrganisationApi.updateOrganisation(payload);

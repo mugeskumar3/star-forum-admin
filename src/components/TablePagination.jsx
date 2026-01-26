@@ -20,11 +20,11 @@ const TablePagination = ({
         <li key={i} className="page-item">
           <button
             className={`page-link fw-medium radius-8 border-0 py-10 d-flex align-items-center justify-content-center h-48-px w-48-px ${
-              currentPage === i
+              currentPage === i - 1
                 ? "bg-primary-600 text-white"
                 : "bg-primary-50 text-secondary-light"
             }`}
-            onClick={() => onPageChange(i)}
+            onClick={() => onPageChange(i - 1)}
           >
             {i}
           </button>
@@ -34,6 +34,7 @@ const TablePagination = ({
     return pages;
   };
 
+  /* Options and Handlers */
   const options = [
     { value: 10, label: "10" },
     { value: 20, label: "20" },
@@ -43,7 +44,6 @@ const TablePagination = ({
   ];
 
   const handleSelectChange = (selectedOption) => {
-    // Adapt the change event to match the native event structure expected by parent components
     onRowsPerPageChange({ target: { value: selectedOption.value } });
   };
 
@@ -93,28 +93,30 @@ const TablePagination = ({
         />
       </div>
       <span className="text-secondary-light">
-        Showing {Math.min((currentPage - 1) * rowsPerPage + 1, totalRecords)} to{" "}
-        {Math.min(currentPage * rowsPerPage, totalRecords)} of {totalRecords}{" "}
-        entries
+        Showing {totalRecords === 0 ? 0 : currentPage * rowsPerPage + 1} to{" "}
+        {Math.min((currentPage + 1) * rowsPerPage, totalRecords)} of{" "}
+        {totalRecords} entries
       </span>
       <ul className="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center mb-0">
-        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+        <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
           <button
             className="page-link bg-primary-50 text-secondary-light fw-medium radius-8 border-0 py-10 d-flex align-items-center justify-content-center h-48-px w-48-px"
             onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+            disabled={currentPage === 0}
           >
             <Icon icon="ep:d-arrow-left" className="text-xl" />
           </button>
         </li>
         {renderPageNumbers()}
         <li
-          className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
+          className={`page-item ${
+            currentPage === totalPages - 1 ? "disabled" : ""
+          }`}
         >
           <button
             className="page-link bg-primary-50 text-secondary-light fw-medium radius-8 border-0 py-10 d-flex align-items-center justify-content-center h-48-px w-48-px"
             onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages - 1}
           >
             <Icon icon="ep:d-arrow-right" className="text-xl" />
           </button>

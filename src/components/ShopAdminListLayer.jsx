@@ -8,7 +8,6 @@ import ShowNotifications from "../helper/ShowNotifications";
 import { IMAGE_BASE_URL } from "../Config/Index";
 
 const ShopAdminListLayer = () => {
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,8 +28,6 @@ const ShopAdminListLayer = () => {
     setShowViewModal(true);
   };
 
-
-
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -41,8 +38,10 @@ const ShopAdminListLayer = () => {
 
   const filteredProducts = products.filter(
     (product) =>
-      (product.productName && product.productName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (product.category && product.category.toLowerCase().includes(searchTerm.toLowerCase()))
+      (product.productName &&
+        product.productName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (product.category &&
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const totalRecords = filteredProducts.length;
@@ -50,7 +49,7 @@ const ShopAdminListLayer = () => {
 
   const currentData = filteredProducts.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   const handlePageChange = (page) => {
@@ -124,16 +123,21 @@ const ShopAdminListLayer = () => {
                   <tr key={index}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>
-                      <div className="d-flex align-items-center">
-                        <img
-                          src={product.productImage && product.productImage.path ? `${IMAGE_BASE_URL}/${product.productImage.path}` : "https://placehold.co/40x40?text=IMG"}
-                          alt={product.productName}
-                          className="w-40-px h-40-px rounded-circle object-fit-cover"
-                          onError={(e) => {
-                            e.target.src =
-                              "https://placehold.co/40x40?text=IMG"; // Fallback
-                          }}
-                        />
+                      <div className="w-40-px h-40-px rounded-circle overflow-hidden">
+                        {product.productImage && product.productImage.path ? (
+                          <img
+                            src={`${IMAGE_BASE_URL}/${product.productImage.path}`}
+                            alt={product.productName}
+                            className="w-100 h-100 object-fit-cover"
+                          />
+                        ) : (
+                          <div className="w-100 h-100 bg-neutral-200 d-flex align-items-center justify-content-center">
+                            <Icon
+                              icon="ri:image-line"
+                              className="text-secondary-light text-xl"
+                            />
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td>
@@ -165,7 +169,9 @@ const ShopAdminListLayer = () => {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => handleDeleteClick(product._id || product.id)}
+                          onClick={() =>
+                            handleDeleteClick(product._id || product.id)
+                          }
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -199,7 +205,11 @@ const ShopAdminListLayer = () => {
       </div>
 
       {/* View Product Modal */}
-      <Modal show={showViewModal} onHide={() => setShowViewModal(false)} centered>
+      <Modal
+        show={showViewModal}
+        onHide={() => setShowViewModal(false)}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Product Details</Modal.Title>
         </Modal.Header>
@@ -208,10 +218,15 @@ const ShopAdminListLayer = () => {
             <div className="d-flex flex-column gap-3">
               <div className="text-center">
                 <img
-                  src={selectedProduct.productImage && selectedProduct.productImage.path ? `${IMAGE_BASE_URL}/${selectedProduct.productImage.path}` : "https://placehold.co/150x150?text=No+Image"}
+                  src={
+                    selectedProduct.productImage &&
+                    selectedProduct.productImage.path
+                      ? `${IMAGE_BASE_URL}/${selectedProduct.productImage.path}`
+                      : "https://placehold.co/150x150?text=No+Image"
+                  }
                   alt={selectedProduct.productName}
                   className="rounded object-fit-cover"
-                  style={{ width: '150px', height: '150px' }}
+                  style={{ width: "150px", height: "150px" }}
                   onError={(e) => {
                     e.target.src = "https://placehold.co/150x150?text=No+Image";
                   }}
@@ -221,23 +236,36 @@ const ShopAdminListLayer = () => {
                 <strong>Product Name:</strong> {selectedProduct.productName}
               </div>
               <div>
-                <strong>Category:</strong> {selectedProduct.category || selectedProduct.categoryId}
+                <strong>Category:</strong>{" "}
+                {selectedProduct.category || selectedProduct.categoryId}
               </div>
               <div>
                 <strong>Price:</strong> ₹{selectedProduct.price}
               </div>
               <div>
-                <strong>Status:</strong> <span className={selectedProduct.isActive ? "text-success" : "text-danger"}>{selectedProduct.isActive ? "Active" : "Inactive"}</span>
+                <strong>Status:</strong>{" "}
+                <span
+                  className={
+                    selectedProduct.isActive ? "text-success" : "text-danger"
+                  }
+                >
+                  {selectedProduct.isActive ? "Active" : "Inactive"}
+                </span>
               </div>
               <div>
                 <strong>Description:</strong>
-                <p className="mb-0 text-secondary">{selectedProduct.description || "No description available."}</p>
+                <p className="mb-0 text-secondary">
+                  {selectedProduct.description || "No description available."}
+                </p>
               </div>
             </div>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={() => setShowViewModal(false)}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowViewModal(false)}
+          >
             Close
           </button>
         </Modal.Footer>
