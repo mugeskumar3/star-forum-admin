@@ -3,6 +3,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Country, State } from "country-state-city";
 import Select from "react-select";
+import ChapterApi from "../Api/ChapterApi";
+import ZoneApi from "../Api/ZoneApi";
+import RegionApi from "../Api/RegionApi";
 
 const ChapterFormLayer = () => {
   const { id } = useParams();
@@ -11,20 +14,111 @@ const ChapterFormLayer = () => {
 
   const [formData, setFormData] = useState({
     chapterName: "",
-    country: "IN", //  Default to India (ISO Code)
+    country: "",
     state: "",
-    zone: "",
-    region: "", // Renamed from religion
-    executiveDirector: "",
-    regionalDirector: [], // Multi-select
-    createdDate: new Date().toISOString().split("T")[0], // Default to current date
-    meetingDateTime: "",
+    zoneId: "",
+    regionId: "",
+    edId: "",
+    rdId: "",
+    createdDate: new Date().toISOString().split("T")[0],
     location: "",
     weekday: "",
-    meetingType: "In Person",
+    meetingType: "",
+    isActive: 1,
   });
 
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+
+  const [zoneOptions, setZoneOptions] = useState([]);
+  const [regionOptions, setRegionOptions] = useState([]);
+  const [edOptions, setEdOptions] = useState([]);
+  const [rdOptions, setRdOptions] = useState([]);
+
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    fetchAdminUsers();
+    fetchRegions();
+    if (isEditMode) {
+      getChapterById(id);
+    }
+  }, [id, isEditMode]);
+
+  useEffect(() => {
+    if (formData.state) {
+      fetchZones(formData.state);
+    } else {
+      setZoneOptions([]);
+    }
+  }, [formData.state]);
+
+  const fetchZones = async (stateName) => {
+    if (!stateName) return;
+    const response = await ZoneApi.getZoneByState(stateName);
+    if (response && response.status && response.response.data) {
+      const zones = response.response.data;
+      setZoneOptions(zones.map((z) => ({ value: z._id, label: z.name })));
+    } else {
+      setZoneOptions([]);
+    }
+  };
+
+  const fetchRegions = async () => {
+    const response = await RegionApi.getRegion();
+    if (response && response.status && response.response.data) {
+      const regions = response.response.data;
+
+      setRegionOptions(
+        regions.map((r) => ({ value: r._id, label: r.region || r.name })),
+      );
+    }
+  };
+
+  const fetchAdminUsers = async () => {
+    const response = await RegionApi.getAdminUser();
+    if (response && response.status && response.response.data) {
+      const users = response.response.data;
+      const options = users.map((user) => ({
+        value: user._id,
+        label: user.name,
+      }));
+      setEdOptions(options);
+      setRdOptions(options);
+    }
+  };
+
+  const getChapterById = async (id) => {
+    const response = await ChapterApi.getChapter({ id });
+    if (response && response.status && response.response.data) {
+      const data = response.response.data;
+      setFormData({
+        ...data,
+        zoneId: data.zoneId?._id || data.zoneId,
+        regionId: data.regionId?._id || data.regionId,
+        edId: data.edId?._id || data.edId,
+        rdId: data.rdId?._id || data.rdId,
+        createdDate: data.createdDate ? data.createdDate.split("T")[0] : "",
+      });
+      const countryObj = Country.getAllCountries().find(
+        (c) => c.name === data.country || c.isoCode === data.country,
+      );
+      if (countryObj) {
+        setSelectedCountry({
+          value: countryObj.isoCode,
+          label: countryObj.name,
+        });
+        setFormData((prev) => ({ ...prev, country: countryObj.isoCode }));
+        const stateObj = State.getStatesOfCountry(countryObj.isoCode).find(
+          (s) => s.name === data.state || s.isoCode === data.state,
+        );
+        if (stateObj) {
+          setSelectedState({ value: stateObj.isoCode, label: stateObj.name });
+          setFormData((prev) => ({ ...prev, state: stateObj.name }));
+        }
+      }
+    }
+  };
 
   const validate = () => {
     const newErrors = {};
@@ -32,16 +126,14 @@ const ChapterFormLayer = () => {
       newErrors.chapterName = "Chapter Name is required";
     if (!formData.country) newErrors.country = "Country is required";
     if (!formData.state) newErrors.state = "State is required";
-    if (!formData.zone) newErrors.zone = "Zone is required";
+    if (!formData.zoneId) newErrors.zoneId = "Zone is required";
+    if (!formData.regionId) newErrors.regionId = "Region is required";
+    if (!formData.edId) newErrors.edId = "Executive Director is required";
+    if (!formData.rdId) newErrors.rdId = "Regional Director is required";
     if (!formData.createdDate)
-      newErrors.createdDate = "Chapter Created Date is required";
+      newErrors.createdDate = "Created Date is required";
     if (!formData.location) newErrors.location = "Location is required";
     if (!formData.weekday) newErrors.weekday = "Weekday is required";
-    if (!formData.region) newErrors.region = "Region is required";
-    if (!formData.executiveDirector)
-      newErrors.executiveDirector = "Executive Director is required";
-    if (!formData.regionalDirector || formData.regionalDirector.length === 0)
-      newErrors.regionalDirector = "Regional Director is required";
     if (!formData.meetingType)
       newErrors.meetingType = "Meeting Type is required";
 
@@ -49,115 +141,58 @@ const ChapterFormLayer = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Dummy Data for Edit Mode Simulation
-  useEffect(() => {
-    if (isEditMode) {
-      // In a real app, fetch data by ID
-      setFormData({
-        chapterName: "Star Chapter",
-        country: "IN",
-        state: "TN",
-        zone: "Zone 1",
-        region: "South Region", // Renamed from religion
-        executiveDirector: "John Doe",
-        regionalDirector: ["Jane Smith", "Bob Wilson"],
-        createdDate: "2025-01-01",
-        meetingDateTime: "2025-01-01T10:00",
-        location: "Chennai",
-        weekday: "Monday",
-        meetingType: "In Person",
-      });
-    }
-  }, [isEditMode]);
-
-  const calculateMaxHeight = () => {
-    // Approx 40px per option * 7 options = 280px
-    return 280;
-  };
-
   const customStyles = {
     menuList: (provided) => ({
       ...provided,
-      maxHeight: calculateMaxHeight(),
+      maxHeight: 280,
     }),
-    control: (provided) => ({
+    control: (provided, state) => ({
       ...provided,
       minHeight: "44px",
       borderRadius: "8px",
-      borderColor: "#dee2e6",
+      borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
       boxShadow: "none",
       "&:hover": {
-        borderColor: "#dee2e6",
+        borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
       },
     }),
   };
 
-  const countryOptions = Country.getAllCountries().map((country) => ({
-    value: country.isoCode,
-    label: country.name,
-  }));
+  const fieldOptions = {
+    weekday: [
+      { value: "monday", label: "Monday" },
+      { value: "tuesday", label: "Tuesday" },
+      { value: "wednesday", label: "Wednesday" },
+      { value: "thursday", label: "Thursday" },
+      { value: "friday", label: "Friday" },
+      { value: "saturday", label: "Saturday" },
+      { value: "sunday", label: "Sunday" },
+    ],
+    meetingType: [
+      { value: "in-person", label: "In Person" },
+      { value: "online", label: "Online" },
+      { value: "hybrid", label: "Hybrid" },
+    ],
+  };
 
-  const stateOptions = formData.country
-    ? State.getStatesOfCountry(formData.country).map((state) => ({
-        value: state.isoCode,
-        label: state.name,
-      }))
-    : [];
-
-  /* Options */
-  const zoneOptions = [
-    { value: "Zone 1", label: "Zone 1" },
-    { value: "Zone 2", label: "Zone 2" },
-  ];
-
-  const regionOptions = [
-    { value: "North Region", label: "North Region" },
-    { value: "South Region", label: "South Region" },
-    { value: "East Region", label: "East Region" },
-    { value: "West Region", label: "West Region" },
-  ];
-
-  const executiveDirectorOptions = [
-    { value: "John Doe", label: "John Doe" },
-    { value: "Jane Doe", label: "Jane Doe" },
-  ];
-
-  const regionalDirectorOptions = [
-    { value: "Jane Smith", label: "Jane Smith" },
-    { value: "Bob Wilson", label: "Bob Wilson" },
-    { value: "Alice Brown", label: "Alice Brown" },
-  ];
-
-  const weekdayOptions = [
-    { value: "Monday", label: "Monday" },
-    { value: "Tuesday", label: "Tuesday" },
-    { value: "Wednesday", label: "Wednesday" },
-    { value: "Thursday", label: "Thursday" },
-    { value: "Friday", label: "Friday" },
-    { value: "Saturday", label: "Saturday" },
-    { value: "Sunday", label: "Sunday" },
-  ];
-
-  const meetingTypeOptions = [
-    { value: "In Person", label: "In Person" },
-    { value: "Online", label: "Online" },
-    { value: "Hybrid", label: "Hybrid" },
-  ];
-
-  /* Handlers */
   const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+    setSelectedState(null);
     setFormData((prev) => ({
       ...prev,
-      country: selectedOption ? selectedOption.value : "",
-      state: "", // Reset state
+      country: selectedOption ? selectedOption.label : "",
+      state: "",
+      zoneId: "",
     }));
     if (errors.country) setErrors((prev) => ({ ...prev, country: "" }));
   };
 
   const handleStateChange = (selectedOption) => {
+    setSelectedState(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      state: selectedOption ? selectedOption.value : "",
+      state: selectedOption ? selectedOption.label : "",
+      zoneId: "",
     }));
     if (errors.state) setErrors((prev) => ({ ...prev, state: "" }));
   };
@@ -170,26 +205,31 @@ const ChapterFormLayer = () => {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleMultiSelectChange = (selectedOptions, { name }) => {
-    const values = selectedOptions
-      ? selectedOptions.map((opt) => opt.value)
-      : [];
-    setFormData((prev) => ({ ...prev, [name]: values }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Form Submitted:", formData);
-      // Add API call here
-      navigate("/chapter-creation");
+      const payload = {
+        ...formData,
+        country: selectedCountry?.name || formData.country,
+        state: selectedState?.name || formData.state,
+        isActive: 1,
+      };
+      let response;
+      if (isEditMode) {
+        response = await ChapterApi.updateChapter({ ...payload, id });
+      } else {
+        response = await ChapterApi.createChapter(payload);
+      }
+
+      if (response && response.status) {
+        navigate("/chapter-creation");
+      }
     }
   };
 
@@ -203,7 +243,6 @@ const ChapterFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-3">
-            {/* Chapter Name */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Chapter Name <span className="text-danger">*</span>
@@ -220,128 +259,142 @@ const ChapterFormLayer = () => {
                 <small className="text-danger">{errors.chapterName}</small>
               )}
             </div>
-
-            {/* Country */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Country <span className="text-danger">*</span>
               </label>
               <Select
-                options={countryOptions}
-                value={countryOptions.find(
-                  (option) => option.value === formData.country,
-                )}
-                onChange={handleCountryChange}
+                options={Country.getAllCountries().map((country) => ({
+                  value: country.isoCode,
+                  label: country.name,
+                }))}
+                value={selectedCountry}
+                onChange={(option) => {
+                  setSelectedCountry(option);
+                  setSelectedState(null);
+                  setFormData((prev) => ({
+                    ...prev,
+                    country: option ? option.value : "",
+                    state: "",
+                    zoneId: "",
+                  }));
+                  if (errors.country)
+                    setErrors((prev) => ({ ...prev, country: "" }));
+                }}
                 placeholder="Select Country"
                 styles={customStyles}
+                error={errors.country}
               />
               {errors.country && (
                 <small className="text-danger">{errors.country}</small>
               )}
             </div>
-
-            {/* State */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 State <span className="text-danger">*</span>
               </label>
               <Select
-                options={stateOptions}
-                value={stateOptions.find(
-                  (option) => option.value === formData.state,
-                )}
-                onChange={handleStateChange}
+                options={
+                  formData.country
+                    ? State.getStatesOfCountry(formData.country).map(
+                        (state) => ({
+                          value: state.isoCode,
+                          label: state.name,
+                        }),
+                      )
+                    : []
+                }
+                value={selectedState}
+                onChange={(option) => {
+                  setSelectedState(option);
+                  setFormData((prev) => ({
+                    ...prev,
+                    state: option ? option.label : "",
+                    zoneId: "",
+                  }));
+                  if (errors.state)
+                    setErrors((prev) => ({ ...prev, state: "" }));
+                }}
                 placeholder="Select State"
                 styles={customStyles}
                 isDisabled={!formData.country}
+                error={errors.state}
               />
               {errors.state && (
                 <small className="text-danger">{errors.state}</small>
               )}
             </div>
-
-            {/* Zone */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Zone <span className="text-danger">*</span>
               </label>
               <Select
-                name="zone"
+                name="zoneId"
                 options={zoneOptions}
-                value={zoneOptions.find(
-                  (option) => option.value === formData.zone,
-                )}
+                value={zoneOptions.find((opt) => opt.value === formData.zoneId)}
                 onChange={handleSelectChange}
                 placeholder="Select Zone"
                 styles={customStyles}
+                isDisabled={!formData.state}
+                error={errors.zoneId}
               />
-              {errors.zone && (
-                <small className="text-danger">{errors.zone}</small>
+              {errors.zoneId && (
+                <small className="text-danger">{errors.zoneId}</small>
               )}
             </div>
-
-            {/* Region (Renamed from Religion) */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Region <span className="text-danger">*</span>
               </label>
               <Select
-                name="region"
+                name="regionId"
                 options={regionOptions}
                 value={regionOptions.find(
-                  (option) => option.value === formData.region,
+                  (opt) => opt.value === formData.regionId,
                 )}
                 onChange={handleSelectChange}
                 placeholder="Select Region"
                 styles={customStyles}
+                error={errors.regionId}
               />
-              {errors.region && (
-                <small className="text-danger">{errors.region}</small>
+              {errors.regionId && (
+                <small className="text-danger">{errors.regionId}</small>
               )}
             </div>
-
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Executive Director <span className="text-danger">*</span>
               </label>
               <Select
-                name="executiveDirector"
-                options={executiveDirectorOptions}
-                value={executiveDirectorOptions.find(
-                  (option) => option.value === formData.executiveDirector,
-                )}
+                name="edId"
+                options={edOptions}
+                value={edOptions.find((opt) => opt.value === formData.edId)}
                 onChange={handleSelectChange}
                 placeholder="Select Executive Director"
                 styles={customStyles}
+                error={errors.edId}
               />
-              {errors.executiveDirector && (
-                <small className="text-danger">
-                  {errors.executiveDirector}
-                </small>
+              {errors.edId && (
+                <small className="text-danger">{errors.edId}</small>
               )}
             </div>
-
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Regional Director <span className="text-danger">*</span>
               </label>
               <Select
-                isMulti
-                name="regionalDirector"
-                options={regionalDirectorOptions}
-                value={regionalDirectorOptions.filter((option) =>
-                  formData.regionalDirector.includes(option.value),
-                )}
-                onChange={handleMultiSelectChange}
-                placeholder="Select Regional Directors"
+                name="rdId"
+                options={rdOptions}
+                value={rdOptions.find((opt) => opt.value === formData.rdId)}
+                onChange={handleSelectChange}
+                placeholder="Select Regional Director"
                 styles={customStyles}
+                error={errors.rdId}
               />
-              {errors.regionalDirector && (
-                <small className="text-danger">{errors.regionalDirector}</small>
+              {errors.rdId && (
+                <small className="text-danger">{errors.rdId}</small>
               )}
             </div>
-
-            {/* Created Date */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Chapter Created Date <span className="text-danger">*</span>
@@ -357,8 +410,6 @@ const ChapterFormLayer = () => {
                 <small className="text-danger">{errors.createdDate}</small>
               )}
             </div>
-
-            {/* Location */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Location <span className="text-danger">*</span>
@@ -376,40 +427,40 @@ const ChapterFormLayer = () => {
               )}
             </div>
 
-            {/* Weekday */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Weekday <span className="text-danger">*</span>
               </label>
               <Select
                 name="weekday"
-                options={weekdayOptions}
-                value={weekdayOptions.find(
-                  (option) => option.value === formData.weekday,
+                options={fieldOptions.weekday}
+                value={fieldOptions.weekday.find(
+                  (opt) => opt.value === formData.weekday,
                 )}
                 onChange={handleSelectChange}
                 placeholder="Select Weekday"
                 styles={customStyles}
+                error={errors.weekday}
               />
               {errors.weekday && (
                 <small className="text-danger">{errors.weekday}</small>
               )}
             </div>
 
-            {/* Meeting Type (Optional) */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Meeting Type <span className="text-danger">*</span>
               </label>
               <Select
                 name="meetingType"
-                options={meetingTypeOptions}
-                value={meetingTypeOptions.find(
-                  (option) => option.value === formData.meetingType,
+                options={fieldOptions.meetingType}
+                value={fieldOptions.meetingType.find(
+                  (opt) => opt.value === formData.meetingType,
                 )}
                 onChange={handleSelectChange}
                 placeholder="Select Meeting Type"
                 styles={customStyles}
+                error={errors.meetingType}
               />
               {errors.meetingType && (
                 <small className="text-danger">{errors.meetingType}</small>
@@ -427,7 +478,7 @@ const ChapterFormLayer = () => {
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
             >
-              Save
+              {isEditMode ? "Update" : "Save"}
             </button>
           </div>
         </form>

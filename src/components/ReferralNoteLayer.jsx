@@ -1,114 +1,355 @@
-import React from 'react';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import './ThankYouSlipLayer.css';
+import React, { useState } from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Select from "react-select";
+import { Modal, Button } from "react-bootstrap";
+import TablePagination from "./TablePagination";
 
 const ReferralNoteLayer = () => {
-    // Mock data
-    const chapters = [
-        {
-            id: 1,
-            name: 'ARAM Chapter',
-            count: 154,
-            members: [
-                { id: 1, name: 'Raj Kumar', company: 'Tech Solutions Inc', category: 'IT Services', count: 45 },
-                { id: 2, name: 'Priya Sharma', company: 'Design Studio', category: 'Graphic Design', count: 38 },
-                { id: 3, name: 'Arun Vijay', company: 'Marketing Pro', category: 'Digital Marketing', count: 35 },
-                { id: 4, name: 'Sneha Reddy', company: 'Finance Corp', category: 'Financial Services', count: 22 },
-                { id: 5, name: 'Karthik M', company: 'Build Tech', category: 'Construction', count: 14 }
-            ]
-        },
-        {
-            id: 2,
-            name: 'Arni Chapter',
-            count: 50,
-            members: [
-                { id: 6, name: 'Ramesh K', company: 'Auto Parts Ltd', category: 'Automobile', count: 18 },
-                { id: 7, name: 'Lakshmi P', company: 'Fashion Hub', category: 'Retail', count: 15 },
-                { id: 8, name: 'Vignesh S', company: 'Food Express', category: 'Food & Beverage', count: 17 }
-            ]
-        },
-        {
-            id: 4,
-            name: 'Coimbatore Chapter',
-            count: 112,
-            members: [
-                { id: 11, name: 'Murugan G', company: 'Pump Works', category: 'Industry', count: 60 },
-                { id: 12, name: 'Santhosh M', company: 'Jewels & Co', category: 'Retail', count: 52 }
-            ]
-        }
-    ];
+  // Mock Data
+  const [referrals, setReferrals] = useState(
+    Array.from({ length: 20 }).map((_, i) => ({
+      id: i + 1,
+      date: "2025-01-25T10:30:00",
+      memberName: `Member ${i + 1}`,
+      referralTo: `Business ${i + 1}`,
+      type: i % 2 === 0 ? "Inside" : "Outside",
+      status: ["Pending", "Closed", "In Progress"][i % 3],
+      name: `Referral Name ${i + 1}`,
+      phone: `98765432${i < 10 ? "0" + i : i}`,
+      email: `referral${i + 1}@example.com`,
+      address: `Address Line ${i + 1}, City`,
+      comments: "Looking for services.",
+      temp: ["Hot", "Warm", "Cold"][i % 3],
+      chapter: ["Star Chapter", "Galaxy Chapter"][i % 2],
+      zone: ["Zone 1", "Zone 2"][i % 2],
+      ed: ["ED 1", "ED 2"][i % 2],
+      rd: ["RD 1", "RD 2"][i % 2],
+    })),
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Modal State
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedReferral, setSelectedReferral] = useState(null);
+
+  // Filter States
+  const [selectedChapter, setSelectedChapter] = useState(null);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [selectedEd, setSelectedEd] = useState(null);
+  const [selectedRd, setSelectedRd] = useState(null);
+
+  // Options
+  const chapterOptions = [
+    { value: "Star Chapter", label: "Star Chapter" },
+    { value: "Galaxy Chapter", label: "Galaxy Chapter" },
+  ];
+  const zoneOptions = [
+    { value: "Zone 1", label: "Zone 1" },
+    { value: "Zone 2", label: "Zone 2" },
+  ];
+  const edOptions = [
+    { value: "ED 1", label: "ED 1" },
+    { value: "ED 2", label: "ED 2" },
+  ];
+  const rdOptions = [
+    { value: "RD 1", label: "RD 1" },
+    { value: "RD 2", label: "RD 2" },
+  ];
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "40px",
+      borderRadius: "8px",
+      border: "1px solid #dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        border: "1px solid #dee2e6",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 9999,
+    }),
+  };
+
+  // Filtering logic
+  const filteredReferrals = referrals.filter((referral) => {
+    const matchesSearch =
+      referral.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      referral.referralTo.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesChapter = selectedChapter
+      ? referral.chapter === selectedChapter.value
+      : true;
+    const matchesZone = selectedZone
+      ? referral.zone === selectedZone.value
+      : true;
+    const matchesEd = selectedEd ? referral.ed === selectedEd.value : true;
+    const matchesRd = selectedRd ? referral.rd === selectedRd.value : true;
 
     return (
-        <div className="d-flex flex-column gap-4">
-            {/* Header section */}
-            <div className="d-flex align-items-center justify-content-between mb-24 px-12">
-                <div className="d-flex align-items-center">
-                    <div className="bg-danger-600 radius-2" style={{ width: '4px', height: '32px' }}></div>
-                    <div className="ms-12">
-                        <h5 className="fw-bold mb-0" style={{ color: '#101828' }}>Referrals Report</h5>
-                        <p className="text-sm text-secondary-light mb-0">Chapter-wise referral details</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Grid of Chapter Slips */}
-            <div className="row gy-3 px-12">
-                {chapters.map(chapter => (
-                    <div key={chapter.id} className="col-xl-3 col-lg-4 col-md-6 col-12">
-                        <div className="card h-100 p-0 radius-12 shadow-hover-sm transition-2 overflow-hidden border-0">
-                            {/* Chapter Header with Primary Gradient */}
-                            <div className="p-12 bg-primary-600 text-white">
-                                <div className="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 className="fw-bold mb-0 text-white text-truncate" style={{ maxWidth: '140px' }}>{chapter.name}</h6>
-                                    <div className="w-28-px h-28-px rounded-circle bg-white-20 d-flex align-items-center justify-content-center">
-                                        <Icon icon="solar:share-circle-outline" fontSize={16} />
-                                    </div>
-                                </div>
-                                <div className="mt-8">
-                                    <span className="text-xxs opacity-75 text-uppercase spacing-1 d-block">Total Referrals</span>
-                                    <h5 className="fw-bolder mb-0 text-white">{chapter.count}</h5>
-                                </div>
-                            </div>
-
-                            {/* Members List */}
-                            <div className="card-body p-12 bg-base">
-                                <h6 className="text-xxs fw-bold text-secondary-light text-uppercase spacing-1 mb-12">Referral Activity</h6>
-                                <div className="d-flex flex-column gap-2">
-                                    {chapter.members.map(member => (
-                                        <div
-                                            key={member.id}
-                                            className="p-10 radius-8 border transition-2 hover-bg-neutral-50"
-                                            style={{ borderColor: '#f5f5f5' }}
-                                        >
-                                            <div className="d-flex justify-content-between align-items-start gap-1">
-                                                <div className="flex-grow-1 overflow-hidden">
-                                                    <h6 className="text-sm fw-bold mb-0 text-dark text-truncate">{member.name}</h6>
-                                                    <span className="text-xxs text-secondary-light d-block text-truncate">
-                                                        {member.category}
-                                                    </span>
-                                                </div>
-                                                <div className="text-end">
-                                                    <span className="text-primary-600 fw-bold text-sm d-block">{member.count}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card Footer Action */}
-                            <div className="card-footer bg-neutral-50 border-top-0 p-8 text-center">
-                                <button type="button" className="btn p-0 text-primary-600 fw-bold text-xs hover-text-primary-700 d-flex align-items-center gap-1 mx-auto">
-                                    View Full List
-                                    <Icon icon="solar:arrow-right-outline" fontSize={12} />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+      matchesSearch && matchesChapter && matchesZone && matchesEd && matchesRd
     );
+  });
+
+  const totalRecords = filteredReferrals.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredReferrals.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
+  );
+
+  const handlePageChange = (page) => setCurrentPage(page);
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Closed":
+        return "bg-success-focus text-success-main";
+      case "Pending":
+        return "bg-warning-focus text-warning-main";
+      case "In Progress":
+        return "bg-info-focus text-info-main";
+      default:
+        return "bg-neutral-200 text-neutral-600";
+    }
+  };
+
+  const getTempColor = (temp) => {
+    switch (temp) {
+      case "Hot":
+        return "text-danger-main";
+      case "Warm":
+        return "text-warning-main";
+      case "Cold":
+        return "text-info-main";
+      default:
+        return "text-neutral-600";
+    }
+  };
+
+  const handleClearFilters = () => {
+    setSelectedChapter(null);
+    setSelectedZone(null);
+    setSelectedEd(null);
+    setSelectedRd(null);
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
+  const handleViewDetails = (referral) => {
+    setSelectedReferral(referral);
+    setShowViewModal(true);
+  };
+
+  return (
+    <div className="card h-100 p-0 radius-12">
+      <div className="card-header border-bottom bg-base py-16 px-24">
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+          <h6 className="text-primary-600 pb-2 mb-0">Referral's Report</h6>
+          <div className="d-flex align-items-center flex-wrap gap-3">
+            <form className="navbar-search">
+              <input
+                type="text"
+                className="bg-base h-40-px w-auto"
+                name="search"
+                placeholder="Search Member or Referral To"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Icon icon="ion:search-outline" className="icon" />
+            </form>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="row g-3 align-items-end">
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={chapterOptions}
+              value={selectedChapter}
+              onChange={setSelectedChapter}
+              placeholder="Chapter"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={zoneOptions}
+              value={selectedZone}
+              onChange={setSelectedZone}
+              placeholder="Zone"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={edOptions}
+              value={selectedEd}
+              onChange={setSelectedEd}
+              placeholder="ED"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={rdOptions}
+              value={selectedRd}
+              onChange={setSelectedRd}
+              placeholder="RD"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl-auto col-md-4 col-sm-6 d-flex align-items-end">
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="btn btn-outline-danger d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap w-100"
+              title="Clear All Filters"
+            >
+              <Icon icon="solar:filter-remove-bold-duotone" fontSize={20} />
+              Clear Filter
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card-body p-24">
+        <div className="table-responsive scroll-sm">
+          <table className="table bordered-table sm-table mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Member Name</th>
+                <th scope="col">Referral To</th>
+                <th scope="col">Type</th>
+                <th scope="col">Status</th>
+                <th scope="col">Referral Name</th>
+                <th scope="col">Temp</th>
+                <th scope="col">Comments</th>
+                <th scope="col" className="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.length > 0 ? (
+                currentData.map((item) => (
+                  <tr key={item.id}>
+                    <td>{formatDate(item.date)}</td>
+                    <td>{item.memberName}</td>
+                    <td>{item.referralTo}</td>
+                    <td>
+                      <span
+                        className={`badge ${item.type === "Inside" ? "bg-primary-50 text-primary-600" : "bg-neutral-200 text-neutral-600"} px-8 py-4 radius-4`}
+                      >
+                        {item.type}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={`badge ${getStatusColor(item.status)} px-8 py-4 radius-4`}
+                      >
+                        {item.status}
+                      </span>
+                    </td>
+                    <td>{item.name}</td>
+                    <td className="fw-bold">
+                      <span className={getTempColor(item.temp)}>
+                        {item.temp}
+                      </span>
+                    </td>
+                    <td style={{ minWidth: "200px" }}>{item.comments}</td>
+                    <td className="text-center">
+                      <button
+                        className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+                        onClick={() => handleViewDetails(item)}
+                      >
+                        <Icon icon="majesticons:eye-line" /> View
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="9" className="text-center py-4">
+                    No referrals found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
+      </div>
+
+      {/* View Details Modal */}
+      <Modal
+        centered
+        show={showViewModal}
+        onHide={() => setShowViewModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="text-lg fw-semibold">
+            Referral Contact Details
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-24">
+          {selectedReferral && (
+            <div className="d-flex flex-column gap-3">
+              <div className="p-16 radius-8 bg-neutral-100 border">
+                <div className="mb-12">
+                  <h6 className="mb-4 fw-bold text-dark text-sm">Phone:</h6>
+                  <p className="mb-0 text-secondary-light">{selectedReferral.phone}</p>
+                </div>
+                <div className="mb-12">
+                  <h6 className="mb-4 fw-bold text-dark text-sm">Email:</h6>
+                  <p className="mb-0 text-secondary-light">{selectedReferral.email}</p>
+                </div>
+                <div>
+                  <h6 className="mb-4 fw-bold text-dark text-sm">Address:</h6>
+                  <p className="mb-0 text-secondary-light">{selectedReferral.address}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowViewModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
 };
 
 export default ReferralNoteLayer;

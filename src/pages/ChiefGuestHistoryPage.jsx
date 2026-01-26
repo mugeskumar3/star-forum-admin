@@ -7,7 +7,6 @@ const ChiefGuestHistoryPage = () => {
   return (
     <>
       <MasterLayout>
-        <Breadcrumb title="Chief Guest History" />
         <ChiefGuestHistoryLayer />
       </MasterLayout>
     </>

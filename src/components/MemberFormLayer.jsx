@@ -114,10 +114,51 @@ const MemberFormLayer = () => {
     }
   };
 
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.fullName) newErrors.fullName = "Full Name is required";
+    if (!formData.email) newErrors.email = "Email Address is required";
+    if (!formData.companyName)
+      newErrors.companyName = "Company Name is required";
+    if (!formData.mobileNumber)
+      newErrors.mobileNumber = "Mobile Number is required";
+    if (!formData.region) newErrors.region = "Region is required";
+    if (!formData.chapter) newErrors.chapter = "Chapter is required";
+    if (!formData.position) newErrors.position = "Position is required";
+    if (!formData.dob) newErrors.dob = "Date of Birth is required";
+    if (!formData.annualFee) newErrors.annualFee = "Annual Fee is required";
+    if (!formData.transactionId)
+      newErrors.transactionId = "Transaction ID is required";
+    if (!formData.gstNo) newErrors.gstNo = "GST No is required";
+    if (!formData.paymentMode)
+      newErrors.paymentMode = "Payment Mode is required";
+    if (!formData.paymentDate)
+      newErrors.paymentDate = "Payment Date is required";
+    if (!formData.joiningDate)
+      newErrors.joiningDate = "Joining Date is required";
+    if (!formData.renewalDate)
+      newErrors.renewalDate = "Renewal Date is required";
+    if (!formData.communicationConsent)
+      newErrors.communicationConsent = "Communication Consent is required";
+    if (!formData.membershipType)
+      newErrors.membershipType = "Membership Type is required";
+    if (!formData.trainingYear)
+      newErrors.trainingYear = "Training Year is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Member Data Submitted:", formData);
-    navigate("/members-registration");
+    if (validate()) {
+      console.log("Member Data Submitted:", formData);
+      navigate("/members-registration");
+    } else {
+      window.scrollTo(0, 0); // Scroll to top to show errors
+    }
   };
 
   // Options for React Select
@@ -236,12 +277,11 @@ const MemberFormLayer = () => {
                   />
                 </div>
 
-                {/* Right Column: Input Fields Grid */}
                 <div className="col-xxl-10 col-xl-9 col-lg-9">
                   <div className="row gy-3">
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Full Name *
+                        Full Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -249,13 +289,15 @@ const MemberFormLayer = () => {
                         name="fullName"
                         value={formData.fullName}
                         onChange={handleChange}
-                        required
                       />
+                      {errors.fullName && (
+                        <small className="text-danger">{errors.fullName}</small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Email Address *
+                        Email Address <span className="text-danger">*</span>
                       </label>
                       <input
                         type="email"
@@ -263,13 +305,15 @@ const MemberFormLayer = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        required
                       />
+                      {errors.email && (
+                        <small className="text-danger">{errors.email}</small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Company Name *
+                        Company Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -277,13 +321,17 @@ const MemberFormLayer = () => {
                         name="companyName"
                         value={formData.companyName}
                         onChange={handleChange}
-                        required
                       />
+                      {errors.companyName && (
+                        <small className="text-danger">
+                          {errors.companyName}
+                        </small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Mobile Number *
+                        Mobile Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
@@ -291,12 +339,18 @@ const MemberFormLayer = () => {
                         name="mobileNumber"
                         value={formData.mobileNumber}
                         onChange={handleChange}
-                        required
                       />
+                      {errors.mobileNumber && (
+                        <small className="text-danger">
+                          {errors.mobileNumber}
+                        </small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Region *</label>
+                      <label className="form-label fw-semibold">
+                        Region <span className="text-danger">*</span>
+                      </label>
                       <Select
                         name="region"
                         options={regionOptions}
@@ -308,13 +362,15 @@ const MemberFormLayer = () => {
                         styles={customStyles}
                         placeholder="Select Region"
                         isClearable={false}
-                        required
                       />
+                      {errors.region && (
+                        <small className="text-danger">{errors.region}</small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Chapter *
+                        Chapter <span className="text-danger">*</span>
                       </label>
                       <Select
                         name="chapter"
@@ -325,15 +381,17 @@ const MemberFormLayer = () => {
                         )}
                         onChange={handleSelectChange}
                         styles={customStyles}
-                        placeholder="Select Chapter"
+                        placeholder="Chapter"
                         isClearable={false}
-                        required
                       />
+                      {errors.chapter && (
+                        <small className="text-danger">{errors.chapter}</small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Membership ID *
+                        Membership ID
                       </label>
                       <input
                         type="text"
@@ -346,7 +404,7 @@ const MemberFormLayer = () => {
 
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Position *
+                        Position <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -354,8 +412,10 @@ const MemberFormLayer = () => {
                         name="position"
                         value={formData.position}
                         onChange={handleChange}
-                        required
                       />
+                      {errors.position && (
+                        <small className="text-danger">{errors.position}</small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
@@ -396,7 +456,7 @@ const MemberFormLayer = () => {
 
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Date of Birth *
+                        Date of Birth <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -404,8 +464,10 @@ const MemberFormLayer = () => {
                         name="dob"
                         value={formData.dob}
                         onChange={handleChange}
-                        required
                       />
+                      {errors.dob && (
+                        <small className="text-danger">{errors.dob}</small>
+                      )}
                     </div>
 
                     <div className="col-md-4">
@@ -514,19 +576,23 @@ const MemberFormLayer = () => {
                   id="communicationConsent"
                   checked={formData.communicationConsent}
                   onChange={handleChange}
-                  required
                 />
                 <label
                   className="form-check-label fw-semibold"
                   htmlFor="communicationConsent"
                 >
-                  I wish to receive updates via SMS and E-Mail *
+                  I wish to receive updates via SMS and E-Mail{" "}
+                  <span className="text-danger">*</span>
                 </label>
               </div>
+              {errors.communicationConsent && (
+                <small className="text-danger ms-3">
+                  {errors.communicationConsent}
+                </small>
+              )}
             </div>
           </div>
 
-          {/* 4. SUBSCRIPTION DETAILS */}
           <div className="row gy-3 mb-24">
             <div className="col-12">
               <h6 className="text-primary-600 pb-2 mb-3">
@@ -534,40 +600,54 @@ const MemberFormLayer = () => {
               </h6>
             </div>
             <div className="col-md-4">
-              <label className="form-label fw-semibold">Annual Fee *</label>
+              <label className="form-label fw-semibold">
+                Annual Fee <span className="text-danger">*</span>
+              </label>
               <input
                 type="number"
                 className="form-control radius-8"
                 name="annualFee"
                 value={formData.annualFee}
                 onChange={handleChange}
-                required
               />
+              {errors.annualFee && (
+                <small className="text-danger">{errors.annualFee}</small>
+              )}
             </div>
             <div className="col-md-4">
-              <label className="form-label fw-semibold">Transaction ID *</label>
+              <label className="form-label fw-semibold">
+                Transaction ID <span className="text-danger">*</span>
+              </label>
               <input
                 type="text"
                 className="form-control radius-8"
                 name="transactionId"
                 value={formData.transactionId}
                 onChange={handleChange}
-                required
               />
+              {errors.transactionId && (
+                <small className="text-danger">{errors.transactionId}</small>
+              )}
             </div>
             <div className="col-md-4">
-              <label className="form-label fw-semibold">GST No *</label>
+              <label className="form-label fw-semibold">
+                GST No <span className="text-danger">*</span>
+              </label>
               <input
                 type="text"
                 className="form-control radius-8"
                 name="gstNo"
                 value={formData.gstNo}
                 onChange={handleChange}
-                required
               />
+              {errors.gstNo && (
+                <small className="text-danger">{errors.gstNo}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Payment Mode *</label>
+              <label className="form-label fw-semibold">
+                Payment Mode <span className="text-danger">*</span>
+              </label>
               <Select
                 name="paymentMode"
                 options={paymentModeOptions}
@@ -579,41 +659,55 @@ const MemberFormLayer = () => {
                 styles={customStyles}
                 placeholder="Select Mode"
                 isClearable={false}
-                required
               />
+              {errors.paymentMode && (
+                <small className="text-danger">{errors.paymentMode}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Payment Date *</label>
+              <label className="form-label fw-semibold">
+                Payment Date <span className="text-danger">*</span>
+              </label>
               <input
                 type="date"
                 className="form-control radius-8"
                 name="paymentDate"
                 value={formData.paymentDate}
                 onChange={handleChange}
-                required
               />
+              {errors.paymentDate && (
+                <small className="text-danger">{errors.paymentDate}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Joining Date *</label>
+              <label className="form-label fw-semibold">
+                Joining Date <span className="text-danger">*</span>
+              </label>
               <input
                 type="date"
                 className="form-control radius-8"
                 name="joiningDate"
                 value={formData.joiningDate}
                 onChange={handleChange}
-                required
               />
+              {errors.joiningDate && (
+                <small className="text-danger">{errors.joiningDate}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Renewal Date *</label>
+              <label className="form-label fw-semibold">
+                Renewal Date <span className="text-danger">*</span>
+              </label>
               <input
                 type="date"
                 className="form-control radius-8"
                 name="renewalDate"
                 value={formData.renewalDate}
                 onChange={handleChange}
-                required
               />
+              {errors.renewalDate && (
+                <small className="text-danger">{errors.renewalDate}</small>
+              )}
             </div>
             <div className="col-12">
               <div className="form-check d-flex align-items-center">
@@ -633,24 +727,27 @@ const MemberFormLayer = () => {
           </div>
 
           <div className="row gy-4 mb-24">
-            <div className="col-md-6">
-              <h6 className="text-primary-600 pb-2 mb-3">Training Report</h6>
-              <div className="row gy-3">
-                <div className="col-md-12">
+            <div className="col-12">
+              <h6 className="text-primary-600 pb-2 mb-3">
+                Training Report
+              </h6>
+              <div className="row gy-3 gx-4 align-items-center">
+                <div className="col-md-6">
                   <label className="form-label fw-semibold">
-                    Training Year *
+                    Training Year <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="number"
+                    type="date"
                     className="form-control radius-8"
                     name="trainingYear"
-                    placeholder="YYYY"
                     value={formData.trainingYear}
                     onChange={handleChange}
-                    required
                   />
+                  {errors.trainingYear && (
+                    <small className="text-danger">{errors.trainingYear}</small>
+                  )}
                 </div>
-                <div className="col-md-12">
+                <div className="col-md-6">
                   <div className="d-flex gap-4">
                     <div className="form-check d-flex align-items-center">
                       <input
@@ -693,32 +790,23 @@ const MemberFormLayer = () => {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-12 text-end">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary btn-sm radius-8"
-                  >
-                    Save Training
-                  </button>
-                </div>
               </div>
             </div>
 
-            {/* 6. AWARDS REPORT */}
-            <div className="col-md-6">
-              <h6 className="text-primary-600 pb-2 mb-3">Awards Report</h6>
+            <div className="col-12">
+              <h6 className="text-primary-600 pb-2 mb-3">Add Awards Report</h6>
               <div className="row gy-3">
-                <div className="col-md-12">
+                <div className="col-md-6">
                   <label className="form-label fw-semibold">Tenure</label>
                   <input
-                    type="text"
+                    type="date"
                     className="form-control radius-8"
                     name="tenure"
                     value={formData.tenure}
                     onChange={handleChange}
                   />
                 </div>
-                <div className="col-md-12">
+                <div className="col-md-6">
                   <label className="form-label fw-semibold">Choose Award</label>
                   <Select
                     name="award"
@@ -742,12 +830,14 @@ const MemberFormLayer = () => {
             </div>
           </div>
 
-          {/* 7. CNI CLUB MEMBER */}
           <div className="row gy-3 mb-24">
             <div className="col-12">
               <h6 className="text-primary-600 border-bottom border-primary-100 pb-2 mb-3">
                 CNI Club Member
               </h6>
+              <p className="text-primary-600 pb-2 mb-3">
+                Select Membership Type <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-12">
               <div className="d-flex flex-wrap gap-4 align-items-center">
@@ -803,6 +893,11 @@ const MemberFormLayer = () => {
                   Reset Selection
                 </button>
               </div>
+              {errors.membershipType && (
+                <small className="text-danger d-block mt-2">
+                  {errors.membershipType}
+                </small>
+              )}
             </div>
           </div>
 

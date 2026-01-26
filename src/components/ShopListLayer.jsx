@@ -42,11 +42,16 @@ const ShopListLayer = () => {
     { value: 5, label: "Sneakers", price: 3000 },
   ];
 
+  const [errors, setErrors] = useState({});
+
   const handleSelectChange = (selectedOption, { name }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: selectedOption ? selectedOption.value : "",
     }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleProductSelect = (selectedOption) => {
@@ -60,8 +65,8 @@ const ShopListLayer = () => {
         prev.map((item) =>
           item.id === selectedOption.value
             ? { ...item, count: item.count + 1 }
-            : item
-        )
+            : item,
+        ),
       );
     } else {
       // Add new item
@@ -76,6 +81,9 @@ const ShopListLayer = () => {
       ]);
     }
     setSelectedProduct(null); // Reset dropdown
+    if (errors.cart) {
+      setErrors((prev) => ({ ...prev, cart: "" }));
+    }
   };
 
   const updateQuantity = (id, delta) => {
@@ -86,7 +94,7 @@ const ShopListLayer = () => {
           return { ...item, count: newCount };
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -102,22 +110,62 @@ const ShopListLayer = () => {
     return items.reduce((total, item) => total + item.price * item.count, 0);
   };
 
+  const validateForm = () => {
+    let newErrors = {};
+    let isValid = true;
+
+    if (!formData.zone) {
+      newErrors.zone = "Zone is required";
+      isValid = false;
+    }
+    if (!formData.region) {
+      newErrors.region = "Region is required";
+      isValid = false;
+    }
+    if (!formData.chapter) {
+      newErrors.chapter = "Chapter is required";
+      isValid = false;
+    }
+    if (!formData.member) {
+      newErrors.member = "Member is required";
+      isValid = false;
+    }
+    if (cart.length === 0) {
+      newErrors.cart = "Please add at least one product to the cart";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     console.log("Order Submitted:", { ...formData, cart });
     // Navigate to orders list just like the request asked
     window.location.href = "/orders";
   };
 
-  const customStyles = {
-    control: (provided) => ({
+  const customStyles = (error) => ({
+    control: (provided, state) => ({
       ...provided,
       minHeight: "40px",
       borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
+      borderColor: state.isFocused ? "#86b7fe" : error ? "#dc3545" : "#dee2e6",
+      boxShadow: state.isFocused
+        ? "0 0 0 0.25rem rgba(13, 110, 253, 0.25)"
+        : "none",
       "&:hover": {
-        borderColor: "#dee2e6",
+        borderColor: state.isFocused
+          ? "#86b7fe"
+          : error
+            ? "#dc3545"
+            : "#dee2e6",
       },
     }),
     singleValue: (provided) => ({
@@ -128,7 +176,7 @@ const ShopListLayer = () => {
       ...provided,
       paddingLeft: "16px",
     }),
-  };
+  });
 
   const getSelectedOption = (options, value) => {
     return options.find((option) => option.value === value) || null;
@@ -142,7 +190,6 @@ const ShopListLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-
             {/* Zone Selection */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
@@ -153,11 +200,13 @@ const ShopListLayer = () => {
                 options={zoneOptions}
                 value={getSelectedOption(zoneOptions, formData.zone)}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={customStyles(errors.zone)}
                 placeholder="Select Zone"
                 isClearable={false}
-                required
               />
+              {errors.zone && (
+                <small className="text-danger">{errors.zone}</small>
+              )}
             </div>
 
             {/* Region Selection */}
@@ -170,11 +219,13 @@ const ShopListLayer = () => {
                 options={regionOptions}
                 value={getSelectedOption(regionOptions, formData.region)}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={customStyles(errors.region)}
                 placeholder="Select Region"
                 isClearable={false}
-                required
               />
+              {errors.region && (
+                <small className="text-danger">{errors.region}</small>
+              )}
             </div>
 
             {/* Chapter Selection */}
@@ -188,10 +239,12 @@ const ShopListLayer = () => {
                 value={getSelectedOption(chapterOptions, formData.chapter)}
                 onChange={handleSelectChange}
                 styles={customStyles}
-                placeholder="Select Chapter"
+                placeholder="Chapter"
                 isClearable={false}
-                required
               />
+              {errors.chapter && (
+                <small className="text-danger">{errors.chapter}</small>
+              )}
             </div>
 
             {/* Member Selection */}
@@ -204,11 +257,13 @@ const ShopListLayer = () => {
                 options={memberOptions}
                 value={getSelectedOption(memberOptions, formData.member)}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={customStyles(errors.member)}
                 placeholder="Select Member"
                 isClearable={false}
-                required
               />
+              {errors.member && (
+                <small className="text-danger">{errors.member}</small>
+              )}
             </div>
 
             {/* Product Selection */}
@@ -221,10 +276,13 @@ const ShopListLayer = () => {
                 options={productOptions}
                 value={selectedProduct}
                 onChange={handleProductSelect}
-                styles={customStyles}
+                styles={customStyles(errors.cart)}
                 placeholder="Search & Select Product..."
                 isClearable={true}
               />
+              {errors.cart && (
+                <small className="text-danger">{errors.cart}</small>
+              )}
             </div>
 
             {/* Product Cart Table - Only show if cart has items */}
@@ -240,7 +298,7 @@ const ShopListLayer = () => {
                             backgroundColor: "#C4161C",
                             color: "white",
                             border: "none",
-                            width: "60px"
+                            width: "60px",
                           }}
                         >
                           S.No
@@ -260,7 +318,7 @@ const ShopListLayer = () => {
                             backgroundColor: "#C4161C",
                             color: "white",
                             border: "none",
-                            width: "200px"
+                            width: "200px",
                           }}
                         >
                           Price
@@ -271,7 +329,7 @@ const ShopListLayer = () => {
                             backgroundColor: "#C4161C",
                             color: "white",
                             border: "none",
-                            width: "240px"
+                            width: "240px",
                           }}
                         >
                           Quantity
@@ -282,7 +340,7 @@ const ShopListLayer = () => {
                             backgroundColor: "#C4161C",
                             color: "white",
                             border: "none",
-                            width: "220px"
+                            width: "220px",
                           }}
                         >
                           Total
@@ -293,7 +351,7 @@ const ShopListLayer = () => {
                             backgroundColor: "#C4161C",
                             color: "white",
                             border: "none",
-                            width: "80px"
+                            width: "80px",
                           }}
                         >
                           Action
@@ -303,16 +361,28 @@ const ShopListLayer = () => {
                     <tbody>
                       {cart.map((item, index) => (
                         <tr key={item.id}>
-                          <td className="text-center align-middle fw-medium" style={{ width: "60px" }}>
+                          <td
+                            className="text-center align-middle fw-medium"
+                            style={{ width: "60px" }}
+                          >
                             {index + 1}
                           </td>
                           <td className="align-middle">{item.name}</td>
-                          <td className="text-center align-middle" style={{ width: "100px" }}>
+                          <td
+                            className="text-center align-middle"
+                            style={{ width: "100px" }}
+                          >
                             ₹{item.price}
                           </td>
-                          <td className="text-center align-middle" style={{ width: "140px" }}>
+                          <td
+                            className="text-center align-middle"
+                            style={{ width: "140px" }}
+                          >
                             <div className="d-flex justify-content-center">
-                              <div className="d-flex border rounded" style={{ width: "120px" }}>
+                              <div
+                                className="d-flex border rounded"
+                                style={{ width: "120px" }}
+                              >
                                 <button
                                   type="button"
                                   className="btn btn-light border-0 d-flex align-items-center justify-content-center"
@@ -320,7 +390,10 @@ const ShopListLayer = () => {
                                   onClick={() => updateQuantity(item.id, -1)}
                                   disabled={item.count <= 1}
                                 >
-                                  <Icon icon="mdi:minus" style={{ fontSize: "16px" }} />
+                                  <Icon
+                                    icon="mdi:minus"
+                                    style={{ fontSize: "16px" }}
+                                  />
                                 </button>
 
                                 <div
@@ -329,7 +402,7 @@ const ShopListLayer = () => {
                                     width: "40px",
                                     backgroundColor: "#f8f9fa",
                                     borderLeft: "1px solid #dee2e6",
-                                    borderRight: "1px solid #dee2e6"
+                                    borderRight: "1px solid #dee2e6",
                                   }}
                                 >
                                   {item.count}
@@ -341,12 +414,18 @@ const ShopListLayer = () => {
                                   style={{ width: "40px" }}
                                   onClick={() => updateQuantity(item.id, 1)}
                                 >
-                                  <Icon icon="mdi:plus" style={{ fontSize: "16px" }} />
+                                  <Icon
+                                    icon="mdi:plus"
+                                    style={{ fontSize: "16px" }}
+                                  />
                                 </button>
                               </div>
                             </div>
                           </td>
-                          <td className="text-center align-middle" style={{ width: "120px" }}>
+                          <td
+                            className="text-center align-middle"
+                            style={{ width: "120px" }}
+                          >
                             ₹{item.price * item.count}
                           </td>
                           <td className="text-center align-middle">
@@ -385,7 +464,6 @@ const ShopListLayer = () => {
                 </div>
               </div>
             )}
-
           </div>
 
           <div className="d-flex justify-content-end gap-2 mt-24">

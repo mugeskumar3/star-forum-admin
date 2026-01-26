@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import ChiefGuestApi from "../Api/ChiefGuestApi";
+import { Spinner } from "react-bootstrap";
 
 const ChiefGuestFormLayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     chiefGuestName: "",
@@ -40,20 +43,28 @@ const ChiefGuestFormLayer = () => {
   };
 
   useEffect(() => {
-    if (isEditMode) {
-      // Simulation of fetching data
-      setFormData({
-        chiefGuestName: "Rajesh Kumar",
-        contactNumber: "9876543210",
-        emailId: "rajesh@example.com",
-        businessName: "Alpha Tech",
-        businessCategory: "Technology",
-        location: "Chennai",
-        referredBy: "Suresh",
-        address: "123 Main St, Chennai",
-      });
-    }
-  }, [isEditMode]);
+    const fetchDetails = async () => {
+      if (isEditMode) {
+        setLoading(true);
+        const response = await ChiefGuestApi.getChiefGuestDetails(id);
+        if (response.status) {
+          const guest = response.data.data;
+          setFormData({
+            chiefGuestName: guest.chiefGuestName || "",
+            contactNumber: guest.contactNumber || "",
+            emailId: guest.emailId || "",
+            businessName: guest.businessName || "",
+            businessCategory: guest.businessCategory || "",
+            location: guest.location || "",
+            referredBy: guest.referredBy?._id || guest.referredBy || "",
+            address: guest.address || "",
+          });
+        }
+        setLoading(false);
+      }
+    };
+    fetchDetails();
+  }, [isEditMode, id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,14 +72,31 @@ const ChiefGuestFormLayer = () => {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Form Submitted:", formData);
-      // Add API call here
-      navigate("/chief-guest-list");
+      setLoading(true);
+      let response;
+      if (isEditMode) {
+        response = await ChiefGuestApi.updateChiefGuest(id, formData);
+      } else {
+        response = await ChiefGuestApi.createChiefGuest(formData);
+      }
+
+      if (response.status) {
+        navigate("/chief-guest-list");
+      }
+      setLoading(false);
     }
   };
+
+  if (loading && isEditMode) {
+    return (
+      <div className="d-flex justify-content-center py-50">
+        <Spinner animation="border" variant="danger" />
+      </div>
+    );
+  }
 
   return (
     <div className="card h-100 p-0 radius-12">
@@ -155,7 +183,7 @@ const ChiefGuestFormLayer = () => {
             {/* Business Category */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Business Category <span className="text-danger">*</span>
+                Business Category ID <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -163,7 +191,7 @@ const ChiefGuestFormLayer = () => {
                 name="businessCategory"
                 value={formData.businessCategory}
                 onChange={handleChange}
-                placeholder="Enter Business Category"
+                placeholder="Enter Business Category ID"
               />
               {errors.businessCategory && (
                 <small className="text-danger">{errors.businessCategory}</small>
@@ -191,7 +219,7 @@ const ChiefGuestFormLayer = () => {
             {/* Referred By */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Referred By <span className="text-danger">*</span>
+                Referred By (Member ID) <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -199,7 +227,7 @@ const ChiefGuestFormLayer = () => {
                 name="referredBy"
                 value={formData.referredBy}
                 onChange={handleChange}
-                placeholder="Enter Referrer Name"
+                placeholder="Enter Referrer Member ID"
               />
               {errors.referredBy && (
                 <small className="text-danger">{errors.referredBy}</small>
@@ -235,8 +263,23 @@ const ChiefGuestFormLayer = () => {
             <button
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
+              disabled={loading}
             >
-              Save
+              {loading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
         </form>

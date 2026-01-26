@@ -44,7 +44,7 @@
 }
 
 .hover-bg-neutral-50:hover {
-    background-color: #f9f9fb !important;
+    background-color: #838387 !important;
 }
 
 .transition-2 {
@@ -77,8 +77,10 @@
 
 .modal-custom .form-control:focus {
     border-color: #C4161C;
-    box-shadow: 0 0 0 5px rgba(196, 22, 28, 0.12);
+    /* box-shadow: 0 0 0 5px rgba(196, 22, 28, 0.12); */
 }
+
+
 
 .spacing-1 {
     letter-spacing: 1px;

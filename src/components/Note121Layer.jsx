@@ -1,113 +1,327 @@
-import React from 'react';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import './ThankYouSlipLayer.css';
+import React, { useState } from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { Link } from "react-router-dom";
+import Select from "react-select";
+import { Modal, Button } from "react-bootstrap";
+import TablePagination from "./TablePagination";
 
 const Note121Layer = () => {
-    // Mock data
-    const chapters = [
-        {
-            id: 1,
-            name: 'ARAM Chapter',
-            count: 135,
-            members: [
-                { id: 1, name: 'Logarajan S P', company: 'e-intellisafe & Security Solutions', category: 'CCTV & Security systems', count: 32 },
-                { id: 2, name: 'Mathiarasu M', company: 'TECHMAXX ENGINEERING', category: 'Fire & Safety', count: 27 },
-                { id: 3, name: 'Mano Neelamegam', company: 'WUDFE INC', category: 'Interior Designer', count: 27 },
-                { id: 4, name: 'Kumar Raj S', company: 'Insure Tech Serv', category: 'General Insurance', count: 25 },
-                { id: 5, name: 'Mohamed Umar', company: 'Harxa Tech', category: 'Software Developer', count: 24 }
-            ]
-        },
-        {
-            id: 2,
-            name: 'Chapter Testing',
-            count: 45,
-            members: [
-                { id: 6, name: 'Aarthi S', company: 'Test Solutions', category: 'Consulting', count: 25 },
-                { id: 7, name: 'Rahul V', company: 'Apex Media', category: 'Photography', count: 20 }
-            ]
-        },
-        {
-            id: 3,
-            name: 'Salem Chapter',
-            count: 88,
-            members: [
-                { id: 8, name: 'Anbu Selvan', company: 'Textile Hub', category: 'Manufacturing', count: 48 },
-                { id: 9, name: 'Revathi S', company: 'Organic Foods', category: 'FMCG', count: 40 }
-            ]
-        }
-    ];
+  // Mock Data
+  const [reports, setReports] = useState(
+    Array.from({ length: 20 }).map((_, i) => ({
+      id: i + 1,
+      dateTime: "2025-01-25T10:30:00",
+      memberName: [
+        "Rajesh Kumar", "Priya Sharma", "Amit Patel", "Sneha Reddy", "Vikram Singh",
+        "Ananya Iyer", "Suresh Nair", "Megha Gupta", "Arjun Verma", "Kavita Joshi",
+        "Rahul Deshmukh", "Pooja Malhotra", "Sandeep Bansal", "Neha Choudhury", "Vijay Ranganathan",
+        "Shilpa Kulkarni", "Manish Tiwari", "Divya Saxena", "Pankaj अग्रवाल", "Swati Bhattacharya",
+      ][i],
+      metWith: [
+        "John Doe", "Jane Smith", "Robert Brown", "Emily Davis", "Michael Wilson",
+        "Sarah Miller", "David Moore", "Jessica Taylor", "Richard Anderson", "Karen Thomas",
+        "Lisa Jackson", "Kevin White", "Brian Harris", "Ashley Martin", "Steven Thompson",
+        "Mary Garcia", "Daniel Martinez", "Patricia Robinson", "Paul Clark", "Jennifer Rodriguez",
+      ][i],
+      initiatedBy: i % 2 === 0 ? "Member" : "Met With",
+      location: ["Chennai", "Mumbai", "Delhi", "Bangalore", "Hyderabad"][i % 5],
+      topics: "Business Growth, Referrals, Networking",
+      selfie: "https://placehold.co/600x400",
+      chapter: ["Star Chapter", "Galaxy Chapter"][i % 2],
+      zone: ["Zone 1", "Zone 2"][i % 2],
+      ed: ["ED 1", "ED 2"][i % 2],
+      rd: ["RD 1", "RD 2"][i % 2],
+    })),
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Modal State
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
+
+  // Filter States
+  const [selectedChapter, setSelectedChapter] = useState(null);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [selectedEd, setSelectedEd] = useState(null);
+  const [selectedRd, setSelectedRd] = useState(null);
+
+  // Options
+  const chapterOptions = [
+    { value: "Star Chapter", label: "Star Chapter" },
+    { value: "Galaxy Chapter", label: "Galaxy Chapter" },
+  ];
+  const zoneOptions = [
+    { value: "Zone 1", label: "Zone 1" },
+    { value: "Zone 2", label: "Zone 2" },
+  ];
+  const edOptions = [
+    { value: "ED 1", label: "ED 1" },
+    { value: "ED 2", label: "ED 2" },
+  ];
+  const rdOptions = [
+    { value: "RD 1", label: "RD 1" },
+    { value: "RD 2", label: "RD 2" },
+  ];
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      minHeight: "40px",
+      borderRadius: "8px",
+      border: "1px solid #dee2e6",
+      boxShadow: "none",
+      "&:hover": {
+        border: "1px solid #dee2e6",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 9999,
+    }),
+  };
+
+  // Filtering logic
+  const filteredReports = reports.filter((report) => {
+    const matchesSearch =
+      report.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.metWith.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesChapter = selectedChapter
+      ? report.chapter === selectedChapter.value
+      : true;
+    const matchesZone = selectedZone
+      ? report.zone === selectedZone.value
+      : true;
+    const matchesEd = selectedEd ? report.ed === selectedEd.value : true;
+    const matchesRd = selectedRd ? report.rd === selectedRd.value : true;
 
     return (
-        <div className="d-flex flex-column gap-4">
-            {/* Header section */}
-            <div className="d-flex align-items-center justify-content-between mb-24 px-12">
-                <div className="d-flex align-items-center">
-                    <div className="bg-danger-600 radius-2" style={{ width: '4px', height: '32px' }}></div>
-                    <div className="ms-12">
-                        <h5 className="fw-bold mb-0" style={{ color: '#101828' }}>121's Report</h5>
-                        <p className="text-sm text-secondary-light mb-0">Chapter-wise one-to-one meeting details</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Grid of Chapter Slips */}
-            <div className="row gy-3 px-12">
-                {chapters.map(chapter => (
-                    <div key={chapter.id} className="col-xl-3 col-lg-4 col-md-6 col-12">
-                        <div className="card h-100 p-0 radius-12 shadow-hover-sm transition-2 overflow-hidden border-0">
-                            {/* Chapter Header with Primary Gradient */}
-                            <div className="p-12 bg-primary-600 text-white">
-                                <div className="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 className="fw-bold mb-0 text-white text-truncate" style={{ maxWidth: '140px' }}>{chapter.name}</h6>
-                                    <div className="w-28-px h-28-px rounded-circle bg-white-20 d-flex align-items-center justify-content-center">
-                                        <Icon icon="solar:users-group-rounded-outline" fontSize={16} />
-                                    </div>
-                                </div>
-                                <div className="mt-8">
-                                    <span className="text-xxs opacity-75 text-uppercase spacing-1 d-block">Total 121's</span>
-                                    <h5 className="fw-bolder mb-0 text-white">{chapter.count}</h5>
-                                </div>
-                            </div>
-
-                            {/* Members List */}
-                            <div className="card-body p-12 bg-base">
-                                <h6 className="text-xxs fw-bold text-secondary-light text-uppercase spacing-1 mb-12">Member Breakdown</h6>
-                                <div className="d-flex flex-column gap-2">
-                                    {chapter.members.map(member => (
-                                        <div
-                                            key={member.id}
-                                            className="p-10 radius-8 border transition-2 hover-bg-neutral-50"
-                                            style={{ borderColor: '#f5f5f5' }}
-                                        >
-                                            <div className="d-flex justify-content-between align-items-start gap-1">
-                                                <div className="flex-grow-1 overflow-hidden">
-                                                    <h6 className="text-sm fw-bold mb-0 text-dark text-truncate">{member.name}</h6>
-                                                    <span className="text-xxs text-secondary-light d-block text-truncate">
-                                                        {member.category}
-                                                    </span>
-                                                </div>
-                                                <div className="text-end">
-                                                    <span className="text-primary-600 fw-bold text-sm d-block">{member.count}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card Footer Action */}
-                            <div className="card-footer bg-neutral-50 border-top-0 p-8 text-center">
-                                <button type="button" className="btn p-0 text-primary-600 fw-bold text-xs hover-text-primary-700 d-flex align-items-center gap-1 mx-auto">
-                                    View Detailed Stats
-                                    <Icon icon="solar:arrow-right-outline" fontSize={12} />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+      matchesSearch && matchesChapter && matchesZone && matchesEd && matchesRd
     );
+  });
+
+  const totalRecords = filteredReports.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const currentData = filteredReports.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
+  );
+
+  const handlePageChange = (page) => setCurrentPage(page);
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
+
+  const handleViewImage = (report) => {
+    setSelectedReport(report);
+    setShowImageModal(true);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).toUpperCase();
+  };
+
+  const handleClearFilters = () => {
+    setSelectedChapter(null);
+    setSelectedZone(null);
+    setSelectedEd(null);
+    setSelectedRd(null);
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
+  return (
+    <div className="card h-100 p-0 radius-12">
+      <div className="card-header border-bottom bg-base py-16 px-24">
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+          <h6 className="text-primary-600 pb-2 mb-0">121's Report</h6>
+          <div className="d-flex align-items-center flex-wrap gap-3">
+            <form className="navbar-search">
+              <input
+                type="text"
+                className="bg-base h-40-px w-auto"
+                name="search"
+                placeholder="Search Member or Met With"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Icon icon="ion:search-outline" className="icon" />
+            </form>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="row g-3 align-items-end">
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={chapterOptions}
+              value={selectedChapter}
+              onChange={setSelectedChapter}
+              placeholder="Chapter"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={zoneOptions}
+              value={selectedZone}
+              onChange={setSelectedZone}
+              placeholder="Zone"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={edOptions}
+              value={selectedEd}
+              onChange={setSelectedEd}
+              placeholder="ED"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl col-md-4 col-sm-6">
+            <Select
+              options={rdOptions}
+              value={selectedRd}
+              onChange={setSelectedRd}
+              placeholder="RD"
+              styles={customStyles}
+              isClearable
+            />
+          </div>
+          <div className="col-xl-auto col-md-4 col-sm-6 d-flex align-items-end">
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="btn btn-outline-danger d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap w-100"
+              title="Clear All Filters"
+            >
+              <Icon icon="solar:filter-remove-bold-duotone" fontSize={20} />
+              Clear Filter
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card-body p-24">
+        <div className="table-responsive scroll-sm">
+          <table className="table bordered-table sm-table mb-0">
+            <thead>
+              <tr>
+                <th scope="col">S.No</th>
+                <th scope="col">Date & Time</th>
+                <th scope="col">Member Name</th>
+                <th scope="col">Met with</th>
+                <th scope="col">Initiated by</th>
+                <th scope="col">Location</th>
+                <th scope="col">Topics</th>
+                <th scope="col" className="text-center">
+                  Selfi (View)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.length > 0 ? (
+                currentData.map((report, index) => (
+                  <tr key={report.id}>
+                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{formatDate(report.dateTime)}</td>
+                    <td>{report.memberName}</td>
+                    <td>{report.metWith}</td>
+                    <td>{report.initiatedBy}</td>
+                    <td>{report.location}</td>
+                    <td style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={report.topics}>
+                      {report.topics}
+                    </td>
+                    <td className="text-center">
+                      <button
+                        onClick={() => handleViewImage(report)}
+                        className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+                      >
+                        <Icon icon="majesticons:eye-line" /> View
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center py-4">
+                    No reports found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          totalRecords={totalRecords}
+        />
+      </div>
+
+      {/* Selfie Modal */}
+      <Modal
+        centered
+        show={showImageModal}
+        onHide={() => setShowImageModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="text-lg fw-semibold">
+            121's Details
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-24">
+          {selectedReport && (
+            <div className="d-flex flex-column gap-3">
+              <div
+                className="p-16 radius-8 bg-neutral-100 border"
+                style={{ maxHeight: '150px', overflowY: 'auto' }}
+              >
+                <h6 className="mb-8 fw-bold text-dark text-sm">Meeting Topic:</h6>
+                <p className="mb-0 text-secondary-light">{selectedReport.topics}</p>
+              </div>
+              <div className="text-center mt-2">
+                <h6 className="mb-12 fw-bold text-dark text-sm text-start">Shared Selfie:</h6>
+                <img
+                  src={selectedReport.selfie}
+                  alt="Selfie"
+                  className="img-fluid radius-12 shadow-sm"
+                  style={{ maxHeight: '300px', objectFit: 'contain' }}
+                />
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowImageModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
 };
 
 export default Note121Layer;
