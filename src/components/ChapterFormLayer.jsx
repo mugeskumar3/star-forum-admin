@@ -54,10 +54,13 @@ const ChapterFormLayer = () => {
   }, [formData.state]);
 
   const fetchZones = async (stateName) => {
+    if (!stateName) return;
     const response = await ZoneApi.getZoneByState(stateName);
     if (response && response.status && response.response.data) {
       const zones = response.response.data;
       setZoneOptions(zones.map((z) => ({ value: z._id, label: z.name })));
+    } else {
+      setZoneOptions([]);
     }
   };
 
