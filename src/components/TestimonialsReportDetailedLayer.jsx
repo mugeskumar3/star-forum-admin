@@ -115,7 +115,7 @@ const TestimonialsReportDetailedLayer = () => {
                                 type="text"
                                 className="bg-base h-40-px w-auto"
                                 name="search"
-                                placeholder="Search Member or Referral To"
+                                placeholder="Search Member"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -174,7 +174,7 @@ const TestimonialsReportDetailedLayer = () => {
                             options={chapterOptions}
                             value={selectedChapter}
                             onChange={setSelectedChapter}
-                            placeholder="Select Chapter"
+                            placeholder="Chapter"
                             styles={customStyles}
                             isClearable
                         />

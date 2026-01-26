@@ -15,10 +15,13 @@ const ViewProfileLayer = () => {
     const [showFullAsksModal, setShowFullAsksModal] = useState(false);
     const [showFullGivesModal, setShowFullGivesModal] = useState(false);
 
+    const [sidebarCardIndex, setSidebarCardIndex] = useState(0);
 
     // Member Data
     const member = {
         name: passedMember?.memberName || "Mr. Vigannesh Veerasamy",
+        chapter: passedMember?.chapter || "Millionaires",
+        position: "Executive Director (ED)",
         email: passedMember?.email || "v2fcons@gmail.com",
         phone1: passedMember?.phoneNumber || "+918300101620",
         phone2: passedMember?.phone2 || "+919962438255",
@@ -75,6 +78,9 @@ const ViewProfileLayer = () => {
         ],
         trainingHistory: [
             { title: "BNI Awards Nite/ Social/ Members Day - India", date: "17/01/2026" },
+            { title: "BNI Awards Nite/ Social/ Members Day - India", date: "17/01/2026" },
+            { title: "BNI Awards Nite/ Social/ Members Day - India", date: "17/01/2026" },
+            { title: "BNI Awards Nite/ Social/ Members Day - India", date: "17/01/2026" },
             { title: "Leadership Team Roundtable - India", date: "08/12/2025" }
         ]
     };
@@ -83,19 +89,11 @@ const ViewProfileLayer = () => {
     const handleCloseEditProfessional = () => setShowEditProfessional(false);
 
     const handleShowMoreAsks = () => {
-        if (asksLimit === 4) {
-            setAsksLimit(10);
-        } else if (member.myAsks.length > 10) {
-            setShowFullAsksModal(true);
-        }
+        setShowFullAsksModal(true);
     };
 
     const handleShowMoreGives = () => {
-        if (givesLimit === 4) {
-            setGivesLimit(10);
-        } else if (member.myGives.length > 10) {
-            setShowFullGivesModal(true);
-        }
+        setShowFullGivesModal(true);
     };
 
 
@@ -133,16 +131,14 @@ const ViewProfileLayer = () => {
                                 className="rounded-circle border border-4 border-white shadow-sm"
                                 style={{ width: '130px', height: '130px', objectFit: 'cover' }}
                             />
-                            <div className="position-absolute" style={{ top: '-10px', right: '-25px' }}>
-                                <img src="assets/images/msp-badge.png" alt="MSP" width="70" />
-                            </div>
                         </div>
 
-                        <h5 className="fw-bold mb-8 text-dark h6">{member.name}</h5>
-                        <p className="text-secondary-light text-xs mb-12 opacity-75">{member.hierarchy}</p>
-                        <p className="fw-medium text-dark text-xs mb-20">{member.roles}</p>
+                        <h5 className="fw-bold mb-4 text-dark h6">{member.name}</h5>
+                        <p className="text-secondary-light text-xs mb-4 fw-bold opacity-75">{member.companyName}</p>
+                        <p className="text-secondary-light text-xs mb-8 fw-bold text-uppercase italic-font opacity-75">Chapter: {member.chapter}</p>
+                        <p className="text-danger-600 text-xxs mb-20 fw-bold uppercase-font">{member.position}</p>
 
-                        <div className="px-16 mb-24">
+                        {/* <div className="px-16 mb-24">
                             <div className="d-flex justify-content-between text-xxs fw-bold mb-6">
                                 <span className="text-success-main">{member.completion}% Complete</span>
                                 <button className="btn p-0 text-secondary-light text-xxs border-0">See More <Icon icon="ion:chevron-down" /></button>
@@ -150,31 +146,98 @@ const ViewProfileLayer = () => {
                             <div className="progress h-6-px radius-4 bg-neutral-100">
                                 <div className="progress-bar bg-success-main" role="progressbar" style={{ width: `${member.completion}%` }}></div>
                             </div>
-                        </div>
-
-                        <div className="mb-32">
-                            <div className="d-flex justify-content-center align-items-center -space-x-12 mb-16">
-                                {[1, 2, 3, 4].map(i => (
-                                    <img key={i} src={`assets/images/user-grid/user-grid-img${i + 10}.png`} className="w-36-px h-36-px rounded-circle border border-2 border-white object-fit-cover shadow-sm" alt="" style={{ marginLeft: i === 1 ? 0 : '-10px' }} />
-                                ))}
-                                <div className="w-36-px h-36-px rounded-circle bg-neutral-200 border border-2 border-white d-flex align-items-center justify-content-center text-xxs fw-bold text-secondary-light shadow-sm" style={{ marginLeft: '-10px' }}>DG</div>
-                            </div>
-                            <h6 className="text-danger-600 fw-bold mb-4" style={{ fontSize: '13px' }}>{member.connections} Connections</h6>
-                            <button className="btn p-0 text-danger-600 fw-bold text-xs border-0 bg-transparent">{member.testimonialsCount} Testimonials</button>
-                        </div>
-
-                        <div className="card border radius-12 p-16 bg-neutral-50 text-start border-neutral-100">
-                            <div className="d-flex align-items-center gap-2 mb-12">
-                                <img src="assets/images/user-grid/user-grid-img12.png" className="w-32-px h-32-px rounded-circle" alt="" />
-                                <div>
-                                    <h6 className="text-xxs fw-bold mb-0 text-dark">Hema Chandran</h6>
-                                    <span className="text-xxxxs text-secondary-light">Millionaires</span>
+                        </div> */}
+                        <div className="carousel-card-item animate__animated animate__fadeIn">
+                            <div className="mb-24" style={{ background: '#e6b2b240', padding: '10px', borderRadius: '10px' }}>
+                                <div className="d-flex justify-content-center align-items-center -space-x-12 mb-16">
+                                    {[1, 2, 3, 4].map(i => (
+                                        <img key={i} src={`assets/images/user-grid/user-grid-img${i + 10}.png`} className="w-36-px h-36-px rounded-circle border border-2 border-white object-fit-cover shadow-sm" alt="" style={{ marginLeft: i === 1 ? 0 : '-10px' }} />
+                                    ))}
+                                    <div className="w-36-px h-36-px rounded-circle bg-neutral-200 border border-2 border-white d-flex align-items-center justify-content-center text-xxs fw-bold text-secondary-light shadow-sm" style={{ marginLeft: '-10px' }}>DG</div>
                                 </div>
+                                <h6 className="text-danger-600 fw-bold mb-4" style={{ fontSize: '13px' }}>{member.connections} Connections</h6>
+                                <button className="btn p-0 text-danger-600 fw-bold text-xs border-0 bg-transparent">{member.testimonialsCount} Testimonials</button>
                             </div>
-                            <p className="text-xxxxs text-secondary-light italic-font mb-0 line-height-1-5">
-                                <Icon icon="fa:quote-left" className="me-1 opacity-25" />
-                                Thanks to Mr Vigannesh, I recently gave him my entire clinic work. As a BNI member...
-                            </p>
+                        </div>
+
+
+
+                        <div className="position-relative">
+                            <div className="carousel-container overflow-hidden" style={{ minHeight: '200px' }}>
+                                {sidebarCardIndex === 0 && (
+                                    <div className="carousel-card-item animate__animated animate__fadeIn">
+                                        <div className="card border radius-12 p-16 bg-neutral-50 text-start border-neutral-100">
+                                            <div className="d-flex align-items-center gap-2 mb-12">
+                                                <img src="assets/images/user-grid/user-grid-img12.png" className="w-32-px h-32-px rounded-circle" alt="" />
+                                                <div>
+                                                    <h6 className="text-xxs fw-bold mb-0 text-dark">Hema Chandran</h6>
+                                                    <span className="text-xxxxs text-secondary-light">Millionaires</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-xxxxs text-secondary-light italic-font mb-0 line-height-1-5 text-truncate-3">
+                                                <Icon icon="fa:quote-left" className="me-1 opacity-25" />
+                                                Thanks to Mr Vigannesh, I recently gave him my entire clinic work...
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {sidebarCardIndex === 1 && (
+                                    <div className="carousel-card-item animate__animated animate__fadeIn">
+                                        <div className="card border radius-12 p-16 bg-neutral-50 text-start border-neutral-100">
+                                            <div className="d-flex align-items-center gap-2 mb-12">
+                                                <img src="assets/images/user-grid/user-grid-img12.png" className="w-32-px h-32-px rounded-circle" alt="" />
+                                                <div>
+                                                    <h6 className="text-xxs fw-bold mb-0 text-dark">Hema Chandran</h6>
+                                                    <span className="text-xxxxs text-secondary-light">Millionaires</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-xxxxs text-secondary-light italic-font mb-0 line-height-1-5 text-truncate-3">
+                                                <Icon icon="fa:quote-left" className="me-1 opacity-25" />
+                                                Thanks to Mr Vigannesh, I recently gave him my entire clinic work...
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {sidebarCardIndex === 2 && (
+                                    <div className="carousel-card-item animate__animated animate__fadeIn">
+                                        <div className="card border radius-12 p-16 bg-neutral-50 text-start border-neutral-100">
+                                            <div className="d-flex align-items-center gap-2 mb-12">
+                                                <img src="assets/images/user-grid/user-grid-img12.png" className="w-32-px h-32-px rounded-circle" alt="" />
+                                                <div>
+                                                    <h6 className="text-xxs fw-bold mb-0 text-dark">Hema Chandran</h6>
+                                                    <span className="text-xxxxs text-secondary-light">Millionaires</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-xxxxs text-secondary-light italic-font mb-0 line-height-1-5 text-truncate-3">
+                                                <Icon icon="fa:quote-left" className="me-1 opacity-25" />
+                                                Thanks to Mr Vigannesh, I recently gave him my entire clinic work...
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="d-flex justify-content-center align-items-center gap-3 mt-16">
+                                <button
+                                    onClick={() => setSidebarCardIndex(prev => (prev === 0 ? 2 : prev - 1))}
+                                    className="btn btn-outline-danger rounded-circle w-32-px h-32-px p-0 d-flex align-items-center justify-content-center transition-2"
+                                >
+                                    <Icon icon="solar:alt-arrow-left-bold" />
+                                </button>
+                                <div className="d-flex gap-2">
+                                    {[0, 1, 2].map(i => (
+                                        <div key={i} className={`w-6-px h-6-px rounded-circle ${sidebarCardIndex === i ? 'bg-danger-600' : 'bg-neutral-200'}`} />
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={() => setSidebarCardIndex(prev => (prev === 2 ? 0 : prev + 1))}
+                                    className="btn btn-outline-danger rounded-circle w-32-px h-32-px p-0 d-flex align-items-center justify-content-center transition-2"
+                                >
+                                    <Icon icon="solar:alt-arrow-right-bold" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -186,7 +249,7 @@ const ViewProfileLayer = () => {
                             <div className="card radius-16 border-0 shadow-sm p-32 bg-white mb-24">
                                 <div className="d-flex justify-content-between align-items-center mb-24">
                                     <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '15px' }}>Personal Details</h6>
-                                    <button onClick={() => setShowEditPersonal(true)} className="btn p-0 text-danger-600 fw-bold text-xs text-uppercase border-0">Edit</button>
+                                    <button onClick={() => setShowEditProfessional(true)} className="btn p-0 text-danger-600 fw-bold text-xs text-uppercase border-0">Edit</button>
                                 </div>
                                 <div className="d-flex flex-column gap-16">
                                     <div className="d-flex align-items-center gap-3">
@@ -201,11 +264,21 @@ const ViewProfileLayer = () => {
                                         <div className="w-18-px"><Icon icon="solar:phone-bold" className="text-secondary-light text-md" /></div>
                                         <span className="text-sm text-secondary-light fw-medium">{member.phone2}</span>
                                     </div>
+                                    <div className="d-flex flex-column gap-20">
+                                        <div className="d-flex gap-3">
+                                            <div className="w-18-px"><Icon icon="solar:case-bold" className="text-secondary-light text-lg flex-shrink-0" /></div>
+                                            <span className="text-sm text-secondary-light fw-medium line-height-1-5">{member.professional}</span>
+                                        </div>
+                                        <div className="d-flex gap-3">
+                                            <div className="w-18-px"><Icon icon="solar:bag-bold" className="text-secondary-light text-lg flex-shrink-0" /></div>
+                                            <span className="text-sm text-secondary-light fw-medium line-height-1-5">{member.businessFocus}</span>
+                                        </div>
+                                    </div>
                                     <div className="d-flex align-items-center gap-3">
                                         <div className="w-18-px"><Icon icon="solar:global-bold" className="text-secondary-light text-md" /></div>
                                         <a href={member.website} target="_blank" rel="noreferrer" className="text-sm text-info-600 fw-medium text-decoration-none">{member.website}</a>
                                     </div>
-                                    <div className="d-flex align-items-center gap-3 mt-4">
+                                    {/* <div className="d-flex align-items-center gap-3 mt-4">
                                         <div className="w-18-px"><Icon icon="solar:link-bold" className="text-secondary-light text-md" /></div>
                                         <div className="d-flex gap-3">
                                             <Icon icon="logos:facebook" className="text-md cursor-pointer" />
@@ -214,7 +287,7 @@ const ViewProfileLayer = () => {
                                             <Icon icon="logos:twitter" className="text-md cursor-pointer" />
                                             <Icon icon="logos:whatsapp-icon" className="text-md cursor-pointer" />
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="d-flex align-items-start gap-3 mt-8 pt-16 border-top border-neutral-100">
                                         <div className="w-18-px pt-2"><Icon icon="solar:map-point-bold" className="text-secondary-light text-xl" /></div>
                                         <div className="flex-grow-1">
@@ -240,46 +313,36 @@ const ViewProfileLayer = () => {
 
                             <div className="card radius-16 border-0 shadow-sm overflow-hidden bg-white">
                                 <div className="card-header border-bottom bg-base py-16 px-32 d-flex justify-content-between align-items-center border-neutral-100">
-                                    <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '15px' }}>About</h6>
-                                    <button onClick={() => setShowEditProfessional(true)} className="btn p-0 text-danger-600 fw-bold text-xs text-uppercase border-0">Edit</button>
+                                    <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '15px' }}>
+                                        About
+                                    </h6>
                                 </div>
-                                <div className="card-body p-0">
-                                    <div className="list-group list-group-flush">
-                                        {['GAINS Profile', 'My Bio', 'Tops Profile', 'Weekly Presentations'].map((item, i) => (
-                                            <button key={i} className="list-group-item list-group-item-action border-0 px-32 py-20 d-flex justify-content-between align-items-center transition-2 hover-bg-neutral-50 border-top border-neutral-100">
-                                                <span className="text-secondary-light fw-medium text-sm">{item}</span>
-                                                <Icon icon="ion:chevron-forward" className="text-secondary-light opacity-50 text-md" />
-                                            </button>
-                                        ))}
+
+                                <div className="card-body p-24">
+                                    <div
+                                        className="border-neutral-200 radius-8 text-sm text-secondary-light fw-medium line-height-1-6 bg-neutral-50 px-16 py-12"
+                                        style={{ minHeight: '150px', whiteSpace: 'pre-wrap' }}
+                                    >
+                                        {member.businessFocus || '—'}
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         <div className="col-xl-6">
-                            <div className="card radius-16 border-0 shadow-sm p-32 bg-white mb-24">
+                            {/* <div className="card radius-16 border-0 shadow-sm p-32 bg-white mb-24">
                                 <div className="d-flex justify-content-between align-items-center mb-24">
                                     <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '15px' }}>Professional Details</h6>
-                                    <button onClick={() => setShowEditProfessional(true)} className="btn p-0 text-danger-600 fw-bold text-xs text-uppercase border-0">Edit</button>
                                 </div>
-                                <div className="d-flex flex-column gap-20">
-                                    <div className="d-flex gap-3">
-                                        <div className="w-18-px"><Icon icon="solar:case-bold" className="text-secondary-light text-lg flex-shrink-0" /></div>
-                                        <span className="text-sm text-secondary-light fw-medium line-height-1-5">{member.professional}</span>
-                                    </div>
-                                    <div className="d-flex gap-3">
-                                        <div className="w-18-px"><Icon icon="solar:bag-bold" className="text-secondary-light text-lg flex-shrink-0" /></div>
-                                        <span className="text-sm text-secondary-light fw-medium line-height-1-5">{member.businessFocus}</span>
-                                    </div>
-                                </div>
-                            </div>
+
+                            </div> */}
 
                             <div className="row g-4 mb-24">
                                 <div className="col-md-6">
                                     <div className="card radius-16 border-0 shadow-sm p-24 bg-white h-100 border-start border-4 border-danger-100">
                                         <div className="d-flex justify-content-between align-items-center mb-20">
                                             <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '14px' }}>My Ask</h6>
-
                                         </div>
                                         <div className="d-flex flex-column gap-10">
                                             {member.myAsks.slice(0, asksLimit).map((ask, idx) => (
@@ -289,39 +352,23 @@ const ViewProfileLayer = () => {
                                                 </div>
                                             ))}
                                         </div>
-                                        <div className="d-flex justify-content-between align-items-center mt-16">
-
-                                            {/* LEFT BUTTON */}
-                                            {member.myAsks.length > asksLimit && (
+                                        <div className="mt-16 text-start">
+                                            {member.myAsks.length > 4 && (
                                                 <button
                                                     onClick={handleShowMoreAsks}
                                                     className="btn p-0 text-danger-600 text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
                                                 >
-                                                    {asksLimit === 4 ? 'View More' : 'View All List'}
+                                                    View All List
                                                     <Icon icon="solar:double-alt-arrow-down-bold" />
                                                 </button>
                                             )}
-
-                                            {/* RIGHT BUTTON */}
-                                            {asksLimit > 4 && (
-                                                <button
-                                                    onClick={() => setAsksLimit(4)}
-                                                    className="btn p-0 text-danger-600 text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1 ms-auto"
-                                                >
-                                                    View Less
-                                                    <Icon icon="solar:double-alt-arrow-up-bold" />
-                                                </button>
-                                            )}
-
                                         </div>
-
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <div className="card radius-16 border-0 shadow-sm p-24 bg-white h-100 border-start border-4 border-success-100">
                                         <div className="d-flex justify-content-between align-items-center mb-20">
                                             <h6 className="fw-bold text-danger-600 mb-0" style={{ fontSize: '14px' }}>My Give</h6>
-
                                         </div>
                                         <div className="d-flex flex-column gap-10">
                                             {member.myGives.slice(0, givesLimit).map((give, idx) => (
@@ -331,34 +378,17 @@ const ViewProfileLayer = () => {
                                                 </div>
                                             ))}
                                         </div>
-                                        <div className="d-flex justify-content-between align-items-center mt-16">
-
-                                            {/* LEFT */}
-                                            {member.myGives.length > givesLimit && (
+                                        <div className="mt-16 text-start">
+                                            {member.myGives.length > 4 && (
                                                 <button
                                                     onClick={handleShowMoreGives}
                                                     className="btn p-0 text-success-main text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
                                                 >
-                                                    {givesLimit === 4 ? 'View More' : 'View All List'}
+                                                    View All List
                                                     <Icon icon="solar:double-alt-arrow-down-bold" />
                                                 </button>
                                             )}
-
-                                            {/* RIGHT */}
-                                            {givesLimit > 4 && (
-                                                <button
-                                                    onClick={() => setGivesLimit(4)}
-                                                    className="btn p-0 text-success-main text-xxs fw-bold border-0 bg-transparent text-uppercase transition-2 d-flex align-items-center gap-1"
-                                                >
-                                                    View Less
-                                                    <Icon icon="solar:double-alt-arrow-up-bold" />
-                                                </button>
-                                            )}
-
                                         </div>
-
-
-
                                     </div>
                                 </div>
                             </div>
@@ -607,6 +637,21 @@ const ViewProfileLayer = () => {
                     transform: scale(1.02);
                     filter: brightness(1.1);
                 }
+                .text-truncate-3 {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+                .animate__fadeIn {
+                    animation: fadeIn 0.4s ease-in-out;
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .w-32-px { width: 32px; }
+                .h-32-px { height: 32px; }
                 .radius-4 { border-radius: 4px; }
                 .radius-16 { border-radius: 16px; }
             `}</style>

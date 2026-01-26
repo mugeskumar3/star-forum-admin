@@ -42,7 +42,7 @@ const ThankYouSlipReportDetailedLayer = () => {
         giverName: ['Logarajan S P', 'Mathiarasu M', 'Mano Neelamegam', 'Kumar Raj S', 'Ramesh Kumar'][i % 5],
         receiverName: ['Receiver John', 'Receiver Jane', 'Receiver Robert', 'Receiver Emily', 'Receiver Michael'][i % 5],
         amount: (i + 1) * 1000,
-        referralType: i % 2 === 0 ? 'Inside' : 'Outside',
+        type: i % 2 === 0 ? 'Inside' : 'Outside',
         businessType: i % 3 === 0 ? 'New' : i % 3 === 1 ? 'Repeat' : 'Bonus',
         comments: i % 4 === 0 ? 'Excellent service' : 'Regular business transaction',
         region: regionOptions[i % 4].value,
@@ -117,7 +117,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                                 type="text"
                                 className="bg-base h-40-px w-auto"
                                 name="search"
-                                placeholder="Search Member or Referral To"
+                                placeholder="Search Member"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -176,7 +176,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                             options={chapterOptions}
                             value={selectedChapter}
                             onChange={setSelectedChapter}
-                            placeholder="Select Chapter"
+                            placeholder="Chapter"
                             styles={customStyles}
                             isClearable
                         />

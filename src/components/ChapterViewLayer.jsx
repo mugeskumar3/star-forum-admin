@@ -101,13 +101,41 @@ const ChapterViewLayer = () => {
             <div className="row gy-3">
                 {stats.map((stat, index) => (
                     <div key={index} className="col-xxl-2 col-md-4 col-sm-6">
-                        <div className={`card p-16 radius-12 border-0 shadow-sm d-flex align-items-center gap-3 ${stat.color.split(' ')[0]} bg-opacity-10`}>
+                        {/* <div className={`card p-16 radius-12 border-0 shadow-sm d-flex align-items-center gap-3 ${stat.color.split(' ')[0]} bg-opacity-10`}>
                             <div className={`w-40-px h-40-px rounded-circle d-flex justify-content-center align-items-center ${stat.color}`}>
                                 <Icon icon={stat.icon} className="text-2xl" />
                             </div>
                             <div>
                                 <h6 className="mb-0 fw-bold">{stat.value}</h6>
                                 <span className="text-secondary-light text-sm">{stat.label}</span>
+                            </div>
+                        </div> */}
+                        <div className="col">
+                            <div
+                                className={`card h-100 py-1 shadow-hover-xl transition-2 radius-20  ${stat.color.split(' ')[0]}`}
+                                style={{ borderRight: `3px solid #c4161c`, paddingLeft: `10px` }}
+                            >
+                                <div className="card-body p-0">
+                                    <div className="gap-2">
+                                        <div className="flex-grow-1">
+                                            <span className="fw-medium text-secondary-light text-sm mb-1 d-block text-uppercase spacing-1">
+                                                {stat.label}
+                                            </span>
+                                        </div>
+                                        <div className="d-flex align-items-center justify-content-between gap-2">
+                                            <h6 className="fw-bolder text-1xl mb-0">
+                                                {stat.value.toLocaleString("en-IN")}
+                                            </h6>
+                                            <span
+                                                className={`w-48-px h-48-px d-flex justify-content-center align-items-center text-1xl`}
+                                            >
+                                                <div className={`w-40-px h-40-px rounded-circle d-flex justify-content-center align-items-center ${stat.color}`}>
+                                                    <Icon icon={stat.icon} className="text-2xl" />
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

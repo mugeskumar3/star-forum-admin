@@ -42,7 +42,7 @@ const TrainingsReportLayer = () => {
         id: i + 1,
         trainingTitle: ['Member Success Program', 'Leadership Team Training', 'Advanced Networking', 'Presentation Skills', 'Social Media Training'][i % 5],
         date: `2025-01-${(i % 25) + 1 < 10 ? '0' + ((i % 25) + 1) : (i % 25) + 1}`,
-        time: i % 2 === 0 ? '10:00 AM - 01:00 PM' : '02:00 PM - 05:00 PM',
+        // time: i % 2 === 0 ? '10:00 AM - 01:00 PM' : '02:00 PM - 05:00 PM',
         trainerName: ['Trainer Rajesh', 'Trainer Priya', 'Trainer Amit', 'Trainer Sneha', 'Trainer Vikram'][i % 5],
         location: i % 2 === 0 ? 'Online (Zoom)' : 'Hotel Residency, Chennai',
         totalRegistered: 20 + (i % 30),
@@ -173,7 +173,7 @@ const TrainingsReportLayer = () => {
                             options={chapterOptions}
                             value={selectedChapter}
                             onChange={setSelectedChapter}
-                            placeholder="Select Chapter"
+                            placeholder="Chapter"
                             styles={customStyles}
                             isClearable
                         />
@@ -197,7 +197,7 @@ const TrainingsReportLayer = () => {
                     <table className="table bordered-table sm-table mb-0">
                         <thead>
                             <tr>
-                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Date & Time</th>
+                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Date</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Training Title</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Trainer Name</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Location</th>

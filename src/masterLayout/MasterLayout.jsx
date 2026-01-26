@@ -690,7 +690,14 @@ const MasterLayout = ({ children }) => {
             <li>
               <NavLink
                 to="/chief-guest-list"
-                className={(navData) => (navData.isActive ? "active-page" : "")}
+                className={(navData) =>
+                  navData.isActive ||
+                    location.pathname === "/chief-guest-add" ||
+                    location.pathname.startsWith("/chief-guest-edit") ||
+                    location.pathname === "/chief-guest-history"
+                    ? "active-page"
+                    : ""
+                }
               >
                 <i className="ri-vip-diamond-line menu-icon" />
                 <span>Chief Guest List</span>
