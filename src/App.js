@@ -480,6 +480,11 @@ function App() {
           />
           <Route
             exact
+            path="/chief-guest-edit/:id"
+            element={<ChiefGuestFormPage />}
+          />
+          <Route
+            exact
             path="/chief-guest-history"
             element={<ChiefGuestHistoryPage />}
           />

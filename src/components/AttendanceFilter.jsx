@@ -77,9 +77,9 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
 
   const stateOptions = filters.country
     ? State.getStatesOfCountry(filters.country.value).map((state) => ({
-        value: state.isoCode,
-        label: state.name,
-      }))
+      value: state.isoCode,
+      label: state.name,
+    }))
     : [];
 
   const onCountryChange = (selectedOption) => {
@@ -166,7 +166,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             options={chapterOptions}
             value={filters.chapter}
             onChange={(opt) => onFilterChange("chapter", opt)}
-            placeholder="Select Chapter"
+            placeholder="Chapter"
             styles={customStyles}
             classNamePrefix="select"
           />

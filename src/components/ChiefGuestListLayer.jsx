@@ -1,59 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import TablePagination from "./TablePagination";
+import ChiefGuestApi from "../Api/ChiefGuestApi";
+import { Spinner, Modal, Button } from "react-bootstrap";
 
 const ChiefGuestListLayer = () => {
-  // Static Dummy Data for Chief Guests
-  const [guests, setGuests] = useState(
-    Array.from({ length: 20 }).map((_, i) => ({
-      id: i + 1,
-      memberId: `MEM${1000 + i}`,
-      memberName: [
-        "Rajesh Kumar",
-        "Priya Sharma",
-        "Amit Patel",
-        "Sneha Reddy",
-        "Vikram Singh",
-        "Ananya Iyer",
-        "Suresh Nair",
-        "Megha Gupta",
-        "Arjun Verma",
-        "Kavita Joshi",
-        "Rahul Deshmukh",
-        "Pooja Malhotra",
-        "Sandeep Bansal",
-        "Neha Choudhury",
-        "Vijay Ranganathan",
-        "Shilpa Kulkarni",
-        "Manish Tiwari",
-        "Divya Saxena",
-        "Pankaj Agarwal",
-        "Swati Bhattacharya",
-      ][i],
-      chapter: [
-        "Chennai Central",
-        "Mumbai South",
-        "Delhi West",
-        "Bangalore East",
-        "Hyderabad North",
-      ][i % 5],
-      region: `Region ${["A", "B", "C", "D"][i % 4]}`,
-      membershipId: `MSH${202400 + i}`,
-      status: i % 2 === 0 ? "Active" : "Inactive",
-      image: `assets/images/user-list/user-list${(i % 5) + 1}.png`,
-    })),
-  );
-
+  const [guests, setGuests] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+  const fetchGuests = async () => {
+    setLoading(true);
+    const response = await ChiefGuestApi.getChiefGuests();
+    if (response.status) {
+      setGuests(response.data.data || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchGuests();
+  }, []);
+
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (deleteId) {
+      const response = await ChiefGuestApi.deleteChiefGuest(deleteId);
+      if (response.status) {
+        fetchGuests();
+        setShowDeleteModal(false);
+        setDeleteId(null);
+      }
+    }
+  };
 
   const filteredGuests = guests.filter(
     (guest) =>
-      guest.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      guest.memberId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      guest.membershipId.toLowerCase().includes(searchTerm.toLowerCase()),
+      guest.chiefGuestName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.businessName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.contactNumber?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Pagination Logic
@@ -106,100 +100,92 @@ const ChiefGuestListLayer = () => {
         </div>
       </div>
       <div className="card-body p-24">
-        <div className="table-responsive scroll-sm">
-          <table className="table bordered-table sm-table mb-0">
-            <thead>
-              <tr>
-                <th scope="col" style={{ color: "black" }}>
-                  S.No
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Member ID
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Member Name
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Chapter
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Region
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Membership ID
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Status
-                </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((guest, index) => (
-                  <tr key={guest.id}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
-                    <td>{guest.memberId}</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <img
-                          src={guest.image}
-                          alt=""
-                          className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
-                          onError={(e) => {
-                            e.target.src = "https://placehold.co/40x40"; // Fallback
-                          }}
-                        />
+        {loading ? (
+          <div className="d-flex justify-content-center py-50">
+            <Spinner animation="border" variant="danger" />
+          </div>
+        ) : (
+          <div className="table-responsive scroll-sm">
+            <table className="table bordered-table sm-table mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" style={{ color: "black" }}>
+                    S.No
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Chief Guest Name
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Contact Number
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Business Name
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Location
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Referred By
+                  </th>
+                  <th
+                    scope="col"
+                    className="text-center"
+                    style={{ color: "black" }}
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.length > 0 ? (
+                  currentData.map((guest, index) => (
+                    <tr key={guest._id}>
+                      <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                      <td>
                         <span className="text-md mb-0 fw-medium text-secondary-light">
-                          {guest.memberName}
+                          {guest.chiefGuestName}
                         </span>
-                      </div>
-                    </td>
-                    <td>{guest.chapter}</td>
-                    <td>{guest.region}</td>
-                    <td>{guest.membershipId}</td>
-                    <td>
-                      <span
-                        className={`badge radius-4 px-10 py-4 text-sm ${
-                          guest.status === "Active"
-                            ? "bg-success-focus text-success-main"
-                            : "bg-danger-focus text-danger-main"
-                        }`}
-                      >
-                        {guest.status}
-                      </span>
-                    </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
-                        <Link
-                          to={`/chief-guest-history`}
-                          className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                        >
-                          <Icon
-                            icon="majesticons:eye-line"
-                            className="icon text-xl"
-                          />
-                        </Link>
-                      </div>
+                      </td>
+                      <td>{guest.contactNumber}</td>
+                      <td>{guest.businessName}</td>
+                      <td>{guest.location}</td>
+                      <td>{guest.referredBy?.name || "N/A"}</td>
+                      <td className="text-center">
+                        <div className="d-flex align-items-center gap-10 justify-content-center">
+                          <Link
+                            to={`/chief-guest-history`}
+                            className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle"
+                          >
+                            <Icon icon="lucide:eye" className="icon text-sm" />
+                          </Link>
+                          <Link
+                            to={`/chief-guest-edit/${guest._id}`}
+                            className="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle"
+                          >
+                            <Icon icon="lucide:edit" className="icon text-sm" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => confirmDelete(guest._id)}
+                            className="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle border-0"
+                          >
+                            <Icon icon="lucide:trash-2" className="icon text-sm" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center py-4">
+                      No chief guests found.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" className="text-center py-4">
-                    No chief guests found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         <TablePagination
           currentPage={currentPage}
@@ -210,6 +196,37 @@ const ChiefGuestListLayer = () => {
           totalRecords={totalRecords}
         />
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        centered
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="text-lg fw-semibold">
+            Confirm Delete
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="text-secondary-light">
+            Are you sure you want to delete this chief guest? This action cannot be
+            undone.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

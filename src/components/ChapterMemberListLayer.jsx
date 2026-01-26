@@ -178,7 +178,7 @@ const ChapterMemberListLayer = () => {
                             options={chapterOptions}
                             value={selectedChapter}
                             onChange={setSelectedChapter}
-                            placeholder="Select Chapter"
+                            placeholder="Chapter"
                             styles={customStyles}
                             isClearable
                         />
