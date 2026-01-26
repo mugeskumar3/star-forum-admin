@@ -57,14 +57,6 @@ const ThankYouSlipReportDetailedLayer = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const handleTypeChange = (id, newType) => {
-        setReportData(prev => prev.map(item => item.id === id ? { ...item, type: newType } : item));
-    };
-
-    const handleReferralChange = (id, newReferral) => {
-        setReportData(prev => prev.map(item => item.id === id ? { ...item, referral: newReferral } : item));
-    };
-
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -247,32 +239,16 @@ const ThankYouSlipReportDetailedLayer = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <select
-                                                className={`form-select form-select-sm radius-4 fw-medium ${item.type === 'Inside'
-                                                    ? "bg-success-focus text-success-main border-success-main"
-                                                    : "bg-info-focus text-info-main border-info-main"
-                                                    }`}
-                                                value={item.type}
-                                                onChange={(e) => handleTypeChange(item.id, e.target.value)}
-                                                style={{ width: '100px' }}
-                                            >
-                                                <option value="Inside">Inside</option>
-                                                <option value="Outside">Outside</option>
-                                            </select>
+                                            <span className={`badge radius-4 px-10 py-4 text-sm ${item.type === 'Inside' ? 'bg-success-focus text-success-main' : 'bg-info-focus text-info-main'
+                                                }`}>
+                                                {item.type}
+                                            </span>
                                         </td>
                                         <td>
-                                            <select
-                                                className={`form-select form-select-sm radius-4 fw-medium ${item.referral === 'New'
-                                                    ? "bg-primary-focus text-primary-600 border-primary-600"
-                                                    : "bg-neutral-200 text-neutral-600 border-neutral-600"
-                                                    }`}
-                                                value={item.referral}
-                                                onChange={(e) => handleReferralChange(item.id, e.target.value)}
-                                                style={{ width: '100px' }}
-                                            >
-                                                <option value="New">New</option>
-                                                <option value="Repeat">Repeat</option>
-                                            </select>
+                                            <span className={`badge radius-4 px-10 py-4 text-sm ${item.referral === 'New' ? 'bg-primary-focus text-primary-600' : 'bg-neutral-200 text-neutral-600'
+                                                }`}>
+                                                {item.referral}
+                                            </span>
                                         </td>
                                         <td>
                                             <span className="text-md mb-0 fw-bold text-success-main">
