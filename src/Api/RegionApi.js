@@ -42,9 +42,10 @@ class RegionApi {
       };
     }
   }
-  async getRegion() {
+  async getRegion(zoneId) {
     try {
-      const response = await apiClient.get("/region");
+      const url = zoneId ? `/region?zoneId=${zoneId}` : "/region";
+      const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }

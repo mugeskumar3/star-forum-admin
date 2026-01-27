@@ -9,6 +9,7 @@ const MeetingListLayer = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [showQRModal, setShowQRModal] = useState(false);
@@ -16,22 +17,26 @@ const MeetingListLayer = () => {
 
   useEffect(() => {
     loadData();
-  }, [currentPage, rowsPerPage]);
+  }, [currentPage, rowsPerPage, searchTerm]);
 
   const loadData = async () => {
     try {
       const response = await MeetingApi.getMeeting({
         page: currentPage,
         limit: rowsPerPage,
+        search: searchTerm,
       });
       if (response.status) {
         setData(response.response.data || []);
+        // Assuming API returns total, if not we might need to rely on other field or if data is just the page data, we can't get total easily without it being in response.
+        // Badge style uses response.response.total
+        setTotalRecords(response.response.total || 0);
       }
     } catch (error) {
       console.error("Error loading meetings:", error);
     }
   };
-  console.log(data,"dataaa")
+  console.log(data, "dataaa");
   const confirmDelete = (id) => {
     setDeleteId(id);
     setShowDeleteModal(true);
@@ -48,13 +53,8 @@ const MeetingListLayer = () => {
     }
   };
 
-  const totalRecords = data.length;
+  const [totalRecords, setTotalRecords] = useState(0);
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = data.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -62,7 +62,7 @@ const MeetingListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const showQRCode = (meeting) => {
@@ -76,17 +76,33 @@ const MeetingListLayer = () => {
         <div className="d-flex align-items-center flex-wrap gap-3">
           <h6 className="text-primary-600 pb-2 mb-0">Meetings List</h6>
         </div>
-        <Link
-          to="/meeting-creation/add"
-          className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-          style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-        >
-          <Icon
-            icon="ic:baseline-plus"
-            className="icon text-xl line-height-1"
-          />
-          Make Meeting
-        </Link>
+        <div className="d-flex align-items-center flex-wrap gap-3">
+          <form className="navbar-search" onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="text"
+              className="bg-base h-40-px w-auto"
+              name="search"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(0);
+              }}
+            />
+            <Icon icon="ion:search-outline" className="icon" />
+          </form>
+          <Link
+            to="/meeting-creation/add"
+            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+          >
+            <Icon
+              icon="ic:baseline-plus"
+              className="icon text-xl line-height-1"
+            />
+            Make Meeting
+          </Link>
+        </div>
       </div>
       <div className="card-body p-24">
         <div className="table-responsive scroll-sm">

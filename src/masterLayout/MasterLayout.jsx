@@ -350,10 +350,10 @@ const MasterLayout = ({ children }) => {
             <li className="dropdown">
               <Link to="#">
                 <i className="ri-megaphone-line menu-icon" />
-                <span>Announcement</span>
+                <span>Update</span>
               </Link>
               <ul className="sidebar-submenu">
-                <li>
+                {/* <li>
                   <NavLink
                     to="/general-update"
                     className={(navData) =>
@@ -363,7 +363,7 @@ const MasterLayout = ({ children }) => {
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />{" "}
                     General Update
                   </NavLink>
-                </li>
+                </li> */}
                 <li>
                   <NavLink
                     to="/community-update"
@@ -551,7 +551,7 @@ const MasterLayout = ({ children }) => {
             <li className="dropdown">
               <Link to="#">
                 <i className="ri-pulse-line menu-icon" />
-                <span>Chapter Activity Report</span>
+                <span>Activity Report</span>
               </Link>
               <ul className="sidebar-submenu">
                 <li>

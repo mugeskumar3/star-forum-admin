@@ -6,14 +6,24 @@ import BusinessCategoryApi from "../Api/BusinessCategoryApi";
 const BusinessCategoryListLayer = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const fetchCategories = async () => {
     try {
-      const response = await BusinessCategoryApi.getBusinessCategory();
+      const response = await BusinessCategoryApi.getBusinessCategory(
+        null,
+        currentPage,
+        rowsPerPage,
+        searchTerm,
+      );
       if (response && response.status && response.response.data) {
         setCategories(response.response.data);
+        setTotalRecords(response.response.total || 0);
+      } else {
+        setCategories([]);
+        setTotalRecords(0);
       }
     } catch (error) {
       console.error("Failed to fetch categories", error);
@@ -22,20 +32,9 @@ const BusinessCategoryListLayer = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [currentPage, rowsPerPage, searchTerm]);
 
-  // Initial Data for Filter/Search
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  const totalRecords = filteredCategories.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = filteredCategories.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -43,7 +42,7 @@ const BusinessCategoryListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const handleDeleteClick = async (id) => {
@@ -71,7 +70,7 @@ const BusinessCategoryListLayer = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(0);
               }}
             />
             <Icon icon="ion:search-outline" className="icon" />
@@ -116,10 +115,10 @@ const BusinessCategoryListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((category, index) => (
+              {categories.length > 0 ? (
+                categories.map((category, index) => (
                   <tr key={index}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{currentPage * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <span className="text-md mb-0 fw-normal text-secondary-light">
