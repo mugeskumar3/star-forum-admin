@@ -36,7 +36,7 @@ const ShopCategoryFormLayer = () => {
           const category = response.data.data || response.data;
           setFormData({
             name: category.name,
-            isActive: category.isActive,
+            isActive: category.isActive ? true : false,
           });
 
           if (category.categoryImage) {
@@ -290,7 +290,7 @@ const ShopCategoryFormLayer = () => {
                         {imageFile
                           ? imageFile.name
                           : existingImage?.imageName ||
-                            existingImage?.path?.split("/").pop()}
+                          existingImage?.path?.split("/").pop()}
                       </p>
                     </div>
                   </div>
@@ -320,11 +320,11 @@ const ShopCategoryFormLayer = () => {
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-18 py-11"
               disabled={loading}
-              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C", width: "85px" }}
             >
-              {loading ? "Saving..." : "Save Category"}
+              {loading ? "Saving..." : "Save "}
             </button>
           </div>
         </form>
