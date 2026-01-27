@@ -11,7 +11,7 @@ const MeetingListLayer = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
+  const [meetingToDelete, setMeetingToDelete] = useState(null);
   const [showQRModal, setShowQRModal] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
 
@@ -37,20 +37,27 @@ const MeetingListLayer = () => {
     }
   };
   console.log(data, "dataaa");
-  const confirmDelete = (id) => {
-    setDeleteId(id);
+  const confirmDelete = (meeting) => {
+    setMeetingToDelete(meeting);
     setShowDeleteModal(true);
   };
 
   const handleDelete = async () => {
-    if (deleteId) {
-      const response = await MeetingApi.deleteMeeting(deleteId);
+    if (meetingToDelete) {
+      const response = await MeetingApi.deleteMeeting(
+        meetingToDelete._id || meetingToDelete.id,
+      );
       if (response.status) {
         loadData();
         setShowDeleteModal(false);
-        setDeleteId(null);
+        setMeetingToDelete(null);
       }
     }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setMeetingToDelete(null);
   };
 
   const [totalRecords, setTotalRecords] = useState(0);
@@ -179,7 +186,7 @@ const MeetingListLayer = () => {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => confirmDelete(item._id || item.id)}
+                          onClick={() => confirmDelete(item)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -206,34 +213,39 @@ const MeetingListLayer = () => {
         />
       </div>
 
-      <Modal
-        centered
-        show={showDeleteModal}
-        onHide={() => setShowDeleteModal(false)}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title className="text-lg fw-semibold">
-            Confirm Delete
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p className="text-secondary-light">
-            Are you sure you want to delete this meeting? This action cannot be
-            undone.
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} centered>
+        <Modal.Body className="text-center p-5">
+          <div className="d-flex justify-content-center mb-3">
+            <div className="bg-danger-focus rounded-circle d-flex justify-content-center align-items-center w-64-px h-64-px">
+              <Icon
+                icon="mingcute:delete-2-line"
+                className="text-danger-600 text-xxl"
+              />
+            </div>
+          </div>
+          <h5 className="mb-3">Are you sure?</h5>
+          <p className="text-secondary-light mb-4">
+            Do you want to delete meeting "{meetingToDelete?.meetingTopic}"?
+            This action cannot be undone.
           </p>
+          <div className="d-flex justify-content-center gap-3">
+            <Button
+              variant="outline-secondary"
+              className="px-32"
+              onClick={handleCloseDeleteModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              className="px-32"
+              onClick={handleDelete}
+              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+            >
+              Delete
+            </Button>
+          </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            onClick={handleDelete}
-            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       {/* QR Code Modal */}

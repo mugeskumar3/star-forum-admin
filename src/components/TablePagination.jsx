@@ -11,8 +11,6 @@ const TablePagination = ({
   onRowsPerPageChange,
   totalRecords,
 }) => {
-  if (totalPages <= 1 && totalRecords <= rowsPerPage) return null;
-
   const renderPageNumbers = () => {
     let pages = [];
     for (let i = 1; i <= totalPages; i++) {
