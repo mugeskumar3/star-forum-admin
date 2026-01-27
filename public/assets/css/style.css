@@ -261,7 +261,8 @@
   --warning-hover: #d69705;
   --warning-pressed: #c28800;
   --warning-focus: rgba(255, 192, 45, 0.1490196078);
-  --danger-main: #ef4a00;
+  /* --danger-main: #ef4a00; */
+  --danger-main: #da3545;
   --danger-surface: #fcdae2;
   --danger-border: #f9b5c6;
   --danger-hover: #d53128;
