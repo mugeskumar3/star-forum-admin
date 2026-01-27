@@ -39,7 +39,6 @@ const ChapterFormLayer = () => {
 
   useEffect(() => {
     fetchAdminUsers();
-    fetchRegions();
     if (isEditMode) {
       getChapterById(id);
     }
@@ -64,8 +63,12 @@ const ChapterFormLayer = () => {
     }
   };
 
-  const fetchRegions = async () => {
-    const response = await RegionApi.getRegion();
+  const fetchRegions = async (zoneId) => {
+    if (!zoneId) {
+      setRegionOptions([]);
+      return;
+    }
+    const response = await RegionApi.getRegion(zoneId);
     if (response && response.status && response.response.data) {
       const regions = response.response.data;
 
@@ -329,10 +332,18 @@ const ChapterFormLayer = () => {
                 Zone <span className="text-danger">*</span>
               </label>
               <Select
-                name="zoneId"
                 options={zoneOptions}
                 value={zoneOptions.find((opt) => opt.value === formData.zoneId)}
-                onChange={handleSelectChange}
+                onChange={(option) => {
+                  handleSelectChange(option, { name: "zoneId" });
+                  // Fetch regions when zone changes
+                  if (option) {
+                    fetchRegions(option.value);
+                  } else {
+                    setRegionOptions([]);
+                    setFormData((prev) => ({ ...prev, regionId: "" }));
+                  }
+                }}
                 placeholder="Select Zone"
                 styles={customStyles}
                 isDisabled={!formData.state}

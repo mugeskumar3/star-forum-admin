@@ -2,25 +2,31 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import BadgeApi from "../Api/BadgeApi"; // Imported BadgeApi
+import BadgeApi from "../Api/BadgeApi"; 
 import TablePagination from "./TablePagination";
 import { IMAGE_BASE_URL } from "../Config/Index";
 
 const BadgeListLayer = () => {
   const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [currentPage, rowsPerPage]);
 
   const loadData = async () => {
-    const response = await BadgeApi.getBadge();
+    const response = await BadgeApi.getBadge(
+      null,
+      currentPage,
+      rowsPerPage,
+    );
     if (response.status) {
-      setData(response.response.data); 
+      setData(response.response.data);
+      setTotalRecords(response.response.total);
     }
   };
 
@@ -40,13 +46,7 @@ const BadgeListLayer = () => {
     }
   };
 
-  const totalRecords = data.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = data.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -54,7 +54,7 @@ const BadgeListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0); // Reset to first page
   };
 
   return (
@@ -102,16 +102,16 @@ const BadgeListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length === 0 ? (
+              {data.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="text-center">
                     No badges found.
                   </td>
                 </tr>
               ) : (
-                currentData.map((item, index) => (
+                data.map((item, index) => (
                   <tr key={item.id}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}.</td>
+                    <td>{currentPage * rowsPerPage + index + 1}.</td>
                     <td>{item.type}</td>
                     <td>{item.name}</td>
                     <td>

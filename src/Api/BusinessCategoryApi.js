@@ -24,9 +24,11 @@ class BusinessCategoryApi {
       };
     }
   }
-  async getBusinessCategory(id) {
+  async getBusinessCategory(id, currentPage, rowsPerPage, search) {
     try {
-      const url = id ? `/business-category/${id}` : "/business-category";
+      const url = id
+        ? `/business-category/${id}`
+        : `/business-category?page=${currentPage}&limit=${rowsPerPage}&search=${search}`;
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
