@@ -61,6 +61,27 @@ class RegionApi {
       };
     }
   }
+
+  async getRegionByZone(zoneId) {
+    try {
+      const response = await apiClient.get("/region", {
+        params: { zoneId },
+      });
+      if (response.status === 200 || response.status === 201) {
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to get regions. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
   async updateRegion(data) {
     try {
       const response = await apiClient.put(`/region/${data.id}`, data);
