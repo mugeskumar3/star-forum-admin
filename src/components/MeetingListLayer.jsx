@@ -2,13 +2,14 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import { MockDataService } from "../helper/MockDataService";
+import MeetingApi from "../Api/MeetingApi";
 import TablePagination from "./TablePagination";
 
 const MeetingListLayer = () => {
   const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [showQRModal, setShowQRModal] = useState(false);
@@ -16,33 +17,44 @@ const MeetingListLayer = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [currentPage, rowsPerPage, searchTerm]);
 
-  const loadData = () => {
-    setData(MockDataService.getMeetings());
+  const loadData = async () => {
+    try {
+      const response = await MeetingApi.getMeeting({
+        page: currentPage,
+        limit: rowsPerPage,
+        search: searchTerm,
+      });
+      if (response.status) {
+        setData(response.response.data || []);
+        // Assuming API returns total, if not we might need to rely on other field or if data is just the page data, we can't get total easily without it being in response.
+        // Badge style uses response.response.total
+        setTotalRecords(response.response.total || 0);
+      }
+    } catch (error) {
+      console.error("Error loading meetings:", error);
+    }
   };
-
+  console.log(data, "dataaa");
   const confirmDelete = (id) => {
     setDeleteId(id);
     setShowDeleteModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deleteId) {
-      MockDataService.deleteMeeting(deleteId);
-      loadData();
-      setShowDeleteModal(false);
-      setDeleteId(null);
+      const response = await MeetingApi.deleteMeeting(deleteId);
+      if (response.status) {
+        loadData();
+        setShowDeleteModal(false);
+        setDeleteId(null);
+      }
     }
   };
 
-  const totalRecords = data.length;
+  const [totalRecords, setTotalRecords] = useState(0);
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = data.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -50,7 +62,7 @@ const MeetingListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const showQRCode = (meeting) => {
@@ -64,17 +76,33 @@ const MeetingListLayer = () => {
         <div className="d-flex align-items-center flex-wrap gap-3">
           <h6 className="text-primary-600 pb-2 mb-0">Meetings List</h6>
         </div>
-        <Link
-          to="/meeting-creation/add"
-          className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-          style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-        >
-          <Icon
-            icon="ic:baseline-plus"
-            className="icon text-xl line-height-1"
-          />
-          Make Meeting
-        </Link>
+        <div className="d-flex align-items-center flex-wrap gap-3">
+          <form className="navbar-search" onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="text"
+              className="bg-base h-40-px w-auto"
+              name="search"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(0);
+              }}
+            />
+            <Icon icon="ion:search-outline" className="icon" />
+          </form>
+          <Link
+            to="/meeting-creation/add"
+            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+          >
+            <Icon
+              icon="ic:baseline-plus"
+              className="icon text-xl line-height-1"
+            />
+            Make Meeting
+          </Link>
+        </div>
       </div>
       <div className="card-body p-24">
         <div className="table-responsive scroll-sm">
@@ -97,22 +125,28 @@ const MeetingListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length === 0 ? (
+              {data.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="text-center">
                     No meetings found.
                   </td>
                 </tr>
               ) : (
-                currentData.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}.</td>
-                    <td>{item.topic}</td>
+                data.map((item, index) => (
+                  <tr key={item._id || item.id}>
+                    <td>{currentPage * rowsPerPage + index + 1}.</td>
+                    <td>{item.meetingTopic}</td>
                     <td>₹{item.meetingFee}</td>
-                    <td>₹{item.visitorsFee}</td>
-                    <td>{item.chapter}</td>
-                    <td>{new Date(item.startDate).toLocaleString()}</td>
-                    <td>{new Date(item.endDate).toLocaleString()}</td>
+                    <td>₹{item.visitorFee}</td>
+                    <td>
+                      {Array.isArray(item.chapters)
+                        ? item.chapters
+                            .map((chapter) => chapter.chapterName)
+                            .join(", ")
+                        : item.chapters}
+                    </td>
+                    <td>{new Date(item.startDateTime).toLocaleString()}</td>
+                    <td>{new Date(item.endDateTime).toLocaleString()}</td>
                     <td className="text-center">
                       <div className="d-flex justify-content-center">
                         <div
@@ -138,14 +172,14 @@ const MeetingListLayer = () => {
                           <Icon icon="mdi:eye-outline" className="menu-icon" />
                         </button>
                         <Link
-                          to={`/meeting-creation/edit/${item.id}`}
+                          to={`/meeting-creation/edit/${item._id || item.id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon icon="lucide:edit" className="menu-icon" />
                         </Link>
                         <button
                           type="button"
-                          onClick={() => confirmDelete(item.id)}
+                          onClick={() => confirmDelete(item._id || item.id)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -172,7 +206,6 @@ const MeetingListLayer = () => {
         />
       </div>
 
-      {/* Delete Confirmation Modal */}
       <Modal
         centered
         show={showDeleteModal}

@@ -54,7 +54,7 @@ const OrganisationListLayer = () => {
   };
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   return (
@@ -71,7 +71,7 @@ const OrganisationListLayer = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(0);
               }}
             />
             <Icon icon="ion:search-outline" className="icon" />

@@ -46,7 +46,11 @@ apiClient.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (error.response?.status === 401) {
+    if (
+      error.response?.status === 401 &&
+      !error.config.url.includes("/auth/login") &&
+      !window.location.pathname.includes("/sign-in")
+    ) {
       localStorage.removeItem("userToken");
       window.location.href = "/sign-in";
     }

@@ -57,7 +57,7 @@ const ChapterListLayer = () => {
   };
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   return (

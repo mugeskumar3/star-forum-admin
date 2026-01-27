@@ -51,12 +51,8 @@ const SignInLayer = () => {
         phoneNumber: phoneNumber.trim(),
         pin: pinValue,
       };
-
       const result = await LoginApi.login(credentials);
-      console.log("Login Result:", result); // Debugging log
-
       if (result.status) {
-        // Handle potential token locations (direct or nested in data)
         const token =
           result.response.token ||
           result.response.data?.token ||
@@ -65,8 +61,6 @@ const SignInLayer = () => {
 
         if (token) {
           localStorage.setItem("userToken", token);
-          // Configure axios default immediately as well for redundancy
-          // apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         } else {
           console.error("Token missing in response:", result.response);
           alert("Login successful but token missing from response.");
@@ -77,8 +71,6 @@ const SignInLayer = () => {
         if (user) {
           localStorage.setItem("userData", JSON.stringify(user));
         }
-
-        // Small delay to ensure localStorage is set before navigation triggers new requests
         setTimeout(() => {
           navigate("/");
         }, 100);

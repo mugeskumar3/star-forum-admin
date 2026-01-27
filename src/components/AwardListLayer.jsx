@@ -8,36 +8,33 @@ const AwardListLayer = () => {
   const [awards, setAwards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   useEffect(() => {
     fetchAwards();
-  }, []);
+  }, [currentPage, rowsPerPage, searchTerm]);
 
   const fetchAwards = async () => {
     setLoading(true);
-    const response = await AwardApi.getAward();
+    const response = await AwardApi.getAward(
+      null,
+      currentPage,
+      rowsPerPage,
+      searchTerm,
+    );
     if (response && response.status && response.response.data) {
       setAwards(response.response.data);
+      setTotalRecords(response.response.total || 0);
     } else {
       setAwards([]);
+      setTotalRecords(0);
     }
     setLoading(false);
   };
 
-  // Initial Data for Filter/Search
-  const filteredAwards = awards.filter((award) =>
-    award.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  const totalRecords = filteredAwards.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = filteredAwards.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -45,7 +42,7 @@ const AwardListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const handleDeleteClick = async (id) => {
@@ -73,7 +70,7 @@ const AwardListLayer = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(0);
               }}
             />
             <Icon icon="ion:search-outline" className="icon" />
@@ -118,10 +115,10 @@ const AwardListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((award, index) => (
+              {awards.length > 0 ? (
+                awards.map((award, index) => (
                   <tr key={index}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{currentPage * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <span className="text-md mb-0 fw-normal text-secondary-light">
