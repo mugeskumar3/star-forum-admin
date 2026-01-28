@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TablePagination from "./TablePagination";
 
 const VisitorsReportLayer = () => {
@@ -54,23 +55,6 @@ const VisitorsReportLayer = () => {
     { value: "RD 1", label: "RD 1" },
     { value: "RD 2", label: "RD 2" },
   ];
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      border: "1px solid #dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        border: "1px solid #dee2e6",
-      },
-    }),
-    menu: (provided) => ({
-      ...provided,
-      zIndex: 9999,
-    }),
-  };
 
   const handleStatusChange = (id, newStatus) => {
     setVisitors(prev => prev.map(v => v.id === id ? { ...v, status: newStatus } : v));
@@ -167,7 +151,7 @@ const VisitorsReportLayer = () => {
               value={selectedChapter}
               onChange={setSelectedChapter}
               placeholder="Chapter"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -178,7 +162,7 @@ const VisitorsReportLayer = () => {
               value={selectedZone}
               onChange={setSelectedZone}
               placeholder="Select Zone"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -189,7 +173,7 @@ const VisitorsReportLayer = () => {
               value={selectedEd}
               onChange={setSelectedEd}
               placeholder="Select ED"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -200,7 +184,7 @@ const VisitorsReportLayer = () => {
               value={selectedRd}
               onChange={setSelectedRd}
               placeholder="Select RD"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -232,7 +216,6 @@ const VisitorsReportLayer = () => {
                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Source of event</th>
                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Invited By</th>
                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Status</th>
-                {/* <th scope="col" className="text-center" style={{ color: "black", fontWeight: '600' }}>Action</th> */}
               </tr>
             </thead>
             <tbody>
@@ -264,26 +247,6 @@ const VisitorsReportLayer = () => {
                         <option value="Rejected">Rejected</option>
                       </select>
                     </td>
-                    {/* <td className="text-center"> */}
-                    {/* <div className="d-flex justify-content-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => navigate(`/visitors-form/view/${visitor.id}`)}
-                          className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
-                          title="View Details"
-                        >
-                          <Icon icon="majesticons:eye-line" className="icon text-xl" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => navigate(`/visitors-form/edit/${visitor.id}`)}
-                          className="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
-                          title="Edit Details"
-                        >
-                          <Icon icon="lucide:edit" className="icon text-xl" />
-                        </button>
-                      </div> */}
-                    {/* </td> */}
                   </tr>
                 ))
               ) : (

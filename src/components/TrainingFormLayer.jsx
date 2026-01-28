@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TrainingApi from "../Api/TrainingApi";
 import ChapterApi from "../Api/ChapterApi";
 import RegionApi from "../Api/RegionApi";
+
 const TrainingFormLayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -74,22 +76,22 @@ const TrainingFormLayer = () => {
 
             const mappedChapterIds = data.chapterIds
               ? data.chapterIds.map((c) => {
-                  if (typeof c === "object") {
-                    return { value: c._id, label: c.chapterName || c.name };
-                  }
-                  const match = chapters.find((opt) => opt.value === c);
-                  return match || { value: c, label: "Unknown Chapter" };
-                })
+                if (typeof c === "object") {
+                  return { value: c._id, label: c.chapterName || c.name };
+                }
+                const match = chapters.find((opt) => opt.value === c);
+                return match || { value: c, label: "Unknown Chapter" };
+              })
               : [];
 
             const mappedTrainerIds = data.trainerIds
               ? data.trainerIds.map((t) => {
-                  if (typeof t === "object") {
-                    return { value: t._id, label: t.name };
-                  }
-                  const match = trainers.find((opt) => opt.value === t);
-                  return match || { value: t, label: "Unknown Trainer" };
-                })
+                if (typeof t === "object") {
+                  return { value: t._id, label: t.name };
+                }
+                const match = trainers.find((opt) => opt.value === t);
+                return match || { value: t, label: "Unknown Trainer" };
+              })
               : [];
 
             const formatDateForInput = (dateString) => {
@@ -110,15 +112,15 @@ const TrainingFormLayer = () => {
               duration: data.duration || "",
               mode: data.mode
                 ? modeOptions.find(
-                    (opt) => opt.value === data.mode.toLowerCase(),
-                  ) || { value: data.mode, label: data.mode }
+                  (opt) => opt.value === data.mode.toLowerCase(),
+                ) || { value: data.mode, label: data.mode }
                 : null,
               locationOrLink: data.locationOrLink || "",
               maxAllowed: data.maxAllowed || "",
               status: data.status
                 ? statusOptions.find(
-                    (opt) => opt.value === data.status.toLowerCase(),
-                  ) || { value: data.status, label: data.status }
+                  (opt) => opt.value === data.status.toLowerCase(),
+                ) || { value: data.status, label: data.status }
                 : null,
             });
           }
@@ -223,40 +225,6 @@ const TrainingFormLayer = () => {
     }
   };
 
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      padding: "2px",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    placeholder: (provided) => ({
-      ...provided,
-      color: "#6c757d",
-    }),
-    multiValue: (provided) => ({
-      ...provided,
-      backgroundColor: "#eef2ff",
-      borderRadius: "4px",
-    }),
-    multiValueLabel: (provided) => ({
-      ...provided,
-      color: "#4f46e5",
-    }),
-    multiValueRemove: (provided) => ({
-      ...provided,
-      color: "#4f46e5",
-      ":hover": {
-        backgroundColor: "#e0e7ff",
-        color: "#4338ca",
-      },
-    }),
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -277,7 +245,7 @@ const TrainingFormLayer = () => {
                 options={chapterOptions}
                 value={formData.chapterIds}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.chapterIds)}
                 placeholder="Select Chapters..."
               />
               {errors.chapterIds && (
@@ -312,7 +280,7 @@ const TrainingFormLayer = () => {
                 options={trainerOptions}
                 value={formData.trainerIds}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.trainerIds)}
                 placeholder="Select Trainers..."
               />
               {errors.trainerIds && (
@@ -380,7 +348,7 @@ const TrainingFormLayer = () => {
                 options={modeOptions}
                 value={formData.mode}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.mode)}
                 placeholder="Select Mode"
               />
               {errors.mode && (
@@ -428,7 +396,7 @@ const TrainingFormLayer = () => {
                 options={statusOptions}
                 value={formData.status}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.status)}
                 placeholder="Select Status"
               />
               {errors.status && (

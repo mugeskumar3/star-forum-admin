@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import { Modal, Button } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 
@@ -65,23 +66,6 @@ const Note121Layer = () => {
     { value: "RD 1", label: "RD 1" },
     { value: "RD 2", label: "RD 2" },
   ];
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      border: "1px solid #dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        border: "1px solid #dee2e6",
-      },
-    }),
-    menu: (provided) => ({
-      ...provided,
-      zIndex: 9999,
-    }),
-  };
 
   // Filtering logic
   const filteredReports = reports.filter((report) => {
@@ -172,7 +156,7 @@ const Note121Layer = () => {
               value={selectedChapter}
               onChange={setSelectedChapter}
               placeholder="Chapter"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -182,7 +166,7 @@ const Note121Layer = () => {
               value={selectedZone}
               onChange={setSelectedZone}
               placeholder="Zone"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -192,7 +176,7 @@ const Note121Layer = () => {
               value={selectedEd}
               onChange={setSelectedEd}
               placeholder="ED"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -202,7 +186,7 @@ const Note121Layer = () => {
               value={selectedRd}
               onChange={setSelectedRd}
               placeholder="RD"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>

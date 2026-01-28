@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
-import { Link } from "react-router-dom";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const TablePagination = ({
   currentPage,
@@ -17,11 +17,10 @@ const TablePagination = ({
       pages.push(
         <li key={i} className="page-item">
           <button
-            className={`page-link fw-medium radius-8 border-0 py-10 d-flex align-items-center justify-content-center h-48-px w-48-px ${
-              currentPage === i - 1
+            className={`page-link fw-medium radius-8 border-0 py-10 d-flex align-items-center justify-content-center h-48-px w-48-px ${currentPage === i - 1
                 ? "bg-primary-600 text-white"
                 : "bg-primary-50 text-secondary-light"
-            }`}
+              }`}
             onClick={() => onPageChange(i - 1)}
           >
             {i}
@@ -32,7 +31,6 @@ const TablePagination = ({
     return pages;
   };
 
-  /* Options and Handlers */
   const options = [
     { value: 10, label: "10" },
     { value: 20, label: "20" },
@@ -45,31 +43,22 @@ const TablePagination = ({
     onRowsPerPageChange({ target: { value: selectedOption.value } });
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
+  const paginationSelectStyles = {
+    ...selectStyles(),
+    control: (base, state) => ({
+      ...selectStyles().control(base, state),
       minHeight: "40px",
       height: "40px",
-      borderRadius: "12px",
-      borderColor: "#dee2e6",
       minWidth: "80px",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
     }),
-    valueContainer: (provided) => ({
-      ...provided,
+    valueContainer: (base) => ({
+      ...base,
       height: "40px",
       padding: "0 8px",
     }),
-    indicatorsContainer: (provided) => ({
-      ...provided,
+    indicatorsContainer: (base) => ({
+      ...base,
       height: "40px",
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
     }),
   };
 
@@ -84,7 +73,7 @@ const TablePagination = ({
           value={selectedOption}
           onChange={handleSelectChange}
           options={options}
-          styles={customStyles}
+          styles={paginationSelectStyles}
           isSearchable={false}
           isClearable={false}
           menuPlacement="auto"
@@ -107,9 +96,8 @@ const TablePagination = ({
         </li>
         {renderPageNumbers()}
         <li
-          className={`page-item ${
-            currentPage === totalPages - 1 ? "disabled" : ""
-          }`}
+          className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+            }`}
         >
           <button
             className="page-link bg-primary-50 text-secondary-light fw-medium radius-8 border-0 py-10 d-flex align-items-center justify-content-center h-48-px w-48-px"

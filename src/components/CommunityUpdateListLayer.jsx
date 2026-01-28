@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Modal, Button, Tabs, Tab } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const CommunityUpdateListLayer = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -17,24 +18,6 @@ const CommunityUpdateListLayer = () => {
     person: null,
     chapter: null,
   });
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      minWidth: "200px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    menu: (provided) => ({
-      ...provided,
-      zIndex: 9999,
-    }),
-  };
 
   const chapterOptions = [
     { value: "Chennai Central", label: "Chennai Central" },
@@ -57,7 +40,7 @@ const CommunityUpdateListLayer = () => {
       ...prev,
       [key]: selectedOption,
     }));
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1);
   };
 
   const generateData = (startId) => {
@@ -184,7 +167,7 @@ const CommunityUpdateListLayer = () => {
               options={chapterOptions}
               value={filters.chapter}
               onChange={(opt) => handleFilterChange("chapter", opt)}
-              styles={customStyles}
+              styles={selectStyles()}
               className="basic-single"
               classNamePrefix="select"
               isClearable
@@ -194,7 +177,7 @@ const CommunityUpdateListLayer = () => {
               options={personOptions}
               value={filters.person}
               onChange={(opt) => handleFilterChange("person", opt)}
-              styles={customStyles}
+              styles={selectStyles()}
               className="basic-single"
               classNamePrefix="select"
               isClearable
@@ -232,7 +215,6 @@ const CommunityUpdateListLayer = () => {
         </div>
       </div>
 
-      {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={handleCloseDelete} centered>
         <Modal.Body className="text-center p-5">
           <div className="d-flex justify-content-center mb-3">
@@ -267,7 +249,6 @@ const CommunityUpdateListLayer = () => {
         </Modal.Body>
       </Modal>
 
-      {/* Response Modal */}
       <Modal
         show={showResponseModal}
         onHide={handleCloseResponse}

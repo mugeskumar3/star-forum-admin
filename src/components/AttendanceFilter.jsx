@@ -1,25 +1,12 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import { useNavigate } from "react-router-dom";
 import { Country, State } from "country-state-city";
 
 const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
   const navigate = useNavigate();
-
-  // Custom Styles (from ChapterFormLayer)
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "44px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-  };
 
   const zoneOptions = [
     { value: "zone1", label: "Zone 1" },
@@ -122,7 +109,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             value={filters.country}
             onChange={onCountryChange}
             placeholder="Select Country"
-            styles={customStyles}
+            styles={selectStyles()}
             classNamePrefix="select"
           />
         </div>
@@ -133,7 +120,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             value={filters.state}
             onChange={(opt) => onFilterChange("state", opt)}
             placeholder="Select State"
-            styles={customStyles}
+            styles={selectStyles()}
             isDisabled={!filters.country}
             classNamePrefix="select"
           />
@@ -145,7 +132,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             value={filters.zone}
             onChange={(opt) => onFilterChange("zone", opt)}
             placeholder="Select Zone"
-            styles={customStyles}
+            styles={selectStyles()}
             classNamePrefix="select"
           />
         </div>
@@ -156,7 +143,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             value={filters.region}
             onChange={(opt) => onFilterChange("region", opt)}
             placeholder="Select Region"
-            styles={customStyles}
+            styles={selectStyles()}
             classNamePrefix="select"
           />
         </div>
@@ -167,7 +154,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             value={filters.chapter}
             onChange={(opt) => onFilterChange("chapter", opt)}
             placeholder="Chapter"
-            styles={customStyles}
+            styles={selectStyles()}
             classNamePrefix="select"
           />
         </div>
@@ -178,7 +165,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             value={filters.member}
             onChange={(opt) => onFilterChange("member", opt)}
             placeholder="Select Member"
-            styles={customStyles}
+            styles={selectStyles()}
             classNamePrefix="select"
           />
         </div>
@@ -189,7 +176,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             value={filters.type}
             onChange={(opt) => onFilterChange("type", opt)}
             placeholder="Select Type"
-            styles={customStyles}
+            styles={selectStyles()}
             classNamePrefix="select"
           />
         </div>
@@ -202,7 +189,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
             )}
             onChange={(opt) => setFilters({ ...filters, dateRange: opt.value })}
             placeholder="Select Date Range"
-            styles={customStyles}
+            styles={selectStyles()}
             classNamePrefix="select"
           />
         </div>
@@ -214,7 +201,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
                 options={monthOptions}
                 value={filters.month}
                 onChange={(opt) => onFilterChange("month", opt)}
-                styles={customStyles}
+                styles={selectStyles()}
                 classNamePrefix="select"
               />
             </div>
@@ -224,7 +211,7 @@ const AttendanceFilter = ({ filters, setFilters, onFilterChange }) => {
                 options={yearOptions}
                 value={filters.year}
                 onChange={(opt) => onFilterChange("year", opt)}
-                styles={customStyles}
+                styles={selectStyles()}
                 classNamePrefix="select"
               />
             </div>

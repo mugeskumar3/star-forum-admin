@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
-import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
+import { selectStyles } from "../helper/SelectStyles";
 import ZoneApi from "../Api/ZoneApi";
 
 const ZoneFormLayer = () => {
@@ -16,27 +16,6 @@ const ZoneFormLayer = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
   const [formErrors, setFormErrors] = useState({});
-
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
-  };
 
   const validateForm = () => {
     let errors = {};
@@ -72,10 +51,9 @@ const ZoneFormLayer = () => {
       state: formData.state,
     };
 
-    // Assuming createZone takes the payload directly.
     const response = await ZoneApi.createZone(payload);
     if (response && response.status) {
-      navigate("/organisation/add"); // Navigate back to organisation form or where appropriate
+      navigate("/organisation/add");
     }
   };
 
@@ -128,7 +106,7 @@ const ZoneFormLayer = () => {
                         setFormErrors({ ...formErrors, country: "" });
                     }}
                     placeholder="Select Country"
-                    styles={customStyles}
+                    styles={selectStyles(formErrors.country)}
                   />
                   {formErrors.country && (
                     <div className="text-danger mt-1 fontsize-14">
@@ -145,13 +123,13 @@ const ZoneFormLayer = () => {
                     options={
                       formData.country
                         ? State.getStatesOfCountry(
-                            Country.getAllCountries().find(
-                              (c) => c.name === formData.country,
-                            )?.isoCode,
-                          ).map((state) => ({
-                            value: state.isoCode,
-                            label: state.name,
-                          }))
+                          Country.getAllCountries().find(
+                            (c) => c.name === formData.country,
+                          )?.isoCode,
+                        ).map((state) => ({
+                          value: state.isoCode,
+                          label: state.name,
+                        }))
                         : []
                     }
                     value={selectedState}
@@ -167,7 +145,7 @@ const ZoneFormLayer = () => {
                     }}
                     placeholder="Select State"
                     isDisabled={!formData.country}
-                    styles={customStyles}
+                    styles={selectStyles(formErrors.state)}
                   />
                   {formErrors.state && (
                     <div className="text-danger mt-1 fontsize-14">

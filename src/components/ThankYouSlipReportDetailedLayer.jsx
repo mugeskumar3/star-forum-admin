@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TablePagination from './TablePagination';
 
 const ThankYouSlipReportDetailedLayer = () => {
@@ -17,23 +18,6 @@ const ThankYouSlipReportDetailedLayer = () => {
     const edOptions = ['ED Rajesh', 'ED Priya', 'ED Amit'].map(ed => ({ value: ed, label: ed }));
     const rdOptions = ['RD Suresh', 'RD Megha', 'RD Arjun'].map(rd => ({ value: rd, label: rd }));
     const chapterOptions = ['Alpha Chapter', 'Beta Chapter', 'Gamma Chapter', 'Delta Chapter'].map(c => ({ value: c, label: c }));
-
-    const customStyles = {
-        control: (provided) => ({
-            ...provided,
-            minHeight: "40px",
-            borderRadius: "8px",
-            border: "1px solid #dee2e6",
-            boxShadow: "none",
-            "&:hover": {
-                border: "1px solid #dee2e6",
-            },
-        }),
-        menu: (provided) => ({
-            ...provided,
-            zIndex: 9999,
-        }),
-    };
 
     // Static Dummy Data for Thank You Slip Report
     const [reportData, setReportData] = useState(Array.from({ length: 25 }).map((_, i) => ({
@@ -138,7 +122,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                             value={selectedRegion}
                             onChange={setSelectedRegion}
                             placeholder="Region"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -148,7 +132,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                             value={selectedZone}
                             onChange={setSelectedZone}
                             placeholder="Zone"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -158,7 +142,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                             value={selectedEd}
                             onChange={setSelectedEd}
                             placeholder="ED"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -168,7 +152,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                             value={selectedRd}
                             onChange={setSelectedRd}
                             placeholder="RD"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -178,7 +162,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                             value={selectedChapter}
                             onChange={setSelectedChapter}
                             placeholder="Chapter"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
