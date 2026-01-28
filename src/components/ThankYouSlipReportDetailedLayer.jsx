@@ -369,7 +369,7 @@ const ThankYouSlipReportDetailedLayer = () => {
               value={selectedRegion}
               onChange={setSelectedRegion}
               placeholder="Region"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -379,7 +379,7 @@ const ThankYouSlipReportDetailedLayer = () => {
               value={selectedZone}
               onChange={setSelectedZone}
               placeholder="Zone"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -389,7 +389,7 @@ const ThankYouSlipReportDetailedLayer = () => {
               value={selectedEd}
               onChange={setSelectedEd}
               placeholder="ED"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -399,7 +399,7 @@ const ThankYouSlipReportDetailedLayer = () => {
               value={selectedRd}
               onChange={setSelectedRd}
               placeholder="RD"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -409,7 +409,7 @@ const ThankYouSlipReportDetailedLayer = () => {
               value={selectedChapter}
               onChange={setSelectedChapter}
               placeholder="Chapter"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>

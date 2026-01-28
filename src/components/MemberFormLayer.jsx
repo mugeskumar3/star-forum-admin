@@ -862,7 +862,7 @@ const MemberFormLayer = () => {
                   if (errors.paymentMode)
                     setErrors((prev) => ({ ...prev, paymentMode: "" }));
                 }}
-                styles={customStyles}
+                styles={selectStyles(errors.paymentMode)}
                 placeholder="Select Mode"
                 isClearable={false}
               />
@@ -1061,7 +1061,7 @@ const MemberFormLayer = () => {
                     onChange={(val) =>
                       setFormData((prev) => ({ ...prev, awardSelected: val }))
                     }
-                    styles={customStyles}
+                    styles={selectStyles()}
                     placeholder="Select Award"
                     isClearable={false}
                   />
