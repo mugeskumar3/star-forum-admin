@@ -25,9 +25,9 @@ class BadgeApi {
       };
     }
   }
-  async getBadge(id) {
+  async getBadge(id, currentPage, rowsPerPage) {
     try {
-      const url = id ? `/badge/${id}` : "/badge";
+      const url = id ? `/badge/${id}` : `/badge?page=${currentPage}&limit=${rowsPerPage}`;
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };

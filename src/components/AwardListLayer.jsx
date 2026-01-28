@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 import AwardApi from "../Api/AwardApi";
 
@@ -8,36 +9,36 @@ const AwardListLayer = () => {
   const [awards, setAwards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [awardToDelete, setAwardToDelete] = useState(null);
 
   useEffect(() => {
     fetchAwards();
-  }, []);
+  }, [currentPage, rowsPerPage, searchTerm]);
 
   const fetchAwards = async () => {
     setLoading(true);
-    const response = await AwardApi.getAward();
+    const response = await AwardApi.getAward(
+      null,
+      currentPage,
+      rowsPerPage,
+      searchTerm,
+    );
     if (response && response.status && response.response.data) {
       setAwards(response.response.data);
+      setTotalRecords(response.response.total || 0);
     } else {
       setAwards([]);
+      setTotalRecords(0);
     }
     setLoading(false);
   };
 
-  // Initial Data for Filter/Search
-  const filteredAwards = awards.filter((award) =>
-    award.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  const totalRecords = filteredAwards.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = filteredAwards.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -45,19 +46,32 @@ const AwardListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
-  const handleDeleteClick = async (id) => {
-    if (window.confirm("Are you sure you want to delete this award?")) {
-      const response = await AwardApi.deleteAward(id);
+  const confirmDelete = (award) => {
+    setAwardToDelete(award);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (awardToDelete) {
+      const response = await AwardApi.deleteAward(awardToDelete._id);
       if (response && response.status) {
         fetchAwards(); // Refresh list
+        setShowDeleteModal(false);
+        setAwardToDelete(null);
       }
     }
   };
 
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setAwardToDelete(null);
+  };
+
   return (
+    <>
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div className="d-flex align-items-center flex-wrap gap-3">
@@ -73,7 +87,7 @@ const AwardListLayer = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(0);
               }}
             />
             <Icon icon="ion:search-outline" className="icon" />
@@ -118,10 +132,10 @@ const AwardListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((award, index) => (
+              {awards.length > 0 ? (
+                awards.map((award, index) => (
                   <tr key={index}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{currentPage * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <span className="text-md mb-0 fw-normal text-secondary-light">
@@ -161,7 +175,7 @@ const AwardListLayer = () => {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => handleDeleteClick(award._id)}
+                          onClick={() => confirmDelete(award)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -193,7 +207,43 @@ const AwardListLayer = () => {
           totalRecords={totalRecords}
         />
       </div>
-    </div>
+      </div>
+      
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} centered>
+        <Modal.Body className="text-center p-5">
+          <div className="d-flex justify-content-center mb-3">
+            <div className="bg-danger-focus rounded-circle d-flex justify-content-center align-items-center w-64-px h-64-px">
+              <Icon
+                icon="mingcute:delete-2-line"
+                className="text-danger-600 text-xxl"
+              />
+            </div>
+          </div>
+          <h5 className="mb-3">Are you sure?</h5>
+          <p className="text-secondary-light mb-4">
+            Do you want to delete award "{awardToDelete?.name}"? This action
+            cannot be undone.
+          </p>
+          <div className="d-flex justify-content-center gap-3">
+            <Button
+              variant="outline-secondary"
+              className="px-32"
+              onClick={handleCloseDeleteModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              className="px-32"
+              onClick={handleDelete}
+              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+            >
+              Delete
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 

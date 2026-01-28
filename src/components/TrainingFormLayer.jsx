@@ -92,17 +92,21 @@ const TrainingFormLayer = () => {
                 })
               : [];
 
+            const formatDateForInput = (dateString) => {
+              if (!dateString) return "";
+              const date = new Date(dateString);
+              const offset = date.getTimezoneOffset();
+              const adjustedDate = new Date(date.getTime() - offset * 60000);
+              return adjustedDate.toISOString().slice(0, 16);
+            };
+
             setFormData({
               chapterIds: mappedChapterIds,
               title: data.title || "",
               description: data.description || "",
               trainerIds: mappedTrainerIds,
-              trainingDateTime: data.trainingDateTime
-                ? new Date(data.trainingDateTime).toISOString().slice(0, 16)
-                : "",
-              lastDateForApply: data.lastDateForApply
-                ? new Date(data.lastDateForApply).toISOString().slice(0, 16)
-                : "",
+              trainingDateTime: formatDateForInput(data.trainingDateTime),
+              lastDateForApply: formatDateForInput(data.lastDateForApply),
               duration: data.duration || "",
               mode: data.mode
                 ? modeOptions.find(
@@ -344,7 +348,6 @@ const TrainingFormLayer = () => {
                 name="trainingDateTime"
                 value={formData.trainingDateTime}
                 onChange={handleChange}
-                required
               />
               {errors.trainingDateTime && (
                 <small className="text-danger">{errors.trainingDateTime}</small>

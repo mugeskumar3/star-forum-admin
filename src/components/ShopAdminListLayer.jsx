@@ -211,7 +211,7 @@ const ShopAdminListLayer = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Product Details</Modal.Title>
+          <Modal.Title className="h5">Product Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedProduct && (
@@ -220,7 +220,7 @@ const ShopAdminListLayer = () => {
                 <img
                   src={
                     selectedProduct.productImage &&
-                    selectedProduct.productImage.path
+                      selectedProduct.productImage.path
                       ? `${IMAGE_BASE_URL}/${selectedProduct.productImage.path}`
                       : "https://placehold.co/150x150?text=No+Image"
                   }
@@ -252,7 +252,7 @@ const ShopAdminListLayer = () => {
                   {selectedProduct.isActive ? "Active" : "Inactive"}
                 </span>
               </div>
-              <div>
+              <div className="d-flex align-items-center">
                 <strong>Description:</strong>
                 <p className="mb-0 text-secondary">
                   {selectedProduct.description || "No description available."}

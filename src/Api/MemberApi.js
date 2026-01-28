@@ -1,31 +1,13 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class RegionApi {
-  async getAdminUser() {
+class MemberApi {
+  async createMember(data) {
     try {
-      const response = await apiClient.get("/adminUser");
-      if (response.status === 200 || response.status === 201) {
-        return { status: true, response: response.data };
-      }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to get admin user. Please try again.";
-      ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
-    }
-  }
-  async createRegion(data) {
-    try {
-      const response = await apiClient.post("/region", data);
+      const response = await apiClient.post("/member/create", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region created successfully!",
+          response.data.message || "Member created successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -34,26 +16,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to create region. Please try again.";
-      ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
-    }
-  }
-  async getRegion(zoneId) {
-    try {
-      const url = zoneId ? `/region?zoneId=${zoneId}` : "/region";
-      const response = await apiClient.get(url);
-      if (response.status === 200 || response.status === 201) {
-        return { status: true, response: response.data };
-      }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to get region. Please try again.";
+        "Failed to create member. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -62,11 +25,17 @@ class RegionApi {
     }
   }
 
-  async getRegionByZone(zoneId) {
+  async getMembers(params = {}) {
     try {
-      const response = await apiClient.get("/region", {
-        params: { zoneId },
-      });
+      const config = {
+        params: {
+          page: params.page,
+          limit: params.limit,
+          search: params.search, // Assuming the API supports search
+        },
+      };
+
+      const response = await apiClient.get("/member/list", config);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }
@@ -74,7 +43,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to get regions. Please try again.";
+        "Failed to get members. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -82,12 +51,32 @@ class RegionApi {
       };
     }
   }
-  async updateRegion(data) {
+
+  async getMemberDetails(id) {
     try {
-      const response = await apiClient.put(`/region/${data.id}`, data);
+      const response = await apiClient.get(`/member/details/${id}`);
+      if (response.status === 200 || response.status === 201) {
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to get member details. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+
+  async updateMember(id, data) {
+    try {
+      const response = await apiClient.put(`/member/update/${id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region updated successfully!",
+          response.data.message || "Member updated successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -96,7 +85,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to update region. Please try again.";
+        "Failed to update member. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -104,12 +93,13 @@ class RegionApi {
       };
     }
   }
-  async deleteRegion(id) {
+
+  async deleteMember(id) {
     try {
-      const response = await apiClient.delete(`/region/${id}`);
+      const response = await apiClient.delete(`/member/delete/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region deleted successfully!",
+          response.data.message || "Member deleted successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -118,7 +108,26 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to delete region. Please try again.";
+        "Failed to delete member. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+
+  async generateMembershipId() {
+    try {
+      const response = await apiClient.post("/member/generate/id");
+      if (response.status === 200 || response.status === 201) {
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to generate membership ID. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -128,4 +137,4 @@ class RegionApi {
   }
 }
 
-export default new RegionApi();
+export default new MemberApi();

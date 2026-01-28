@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import TablePagination from "./TablePagination";
-import { Modal } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 
 import TrainingApi from "../Api/TrainingApi";
 
@@ -12,6 +12,9 @@ const TrainingListLayer = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [totalRecords, setTotalRecords] = useState(0);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [trainingToDelete, setTrainingToDelete] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState(null);
@@ -57,13 +60,27 @@ const TrainingListLayer = () => {
     }
   };
 
-  const deleteTraining = async (id) => {
-    if (window.confirm("Are you sure you want to delete this training?")) {
-      const response = await TrainingApi.deleteTraining(id);
+  const confirmDelete = (training) => {
+    setTrainingToDelete(training);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (trainingToDelete) {
+      const response = await TrainingApi.deleteTraining(
+        trainingToDelete._id || trainingToDelete.trainingId,
+      );
       if (response && response.status) {
         fetchTrainings();
+        setShowDeleteModal(false);
+        setTrainingToDelete(null);
       }
     }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setTrainingToDelete(null);
   };
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
@@ -222,7 +239,7 @@ const TrainingListLayer = () => {
                           <Icon icon="lucide:edit" className="icon text-xl" />
                         </Link>
                         <button
-                          onClick={() => deleteTraining(item._id)}
+                          onClick={() => confirmDelete(item)}
                           className="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
                         >
                           <Icon
@@ -323,6 +340,42 @@ const TrainingListLayer = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Modal */}
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} centered>
+        <Modal.Body className="text-center p-5">
+          <div className="d-flex justify-content-center mb-3">
+            <div className="bg-danger-focus rounded-circle d-flex justify-content-center align-items-center w-64-px h-64-px">
+              <Icon
+                icon="mingcute:delete-2-line"
+                className="text-danger-600 text-xxl"
+              />
+            </div>
+          </div>
+          <h5 className="mb-3">Are you sure?</h5>
+          <p className="text-secondary-light mb-4">
+            Do you want to delete training "{trainingToDelete?.title}"? This
+            action cannot be undone.
+          </p>
+          <div className="d-flex justify-content-center gap-3">
+            <Button
+              variant="outline-secondary"
+              className="px-32"
+              onClick={handleCloseDeleteModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              className="px-32"
+              onClick={handleDelete}
+              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+            >
+              Delete
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

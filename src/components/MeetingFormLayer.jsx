@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { MockDataService } from "../helper/MockDataService";
 import Select from "react-select";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import MeetingApi from "../Api/MeetingApi";
+import ChapterApi from "../Api/ChapterApi";
 
 const MeetingFormLayer = () => {
   const navigate = useNavigate();
@@ -12,13 +13,15 @@ const MeetingFormLayer = () => {
     topic: "",
     meetingFee: "",
     visitorFee: "",
-    chapter: "",
+    chapters: [],
     hotelName: "",
     startDate: "",
     endDate: "",
     latePunchTime: "",
     location: "",
   });
+
+  const [chapterOptions, setChapterOptions] = useState([]);
 
   const [errors, setErrors] = useState({});
 
@@ -27,7 +30,8 @@ const MeetingFormLayer = () => {
     if (!formData.topic) newErrors.topic = "Meeting Topic is required";
     if (!formData.meetingFee) newErrors.meetingFee = "Meeting Fee is required";
     if (!formData.visitorFee) newErrors.visitorFee = "Visitor Fee is required";
-    if (!formData.chapter) newErrors.chapter = "Chapter is required";
+    if (!formData.chapters || formData.chapters.length === 0)
+      newErrors.chapters = "At least one Chapter is required";
     if (!formData.hotelName) newErrors.hotelName = "Hotel Name is required";
     if (!formData.startDate)
       newErrors.startDate = "Start Date & Time is required";
@@ -40,7 +44,6 @@ const MeetingFormLayer = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Google Maps Configuration
   const mapContainerStyle = {
     width: "100%",
     height: "300px",
@@ -49,32 +52,79 @@ const MeetingFormLayer = () => {
   };
 
   const defaultCenter = {
-    lat: 13.0827, // Default to Chennai
+    lat: 13.0827,
     lng: 80.2707,
   };
 
   const [markerPosition, setMarkerPosition] = useState(null);
-
   useEffect(() => {
+    fetchChapters();
     if (id) {
-      const meeting = MockDataService.getMeetingById(id);
-      if (meeting) {
-        setFormData(meeting);
-        if (meeting.location) {
-          // Try to parse lat,lng from location string if possible, else just keep text
-          // This is a simple assumption for the demo
-          const parts = meeting.location.split(",");
-          if (parts.length === 2) {
-            const lat = parseFloat(parts[0]);
-            const lng = parseFloat(parts[1]);
-            if (!isNaN(lat) && !isNaN(lng)) {
-              setMarkerPosition({ lat, lng });
-            }
-          }
-        }
-      }
+      fetchMeeting(id);
     }
   }, [id]);
+
+  const fetchChapters = async () => {
+    try {
+      const response = await ChapterApi.getChapter();
+      if (response.status && response.response.data) {
+        const options = response.response.data.map((chapter) => ({
+          value: chapter._id,
+          label: chapter.chapterName,
+        }));
+        setChapterOptions(options);
+      }
+    } catch (error) {
+      console.error("Error fetching chapters:", error);
+    }
+  };
+
+  const fetchMeeting = async (id) => {
+    try {
+      const response = await MeetingApi.getMeeting({ id });
+      if (response.status && response.response.data) {
+        const meeting = response.response.data;
+
+        // Extract IDs if chapters are objects
+        const chapterIds =
+          meeting.chapters && Array.isArray(meeting.chapters)
+            ? meeting.chapters.map((ch) =>
+                typeof ch === "object" && ch._id ? ch._id : ch,
+              )
+            : [];
+
+        setFormData({
+          topic: meeting.meetingTopic,
+          meetingFee: meeting.meetingFee,
+          visitorFee: meeting.visitorFee,
+          chapters: chapterIds,
+          hotelName: meeting.hotelName,
+          startDate: formatDateForInput(meeting.startDateTime),
+          endDate: formatDateForInput(meeting.endDateTime),
+          latePunchTime: formatDateForInput(meeting.latePunchTime),
+          location:
+            meeting.location && meeting.location.name
+              ? meeting.location.name
+              : "",
+        });
+
+        if (meeting.location && meeting.location.latitude) {
+          setMarkerPosition({
+            lat: meeting.location.latitude,
+            lng: meeting.location.longitude,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching meeting:", error);
+    }
+  };
+
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -82,11 +132,18 @@ const MeetingFormLayer = () => {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSelectChange = (selectedOption, { name }) => {
-    setFormData({
-      ...formData,
-      [name]: selectedOption ? selectedOption.value : "",
-    });
+  const handleSelectChange = (selectedOptions, { name }) => {
+    if (name === "chapters") {
+      const values = selectedOptions
+        ? selectedOptions.map((opt) => opt.value)
+        : [];
+      setFormData({ ...formData, [name]: values });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: selectedOptions ? selectedOptions.value : "",
+      });
+    }
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -94,23 +151,42 @@ const MeetingFormLayer = () => {
     const lat = e.latLng.lat();
     const lng = e.latLng.lng();
     setMarkerPosition({ lat, lng });
-    setFormData({ ...formData, location: `${lat}, ${lng}` });
+    // Keep location text as is or update if you want to show coords
+    // setFormData({ ...formData, location: `${lat}, ${lng}` });
     if (errors.location) setErrors((prev) => ({ ...prev, location: "" }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      MockDataService.saveMeeting(formData);
-      navigate("/meeting-creation");
+      const payload = {
+        meetingTopic: formData.topic,
+        meetingFee: parseFloat(formData.meetingFee),
+        visitorFee: parseFloat(formData.visitorFee),
+        hotelName: formData.hotelName,
+        chapters: formData.chapters,
+        startDateTime: new Date(formData.startDate).toISOString(),
+        endDateTime: new Date(formData.endDate).toISOString(),
+        latePunchTime: new Date(formData.latePunchTime).toISOString(),
+        location: {
+          name: formData.location || "Default Location",
+          latitude: markerPosition ? markerPosition.lat : 13.0827,
+          longitude: markerPosition ? markerPosition.lng : 80.2707,
+        },
+      };
+
+      let response;
+      if (id) {
+        response = await MeetingApi.updateMeeting(id, payload);
+      } else {
+        response = await MeetingApi.createMeeting(payload);
+      }
+
+      if (response.status) {
+        navigate("/meeting-creation");
+      }
     }
   };
-
-  const chapterOptions = [
-    { value: "ARAM", label: "ARAM" },
-    { value: "Chapter Alpha", label: "Chapter Alpha" },
-    { value: "Chapter Beta", label: "Chapter Beta" },
-  ];
 
   const getSelectedOption = (options, value) => {
     return options.find((option) => option.value === value) || null;
@@ -219,16 +295,19 @@ const MeetingFormLayer = () => {
                   Chapter(s) <span className="text-danger-600">*</span>
                 </label>
                 <Select
-                  name="chapter"
+                  name="chapters"
+                  isMulti
                   options={chapterOptions}
-                  value={getSelectedOption(chapterOptions, formData.chapter)}
+                  value={chapterOptions.filter((option) =>
+                    formData.chapters.includes(option.value),
+                  )}
                   onChange={handleSelectChange}
                   styles={customStyles}
-                  placeholder="Select chapter..."
+                  placeholder="Select chapters..."
                   isClearable={false}
                 />
-                {errors.chapter && (
-                  <small className="text-danger">{errors.chapter}</small>
+                {errors.chapters && (
+                  <small className="text-danger">{errors.chapters}</small>
                 )}
               </div>
             </div>

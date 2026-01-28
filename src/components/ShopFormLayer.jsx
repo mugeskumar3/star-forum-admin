@@ -88,6 +88,12 @@ const ShopFormLayer = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === "price") {
+      if (value < 0) {
+        setErrors((prev) => ({ ...prev, price: "Price cannot be negative" }));
+        return;
+      }
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -131,8 +137,8 @@ const ShopFormLayer = () => {
     if (!formData.price) {
       newErrors.price = "Price is required";
       isValid = false;
-    } else if (Number(formData.price) <= 0) {
-      newErrors.price = "Price must be greater than 0";
+    } else if (Number(formData.price) < 0) {
+      newErrors.price = "Price cannot be negative";
       isValid = false;
     }
 
@@ -310,7 +316,7 @@ const ShopFormLayer = () => {
                 placeholder="Enter product name"
               />
               {errors.productName && (
-                <div className="invalid-feedback">{errors.productName}</div>
+                <div className="invalid-feedback text-danger">{errors.productName}</div>
               )}
             </div>
 
@@ -324,12 +330,13 @@ const ShopFormLayer = () => {
                   type="number"
                   className={`form-control radius-8 ${errors.price ? "is-invalid" : ""}`}
                   name="price"
+                  min={1}
                   value={formData.price}
                   onChange={handleChange}
                   placeholder="Enter price"
                 />
                 {errors.price && (
-                  <div className="invalid-feedback">{errors.price}</div>
+                  <div className="invalid-feedback text-danger">{errors.price}</div>
                 )}
               </div>
             </div>
@@ -372,7 +379,7 @@ const ShopFormLayer = () => {
                     onChange={handleImageChange}
                   />
                   {errors.image && (
-                    <div className="invalid-feedback">{errors.image}</div>
+                    <div className="invalid-feedback text-danger">{errors.image}</div>
                   )}
                 </div>
               )}
@@ -437,7 +444,7 @@ const ShopFormLayer = () => {
 
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
-              to="/shop-list"
+              to="/shop-create"
               className="btn btn-outline-secondary radius-8 px-20 py-11"
             >
               Cancel
@@ -446,8 +453,9 @@ const ShopFormLayer = () => {
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
               disabled={loading}
+              style={{ width: "90px" }}
             >
-              {loading ? "Saving..." : "Save Product"}
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>

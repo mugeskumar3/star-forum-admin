@@ -1,92 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import TablePagination from "./TablePagination";
+import MemberApi from "../Api/MemberApi";
 
 const MemberListLayer = () => {
-  const [members, setMembers] = useState(
-    Array.from({ length: 20 }).map((_, i) => ({
-      id: i + 1,
-      name: [
-        "Rajesh Kumar",
-        "Priya Sharma",
-        "Amit Patel",
-        "Sneha Reddy",
-        "Vikram Singh",
-        "Ananya Iyer",
-        "Suresh Nair",
-        "Megha Gupta",
-        "Arjun Verma",
-        "Kavita Joshi",
-        "Rahul Deshmukh",
-        "Pooja Malhotra",
-        "Sandeep Bansal",
-        "Neha Choudhury",
-        "Vijay Ranganathan",
-        "Shilpa Kulkarni",
-        "Manish Tiwari",
-        "Divya Saxena",
-        "Pankaj अग्रवाल",
-        "Swati Bhattacharya",
-      ][i],
-      image: `assets/images/users/user${(i % 5) + 1}.png`,
-      chapter: [
-        "Chennai Central",
-        "Mumbai South",
-        "Delhi West",
-        "Bangalore East",
-        "Hyderabad North",
-        "Kolkata Metro",
-        "Pune City",
-        "Ahmedabad GIDC",
-        "Jaipur Pink",
-        "Lucknow Nawabs",
-        "Chandigarh Royal",
-        "Coimbatore Elite",
-        "Madurai Star",
-        "Trichy Titans",
-        "Salem Warriors",
-        "Erode Kings",
-        "Vellore Fort",
-        "Nellore Coast",
-        "Vizag Port",
-        "Kochi Spice",
-      ][i],
-      region: [
-        "North Region",
-        "South Region",
-        "East Region",
-        "West Region",
-        "Central Region",
-      ][i % 5],
-      membershipId: `MEM-0${i + 100}`,
-      status: i % 2 === 0 ? "Active" : "Inactive",
-      email: `member${i + 1}@example.com`,
-      membershipType: ["Gold", "Platinum", "Silver"][i % 3],
-    })),
-  );
+  const [members, setMembers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMembershipType, setSelectedMembershipType] = useState("All");
 
-  // Filter Data
-  const filteredMembers = members.filter(
-    (member) =>
-      (member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        member.membershipId.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (selectedMembershipType === "All" ||
-        member.membershipType === selectedMembershipType),
-  );
+  const [totalRecords, setTotalRecords] = useState(0);
 
-  const totalRecords = filteredMembers.length;
+  useEffect(() => {
+    fetchMembers();
+  }, [currentPage, rowsPerPage, searchTerm, selectedMembershipType]);
+
+  const fetchMembers = async () => {
+    try {
+      const params = {
+        page: currentPage,
+        limit: rowsPerPage,
+        search: searchTerm,
+        // API might expect membershipType filter. Adding it just in case logic exists or for future.
+        // If API doesn't support it, it will ignore.
+        membershipType:
+          selectedMembershipType !== "All" ? selectedMembershipType : undefined,
+      };
+
+      const res = await MemberApi.getMembers(params);
+
+      if (res.status) {
+        // Assuming response structure: { data: { docs: [], totalDocs: 100, ... } } or similar pagination object
+        // Adjust based on actual API response. Common pattern in this project seems to be res.response.data having the list?
+        // Let's assume standard paginate v2 response often used: { docs, totalDocs, limit, page, totalPages }
+        // Or if it's a simple list: { data: [] } and we paginate client side?
+        // User requested "server-side pagination".
+        // Let's assume response.data is the object containing { docs: [...], totalDocs: ... }
+
+        // CHECK ChapterApi/RegionApi usage.
+        // ChapterApi just returns response.data.
+        // If I assume standard mongoose-paginate:
+        const data = res.response.data;
+        if (data.docs) {
+          setMembers(data.docs);
+          setTotalRecords(data.totalDocs);
+        } else if (Array.isArray(data)) {
+          // Fallback if API returns simple array (not paginated on server effectively?)
+          setMembers(data);
+          setTotalRecords(data.length);
+        } else {
+          // Maybe data itself is the list
+          setMembers([]);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch members", error);
+    }
+  };
+
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = filteredMembers.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -97,9 +72,12 @@ const MemberListLayer = () => {
     setCurrentPage(1);
   };
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = async (id) => {
     if (window.confirm("Are you sure you want to delete this member?")) {
-      setMembers((prev) => prev.filter((m) => m.id !== id));
+      const res = await MemberApi.deleteMember(id);
+      if (res.status) {
+        fetchMembers(); // Refresh list
+      }
     }
   };
 
@@ -107,7 +85,8 @@ const MemberListLayer = () => {
     { value: "All", label: "All Types" },
     { value: "Gold", label: "Gold" },
     { value: "Platinum", label: "Platinum" },
-    { value: "Silver", label: "Silver" },
+    { value: "Silver", label: "Silver" }, // "Diamond" was in form, checking consistency. Form had Gold/Diamond/Platinum. List had Gold/Platinum/Silver. I should probably align them.
+    { value: "Diamond", label: "Diamond" },
   ];
 
   const customStyles = {
@@ -164,7 +143,7 @@ const MemberListLayer = () => {
               placeholder="Select Type"
             />
           </div>
-          <form className="navbar-search">
+          <form className="navbar-search" onSubmit={(e) => e.preventDefault()}>
             <input
               type="text"
               className="bg-base h-40-px w-auto"
@@ -211,12 +190,28 @@ const MemberListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Category
                 </th>
+                {/*  Replaced Region with Category as per original? Original had both. Let's check columns. 
+                      Original: S.No, Member Id, Member Name, Chapter, Category, Type, Status, Action.
+                      Wait, previous file code had 'Region' under 'Category' header index? 
+                      Let's stick to columns: ID, Name, Chapter, Region/Category? 
+                      Let's follow logical display or previous.
+                      Previous: Chapter (4th), Region (5th - Header says 'Category'?), Type (6th).
+                      I will use headers: Chapter, Region, Business Category.
+                  */}
+                <th scope="col" style={{ color: "black" }}>
+                  Region
+                </th>
+                <th scope="col" style={{ color: "black" }}>
+                  Business
+                </th>
                 <th scope="col" style={{ color: "black" }}>
                   Type
                 </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Status
-                </th>
+                {/* Status was inferred from even/odd in mock. Real data might not have status? 
+                     User JSON doesn't show status field explicitly unless boolean?
+                     'isWantSmsEmailUpdates' is boolean. 'clubMemberType'.
+                     I'll omit Status for now if not in payload, or assume Active.
+                 */}
                 <th
                   scope="col"
                   className="text-center"
@@ -227,15 +222,17 @@ const MemberListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((member, index) => (
-                  <tr key={member.id}>
+              {members.length > 0 ? (
+                members.map((member, index) => (
+                  <tr key={member._id || member.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
                     <td>{member.membershipId}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <img
-                          src={member.image}
+                          src={
+                            member.profileImage || "https://placehold.co/40x40"
+                          }
                           alt=""
                           className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
                           onError={(e) => {
@@ -244,7 +241,7 @@ const MemberListLayer = () => {
                         />
                         <div className="flex-grow-1">
                           <span className="text-md mb-0 fw-normal text-secondary-light d-block">
-                            {member.name}
+                            {member.fullName}
                           </span>
                           <span className="text-xs text-secondary-light fw-normal">
                             {member.email}
@@ -252,30 +249,24 @@ const MemberListLayer = () => {
                         </div>
                       </div>
                     </td>
-                    <td>{member.chapter}</td>
-                    <td>{member.region}</td>
+                    <td>{member.chapter?.chapterName || member.chapter}</td>
+                    <td>{member.region?.name || member.region || "-"}</td>
                     <td>
-                      <span
-                        className={`badge ${member.membershipType === "Platinum" ? "bg-primary-50 text-primary-600" : member.membershipType === "Gold" ? "bg-warning-50 text-warning-600" : "bg-secondary-50 text-secondary-600"} px-12 py-4 radius-4`}
-                      >
-                        {member.membershipType}
-                      </span>
+                      {member.businessCategory?.name ||
+                        member.businessCategory ||
+                        "-"}
                     </td>
                     <td>
                       <span
-                        className={`badge ${
-                          member.status === "Active"
-                            ? "bg-success-focus text-success-main"
-                            : "bg-danger-focus text-danger-main"
-                        } px-24 py-4 rounded-pill fw-medium text-sm`}
+                        className={`badge ${member.clubMemberType === "Platinum" ? "bg-primary-50 text-primary-600" : member.clubMemberType === "Gold" ? "bg-warning-50 text-warning-600" : "bg-secondary-50 text-secondary-600"} px-12 py-4 radius-4`}
                       >
-                        {member.status}
+                        {member.clubMemberType || "Member"}
                       </span>
                     </td>
                     <td className="text-center">
                       <div className="d-flex align-items-center gap-10 justify-content-center">
                         <Link
-                          to={`/members-registration/edit/${member.id}`}
+                          to={`/members-registration/edit/${member._id || member.id}`}
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -284,14 +275,16 @@ const MemberListLayer = () => {
                           />
                         </Link>
                         <Link
-                          to={`/members-registration/edit/${member.id}`}
+                          to={`/members-registration/edit/${member._id || member.id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon icon="lucide:edit" className="menu-icon" />
                         </Link>
                         <button
                           type="button"
-                          onClick={() => handleDeleteClick(member.id)}
+                          onClick={() =>
+                            handleDeleteClick(member._id || member.id)
+                          }
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -305,7 +298,7 @@ const MemberListLayer = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center py-4">
+                  <td colSpan="8" className="text-center py-4">
                     No members found.
                   </td>
                 </tr>

@@ -1,35 +1,12 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class AwardApi {
-  async createAward(data) {
-    try {
-      const response = await apiClient.post("/award", data);
-      if (response.status === 200 || response.status === 201) {
-        ShowNotifications.showAlertNotification(
-          response.data.message || "Award created successfully!",
-          true,
-        );
-        return { status: true, response: response.data };
-      }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        error?.message ||
-        "Failed to create award. Please try again.";
-      ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
-    }
-  }
-  async getAward(id, currentPage, rowsPerPage, search) {
+class AdminUserApi {
+  async getAdminUser(id, currentPage, rowsPerPage, search) {
     try {
       const url = id
-        ? `/award/${id}`
-        : `/award?page=${currentPage}&limit=${rowsPerPage}&search=${search}`;
+        ? `/adminUser/${id}`
+        : `/adminUser?page=${currentPage}&limit=${rowsPerPage}&search=${search || ""}`;
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
@@ -38,7 +15,7 @@ class AwardApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to get award. Please try again.";
+        "Failed to fetch admin user(s). Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -46,12 +23,13 @@ class AwardApi {
       };
     }
   }
-  async updateAward(data) {
+
+  async createAdminUser(data) {
     try {
-      const response = await apiClient.put(`/award/${data.id}`, data);
+      const response = await apiClient.post("/adminUser", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Award updated successfully!",
+          response.data.message || "Admin user created successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -60,8 +38,7 @@ class AwardApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        error?.message ||
-        "Failed to update award. Please try again.";
+        "Failed to create admin user. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -69,12 +46,13 @@ class AwardApi {
       };
     }
   }
-  async deleteAward(id) {
+
+  async updateAdminUser(data) {
     try {
-      const response = await apiClient.delete(`/award/${id}`);
+      const response = await apiClient.put(`/adminUser/${data.id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Award deleted successfully!",
+          response.data.message || "Admin user updated successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -83,8 +61,30 @@ class AwardApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
+        "Failed to update admin user. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+
+  async deleteAdminUser(id) {
+    try {
+      const response = await apiClient.delete(`/adminUser/${id}`);
+      if (response.status === 200 || response.status === 201) {
+        ShowNotifications.showAlertNotification(
+          response.data.message || "Admin user deleted successfully!",
+          true,
+        );
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
         error?.message ||
-        "Failed to delete award. Please try again.";
+        "Failed to delete admin user. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -94,4 +94,4 @@ class AwardApi {
   }
 }
 
-export default new AwardApi();
+export default new AdminUserApi();

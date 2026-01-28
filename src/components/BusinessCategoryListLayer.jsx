@@ -1,19 +1,33 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 import BusinessCategoryApi from "../Api/BusinessCategoryApi";
 const BusinessCategoryListLayer = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   const fetchCategories = async () => {
     try {
-      const response = await BusinessCategoryApi.getBusinessCategory();
+      const response = await BusinessCategoryApi.getBusinessCategory(
+        null,
+        currentPage,
+        rowsPerPage,
+        searchTerm,
+      );
       if (response && response.status && response.response.data) {
         setCategories(response.response.data);
+        setTotalRecords(response.response.total || 0);
+      } else {
+        setCategories([]);
+        setTotalRecords(0);
       }
     } catch (error) {
       console.error("Failed to fetch categories", error);
@@ -22,20 +36,9 @@ const BusinessCategoryListLayer = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [currentPage, rowsPerPage, searchTerm]);
 
-  // Initial Data for Filter/Search
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  const totalRecords = filteredCategories.length;
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
-
-  const currentData = filteredCategories.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -43,16 +46,30 @@ const BusinessCategoryListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
-  const handleDeleteClick = async (id) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
-      const response = await BusinessCategoryApi.deleteBusinessCategory(id);
+  const confirmDelete = (category) => {
+    setCategoryToDelete(category);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (categoryToDelete) {
+      const response = await BusinessCategoryApi.deleteBusinessCategory(
+        categoryToDelete._id,
+      );
       if (response && response.status) {
         fetchCategories();
+        setShowDeleteModal(false);
+        setCategoryToDelete(null);
       }
     }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setCategoryToDelete(null);
   };
 
   return (
@@ -71,7 +88,7 @@ const BusinessCategoryListLayer = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(0);
               }}
             />
             <Icon icon="ion:search-outline" className="icon" />
@@ -116,10 +133,10 @@ const BusinessCategoryListLayer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length > 0 ? (
-                currentData.map((category, index) => (
+              {categories.length > 0 ? (
+                categories.map((category, index) => (
                   <tr key={index}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{currentPage * rowsPerPage + index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <span className="text-md mb-0 fw-normal text-secondary-light">
@@ -159,7 +176,7 @@ const BusinessCategoryListLayer = () => {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => handleDeleteClick(category._id)}
+                          onClick={() => confirmDelete(category)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                         >
                           <Icon
@@ -191,6 +208,41 @@ const BusinessCategoryListLayer = () => {
           totalRecords={totalRecords}
         />
       </div>
+
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} centered>
+        <Modal.Body className="text-center p-5">
+          <div className="d-flex justify-content-center mb-3">
+            <div className="bg-danger-focus rounded-circle d-flex justify-content-center align-items-center w-64-px h-64-px">
+              <Icon
+                icon="mingcute:delete-2-line"
+                className="text-danger-600 text-xxl"
+              />
+            </div>
+          </div>
+          <h5 className="mb-3">Are you sure?</h5>
+          <p className="text-secondary-light mb-4">
+            Do you want to delete category "{categoryToDelete?.name}"? This
+            action cannot be undone.
+          </p>
+          <div className="d-flex justify-content-center gap-3">
+            <Button
+              variant="outline-secondary"
+              className="px-32"
+              onClick={handleCloseDeleteModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              className="px-32"
+              onClick={handleDelete}
+              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+            >
+              Delete
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
