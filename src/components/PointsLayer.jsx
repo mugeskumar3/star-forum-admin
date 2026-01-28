@@ -95,16 +95,23 @@ const PointsLayer = () => {
                                                         {(item.value || 0).toLocaleString()}
                                                     </span>
                                                 </td>
-                                                <td className="text-center">
+                                                <td
+                                                    style={{
+                                                        textAlign: 'center',
+                                                        verticalAlign: 'middle',
+                                                    }}
+                                                >
+
                                                     <button
                                                         type="button"
                                                         onClick={() => handleEditClick(item)}
-                                                        className="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-44-px h-44-px d-flex justify-content-center align-items-center rounded-circle border-0 mx-auto transition-2 action-btn shadow-sm"
+                                                        className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle mx-auto"
                                                         title="Edit Points"
                                                     >
-                                                        <Icon icon="lucide:edit" className="icon text-2xl" />
+                                                        <Icon icon="lucide:edit" className="icon text-l" />
                                                     </button>
                                                 </td>
+
                                             </tr>
                                         ))
                                     ) : (
@@ -127,7 +134,7 @@ const PointsLayer = () => {
                 className="modal-custom"
             >
                 <Modal.Header closeButton className="border-bottom-0 pb-0">
-                    <Modal.Title className="fw-bold h4">Update Points</Modal.Title>
+                    <span className="fw-bold" style={{ color: '#C4161C', fontSize: '24px' }}>Update Points</span>
                 </Modal.Header>
                 <Modal.Body className="pt-2">
                     <div className="d-flex align-items-center gap-3 mb-24 p-20 radius-12 bg-neutral-50 border">
@@ -140,18 +147,24 @@ const PointsLayer = () => {
                     <div className="form-group mb-4">
                         <label className="form-label fw-bold text-dark fs-5 mb-12">Point Configuration</label>
                         <div className="input-group input-group-lg shadow-sm">
-                            <span className="icon-border input-group-text bg-white border-end-0 radius-start-12" style={{ borderColor: '#C4161C' }} >
+                            <span className="icon-border input-group-text bg-white border-end-0 radius-start-12" >
                                 <Icon icon="solar:star-bold" className="text-warning" fontSize={24} />
                             </span>
                             <input
                                 type="number"
-                                className=" icon-border form-control radius-end-12 border-start-0 ps-0 fw-bold text-center"
+                                min="0"
+                                onKeyDown={(e) => {
+                                    if (e.key === '-' || e.key === 'e') {
+                                        e.preventDefault()
+                                    }
+                                }}
+                                className="icon-border form-control radius-end-12 border-start-0 ps-0 fw-bold text-center"
                                 value={tempValue}
-                                onChange={(e) => setTempValue(e.target.value)}
+                                onChange={(e) => setTempValue(Math.max(0, e.target.value))}
                                 placeholder="0"
-                                autoFocus
                                 style={{ fontSize: '24px' }}
                             />
+
                         </div>
                         <small className="text-sm text-secondary-light mt-12 d-block">
                             Set the numeric value for this activity type.
@@ -162,7 +175,7 @@ const PointsLayer = () => {
                     <Button
                         variant="outline-secondary"
                         onClick={() => setShowModal(false)}
-                        className="radius-12 px-32 py-12 fw-bold text-lg border-0"
+                        className="radius-12 px-28 py-12 fw-bold text-lg shadow-md"
                     >
                         Cancel
                     </Button>
@@ -172,7 +185,7 @@ const PointsLayer = () => {
                         className="radius-12 px-32 py-12 fw-bold text-lg shadow-md"
                         style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
                     >
-                        Save Configuration
+                        Save
                     </Button>
                 </Modal.Footer>
             </Modal>
