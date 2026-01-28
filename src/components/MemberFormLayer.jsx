@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
-import AsyncSelect from "react-select/async"; // Import AsyncSelect
+import AsyncSelect from "react-select/async";
 import MemberApi from "../Api/MemberApi";
 import ChapterApi from "../Api/ChapterApi";
 import RegionApi from "../Api/RegionApi";
@@ -10,22 +10,19 @@ import BusinessCategoryApi from "../Api/BusinessCategoryApi";
 import AdminUserApi from "../Api/AdminUserApi";
 import AwardApi from "../Api/AwardApi";
 import ImageUploadApi from "../Api/ImageUploadApi";
-import ShowNotifications from "../helper/ShowNotifications";
 
 const MemberFormLayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
-
-  // Region options (Static or simple Select)
   const [regionOptions, setRegionOptions] = useState([]);
-
+  const [selectedFile, setSelectedFile] = useState(null);
   const [formData, setFormData] = useState({
     profileImage: "",
     fullName: "",
     email: "",
     companyName: "",
-    mobileNumber: "",
+    phoneNumber: "", // Renamed from mobileNumber
     membershipId: "",
     region: "",
     chapter: null,
@@ -199,7 +196,7 @@ const MemberFormLayer = () => {
         setFormData({
           profileImage: data.profileImage || "",
           fullName: data.fullName || "",
-          mobileNumber: data.mobileNumber || "",
+          phoneNumber: data.phoneNumber || data.mobileNumber || "", // Map from API
           email: data.email || "",
           companyName: data.companyName || "",
           membershipId: data.membershipId || "",
@@ -229,13 +226,15 @@ const MemberFormLayer = () => {
           gstNo: data.gstNumber || "",
           sendWelcomeSms: data.sendWelcomeSms || false,
 
-          trainingYear: data.trainingYear || "",
+          sendWelcomeSms: data.sendWelcomeSms || false,
+
+          trainingYear: data.trainingYear?.split("T")[0] || "",
           mrp: data.trainingTypes?.includes("MRP") || false,
           mtp: data.trainingTypes?.includes("MTP") || false,
           atp: data.trainingTypes?.includes("ATP") || false,
           trainings: data.trainings || [],
 
-          tenure: data.tenure || "",
+          tenure: data.tenure?.split("T")[0] || "",
           awardSelected: null, // Reset as this is for adding *new* award
           awards: data.awards || [],
 
@@ -258,45 +257,23 @@ const MemberFormLayer = () => {
   const handleSelectChange = (selectedOption, { name }) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: selectedOption, // For AsyncSelect, store the whole object {value, label} or just value?
-      // AsyncSelect value prop expects {value, label}.
-      // Standard Select we usually stored just value.
-      // Let's store object for AsyncSelects (chapter, etc) to persist label.
-      // Check if it's Region (normal select).
+      [name]: selectedOption,
     }));
   };
-
-  // Specific handler for Region (normal select) if needed, or unify.
-  // My previous code expected value for region.
   const handleRegionChange = (selectedOption) => {
     setFormData((prev) => ({
       ...prev,
       region: selectedOption ? selectedOption.value : "",
     }));
   };
-
-  const handleImageChange = async (e) => {
+  const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const formDataUpload = new FormData();
-      formDataUpload.append("image", file);
-
-      const uploadData = {
-        formData: formDataUpload,
-        path: "member-profile",
-      };
-
-      const res = await ImageUploadApi.uploadImage(uploadData);
-
-      if (res.status) {
-        // Fallback or explicit check
-        const imageUrl =
-          res.response.data?.url ||
-          res.response.data?.imagePath ||
-          (typeof res.response.data === "string" ? res.response.data : "");
-        if (imageUrl)
-          setFormData((prev) => ({ ...prev, profileImage: imageUrl }));
-      }
+      setSelectedFile(file);
+      setFormData((prev) => ({
+        ...prev,
+        profileImage: URL.createObjectURL(file),
+      }));
     }
   };
 
@@ -308,30 +285,51 @@ const MemberFormLayer = () => {
     if (!formData.email) newErrors.email = "Email Address is required";
     if (!formData.companyName)
       newErrors.companyName = "Company Name is required";
-    if (!formData.mobileNumber)
-      newErrors.mobileNumber = "Mobile Number is required";
+    if (!formData.phoneNumber)
+      newErrors.phoneNumber = "Phone Number is required";
     if (!formData.region) newErrors.region = "Region is required";
     if (!formData.chapter) newErrors.chapter = "Chapter is required";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
+      let finalImagePath = formData.profileImage;
+      if (selectedFile) {
+        const formDataUpload = new FormData();
+        formDataUpload.append("file", selectedFile);
+        const uploadData = {
+          formData: formDataUpload,
+          path: "member-profile",
+        };
+        try {
+          const res = await ImageUploadApi.uploadImage(uploadData);
+          if (res.status) {
+            finalImagePath =
+              res.response.data?.url ||
+              res.response.data?.imagePath ||
+              (typeof res.response.data === "string" ? res.response.data : "");
+          } else {
+            return;
+          }
+        } catch (error) {
+          console.error("Image upload failed", error);
+          return;
+        }
+      }
       const payload = {
-        profileImage: formData.profileImage,
+        profileImage: finalImagePath,
         fullName: formData.fullName,
-        mobileNumber: formData.mobileNumber,
+        phoneNumber: formData.phoneNumber,
         email: formData.email,
         companyName: formData.companyName,
         membershipId: formData.membershipId,
         region: formData.region,
-        chapter: formData.chapter?.value, // Extract value from Object
+        chapter: formData.chapter?.value || null,
         position: formData.position,
-        businessCategory: formData.businessCategory?.value, // Extract value
-        referredBy: formData.referredBy?.value || null, // Extract value
+        businessCategory: formData.businessCategory?.value || null,
+        referredBy: formData.referredBy?.value || null,
         dateOfBirth: formData.dob,
         anniversary: formData.anniversary,
         officeAddress: {
@@ -345,8 +343,7 @@ const MemberFormLayer = () => {
         },
         isWantSmsEmailUpdates: formData.communicationConsent,
         annualFee: Number(formData.annualFee),
-        paymentMode: formData.paymentMode, // Assuming simple string here? No, paymentMode select stores value?
-        // Check implementation below.
+        paymentMode: formData.paymentMode,
         transactionId: formData.transactionId,
         paymentDate: formData.paymentDate,
         joiningDate: formData.joiningDate,
@@ -361,28 +358,17 @@ const MemberFormLayer = () => {
         ].filter(Boolean),
         trainings: formData.trainings,
         tenure: formData.tenure,
-        awardSelected: formData.awardSelected?.value, // Assuming API logic takes ID? Or does it take name/string?
-        // Payload example used "Business Excellence" string.
-        // But now we are fetching Awards (IDs).
-        // If Backend expects string, use label?
-        // User request said "fetch the award list correctly".
-        // Usually means linking to Award ID.
-        // I will send ID (value). If logic breaks, switch to label.
         awards: formData.awards,
         clubMemberType: formData.membershipType,
-        createdBy: "679c133fdfd8f9a7b29c63a5",
       };
-
       if (payload.referredBy === "None" || payload.referredBy === "")
         delete payload.referredBy;
-
       let res;
       if (isEditMode) {
         res = await MemberApi.updateMember(id, payload);
       } else {
         res = await MemberApi.createMember(payload);
       }
-
       if (res.status) {
         navigate("/members-registration");
       }
@@ -390,17 +376,8 @@ const MemberFormLayer = () => {
       window.scrollTo(0, 0);
     }
   };
-
   const handleAddAward = () => {
     if (formData.tenure && formData.awardSelected) {
-      // Award object for list: { tenure, award }
-      // If we use AsyncSelect for award, awardSelected is object {value, label}.
-      // Should we store ID or Label in the local list?
-      // Display uses name. Backend likely wants name or ID depending on schema.
-      // Given previous hardcoded strings, I'll store Label for display/submission if schema is string-based.
-      // If schema allows ID reference, use ID. User said "fetch award list", implies relation.
-      // BUT "awards" array in payload example: [{ tenure: "2024", award: "Growth Award" }] -> String.
-      // So I might need to send the Label.
       const newAward = {
         tenure: formData.tenure,
         award: formData.awardSelected.label,
@@ -413,7 +390,6 @@ const MemberFormLayer = () => {
       }));
     }
   };
-
   const handleRemoveAward = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -444,7 +420,6 @@ const MemberFormLayer = () => {
     singleValue: (provided) => ({ ...provided, color: "#495057" }),
     valueContainer: (provided) => ({ ...provided, paddingLeft: "16px" }),
   };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
@@ -454,7 +429,6 @@ const MemberFormLayer = () => {
       </div>
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
-          {/* 1. BASIC INFORMATION */}
           <div className="row gy-4 mb-24">
             <div className="col-12">
               <h6 className="text-primary-600 pb-2 mb-3">Basic Information</h6>
@@ -462,7 +436,6 @@ const MemberFormLayer = () => {
 
             <div className="col-12">
               <div className="row gy-4">
-                {/* Profile Image */}
                 <div className="col-xxl-2 col-xl-3 col-lg-3 text-center">
                   <div
                     className="upload-image-app-icon rounded-circle overflow-hidden position-relative mx-auto mb-3"
@@ -501,7 +474,6 @@ const MemberFormLayer = () => {
 
                 <div className="col-xxl-10 col-xl-9 col-lg-9">
                   <div className="row gy-3">
-                    {/* Full Name */}
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
                         Full Name <span className="text-danger">*</span>
@@ -518,7 +490,6 @@ const MemberFormLayer = () => {
                       )}
                     </div>
 
-                    {/* Email */}
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
                         Email Address <span className="text-danger">*</span>
@@ -535,7 +506,6 @@ const MemberFormLayer = () => {
                       )}
                     </div>
 
-                    {/* Company Name */}
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
                         Company Name <span className="text-danger">*</span>
@@ -554,21 +524,21 @@ const MemberFormLayer = () => {
                       )}
                     </div>
 
-                    {/* Mobile */}
+                    {/* Phone Number */}
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Mobile Number <span className="text-danger">*</span>
+                        Phone Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
                         className="form-control radius-8"
-                        name="mobileNumber"
-                        value={formData.mobileNumber}
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
                         onChange={handleChange}
                       />
-                      {errors.mobileNumber && (
+                      {errors.phoneNumber && (
                         <small className="text-danger">
-                          {errors.mobileNumber}
+                          {errors.phoneNumber}
                         </small>
                       )}
                     </div>
@@ -917,19 +887,18 @@ const MemberFormLayer = () => {
               <div className="row gy-3 gx-4 align-items-center">
                 <div className="col-md-6">
                   <label className="form-label fw-semibold">
-                    Training Year
+                    Training Date
                   </label>
                   <input
-                    type="number"
+                    type="date"
                     className="form-control radius-8"
                     name="trainingYear"
-                    placeholder="YYYY"
                     value={formData.trainingYear}
                     onChange={handleChange}
                   />
                 </div>
-                <div className="col-md-6">
-                  <div className="d-flex gap-4">
+                <div className="col-md-6 mt-3">
+                  <div className="d-flex gap-4 mt-3">
                     <div className="form-check d-flex align-items-center">
                       <input
                         className="form-check-input"
@@ -1012,12 +981,11 @@ const MemberFormLayer = () => {
 
               <div className="row gy-3">
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Tenure</label>
+                  <label className="form-label fw-semibold">Tenure Date</label>
                   <input
-                    type="text"
+                    type="date"
                     className="form-control radius-8"
                     name="tenure"
-                    placeholder="e.g. 2024"
                     value={formData.tenure}
                     onChange={handleChange}
                   />
@@ -1116,7 +1084,7 @@ const MemberFormLayer = () => {
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
             >
-              Save New Member
+              {isEditMode ? "Update Member" : "Save New Member"}
             </button>
           </div>
         </form>
