@@ -128,6 +128,9 @@ const MeetingFormLayer = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    // Prevent negative fees
+    if ((name === "meetingFee" || name === "visitorFee") && value < 0) return;
+
     setFormData({ ...formData, [name]: value });
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };

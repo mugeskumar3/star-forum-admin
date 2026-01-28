@@ -118,9 +118,6 @@ const BusinessCategoryListLayer = () => {
                   Category Name
                 </th>
                 <th scope="col" style={{ color: "black" }}>
-                  Status
-                </th>
-                <th scope="col" style={{ color: "black" }}>
                   Created Date
                 </th>
                 <th
@@ -143,17 +140,6 @@ const BusinessCategoryListLayer = () => {
                           {category.name}
                         </span>
                       </div>
-                    </td>
-                    <td>
-                      <span
-                        className={`badge ${
-                          category.isActive
-                            ? "bg-success-focus text-success-main"
-                            : "bg-danger-focus text-danger-main"
-                        }`}
-                      >
-                        {category.isActive ? "Active" : "Inactive"}
-                      </span>
                     </td>
                     <td>
                       {category.createdAt

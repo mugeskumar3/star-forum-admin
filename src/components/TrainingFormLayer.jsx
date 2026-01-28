@@ -129,12 +129,11 @@ const TrainingFormLayer = () => {
     };
 
     fetchData();
-  }, [isEditMode, id]); // Added id to dependency array
-
-  // Removed separate fetchOptions and fetchTrainingDetails functions to avoid staleness issues
+  }, [isEditMode, id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if ((name === "duration" || name === "maxAllowed") && value < 0) return;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -331,6 +330,8 @@ const TrainingFormLayer = () => {
                 name="duration"
                 value={formData.duration}
                 onChange={handleChange}
+                onWheel={(e) => e.target.blur()}
+                min="0"
                 placeholder="e.g. 4"
               />
               {errors.duration && (
@@ -412,6 +413,8 @@ const TrainingFormLayer = () => {
                 name="maxAllowed"
                 value={formData.maxAllowed}
                 onChange={handleChange}
+                onWheel={(e) => e.target.blur()}
+                min="0"
                 placeholder="Enter Max Participants"
               />
             </div>
@@ -452,6 +455,7 @@ const TrainingFormLayer = () => {
             <Link
               to="/training-list"
               className="btn btn-outline-secondary radius-8 px-20 py-11"
+              style={{ minWidth: "120px" }}
             >
               Cancel
             </Link>
@@ -459,6 +463,7 @@ const TrainingFormLayer = () => {
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
               disabled={loading}
+              style={{ minWidth: "120px" }}
             >
               {loading ? "Saving..." : "Save Training"}
             </button>

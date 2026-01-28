@@ -102,6 +102,7 @@ const MemberFormLayer = () => {
       const res = await ChapterApi.getChapter({
         search: inputValue,
         limit: 10,
+        regionId: formData.region,
       });
       if (res.status) {
         return res.response.data.map((c) => ({
@@ -252,6 +253,10 @@ const MemberFormLayer = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    // Clear error on change
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSelectChange = (selectedOption, { name }) => {
@@ -259,11 +264,16 @@ const MemberFormLayer = () => {
       ...prev,
       [name]: selectedOption,
     }));
+    // Clear error on change
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
   const handleRegionChange = (selectedOption) => {
     setFormData((prev) => ({
       ...prev,
       region: selectedOption ? selectedOption.value : "",
+      chapter: null,
     }));
   };
   const handleImageChange = (e) => {
@@ -289,6 +299,32 @@ const MemberFormLayer = () => {
       newErrors.phoneNumber = "Phone Number is required";
     if (!formData.region) newErrors.region = "Region is required";
     if (!formData.chapter) newErrors.chapter = "Chapter is required";
+
+    // New mandatory fields
+    if (!formData.membershipId)
+      newErrors.membershipId = "Membership ID is required";
+    if (!formData.position) newErrors.position = "Position is required";
+    if (!formData.dob) newErrors.dob = "Date of Birth is required";
+
+    if (!formData.annualFee) newErrors.annualFee = "Annual Fee is required";
+    if (!formData.transactionId)
+      newErrors.transactionId = "Transaction ID is required";
+    if (!formData.gstNo) newErrors.gstNo = "GST No is required";
+    if (!formData.paymentMode)
+      newErrors.paymentMode = "Payment Mode is required";
+    if (!formData.paymentDate)
+      newErrors.paymentDate = "Payment Date is required";
+    if (!formData.joiningDate)
+      newErrors.joiningDate = "Joining Date is required";
+    if (!formData.renewalDate)
+      newErrors.renewalDate = "Renewal Date is required";
+
+    if (!formData.trainingYear)
+      newErrors.trainingYear = "Training Date is required";
+    if (!formData.tenure) newErrors.tenure = "Tenure Date is required";
+    if (!formData.membershipType)
+      newErrors.membershipType = "Membership Type is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -306,10 +342,7 @@ const MemberFormLayer = () => {
         try {
           const res = await ImageUploadApi.uploadImage(uploadData);
           if (res.status) {
-            finalImagePath =
-              res.response.data?.url ||
-              res.response.data?.imagePath ||
-              (typeof res.response.data === "string" ? res.response.data : "");
+            finalImagePath = res.response.data;
           } else {
             return;
           }
@@ -571,6 +604,7 @@ const MemberFormLayer = () => {
                         Chapter <span className="text-danger">*</span>
                       </label>
                       <AsyncSelect
+                        key={formData.region}
                         name="chapter"
                         cacheOptions
                         defaultOptions
@@ -591,7 +625,9 @@ const MemberFormLayer = () => {
 
                     {/* Position */}
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Position</label>
+                      <label className="form-label fw-semibold">
+                        Position <span className="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         className="form-control radius-8"
@@ -599,6 +635,9 @@ const MemberFormLayer = () => {
                         value={formData.position}
                         onChange={handleChange}
                       />
+                      {errors.position && (
+                        <small className="text-danger">{errors.position}</small>
+                      )}
                     </div>
 
                     {/* Business Category - AsyncSelect */}
@@ -647,7 +686,7 @@ const MemberFormLayer = () => {
                     {/* DOB */}
                     <div className="col-md-4">
                       <label className="form-label fw-semibold">
-                        Date of Birth
+                        Date of Birth <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -656,6 +695,9 @@ const MemberFormLayer = () => {
                         value={formData.dob}
                         onChange={handleChange}
                       />
+                      {errors.dob && (
+                        <small className="text-danger">{errors.dob}</small>
+                      )}
                     </div>
 
                     {/* Anniversary */}
@@ -784,7 +826,9 @@ const MemberFormLayer = () => {
               </h6>
             </div>
             <div className="col-md-4">
-              <label className="form-label fw-semibold">Annual Fee</label>
+              <label className="form-label fw-semibold">
+                Annual Fee <span className="text-danger">*</span>
+              </label>
               <input
                 type="number"
                 className="form-control radius-8"
@@ -792,9 +836,14 @@ const MemberFormLayer = () => {
                 value={formData.annualFee}
                 onChange={handleChange}
               />
+              {errors.annualFee && (
+                <small className="text-danger">{errors.annualFee}</small>
+              )}
             </div>
             <div className="col-md-4">
-              <label className="form-label fw-semibold">Transaction ID</label>
+              <label className="form-label fw-semibold">
+                Transaction ID <span className="text-danger">*</span>
+              </label>
               <input
                 type="text"
                 className="form-control radius-8"
@@ -802,9 +851,14 @@ const MemberFormLayer = () => {
                 value={formData.transactionId}
                 onChange={handleChange}
               />
+              {errors.transactionId && (
+                <small className="text-danger">{errors.transactionId}</small>
+              )}
             </div>
             <div className="col-md-4">
-              <label className="form-label fw-semibold">GST No</label>
+              <label className="form-label fw-semibold">
+                GST No <span className="text-danger">*</span>
+              </label>
               <input
                 type="text"
                 className="form-control radius-8"
@@ -812,9 +866,14 @@ const MemberFormLayer = () => {
                 value={formData.gstNo}
                 onChange={handleChange}
               />
+              {errors.gstNo && (
+                <small className="text-danger">{errors.gstNo}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Payment Mode</label>
+              <label className="form-label fw-semibold">
+                Payment Mode <span className="text-danger">*</span>
+              </label>
               <Select
                 name="paymentMode"
                 options={paymentModeOptions}
@@ -822,19 +881,26 @@ const MemberFormLayer = () => {
                   paymentModeOptions,
                   formData.paymentMode,
                 )}
-                onChange={(opt) =>
+                onChange={(opt) => {
                   setFormData((prev) => ({
                     ...prev,
                     paymentMode: opt ? opt.value : "",
-                  }))
-                } // Using simple handleSelect helper equivalent
+                  }));
+                  if (errors.paymentMode)
+                    setErrors((prev) => ({ ...prev, paymentMode: "" }));
+                }}
                 styles={customStyles}
                 placeholder="Select Mode"
                 isClearable={false}
               />
+              {errors.paymentMode && (
+                <small className="text-danger">{errors.paymentMode}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Payment Date</label>
+              <label className="form-label fw-semibold">
+                Payment Date <span className="text-danger">*</span>
+              </label>
               <input
                 type="date"
                 className="form-control radius-8"
@@ -842,9 +908,14 @@ const MemberFormLayer = () => {
                 value={formData.paymentDate}
                 onChange={handleChange}
               />
+              {errors.paymentDate && (
+                <small className="text-danger">{errors.paymentDate}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Joining Date</label>
+              <label className="form-label fw-semibold">
+                Joining Date <span className="text-danger">*</span>
+              </label>
               <input
                 type="date"
                 className="form-control radius-8"
@@ -852,9 +923,14 @@ const MemberFormLayer = () => {
                 value={formData.joiningDate}
                 onChange={handleChange}
               />
+              {errors.joiningDate && (
+                <small className="text-danger">{errors.joiningDate}</small>
+              )}
             </div>
             <div className="col-md-3">
-              <label className="form-label fw-semibold">Renewal Date</label>
+              <label className="form-label fw-semibold">
+                Renewal Date <span className="text-danger">*</span>
+              </label>
               <input
                 type="date"
                 className="form-control radius-8"
@@ -862,6 +938,9 @@ const MemberFormLayer = () => {
                 value={formData.renewalDate}
                 onChange={handleChange}
               />
+              {errors.renewalDate && (
+                <small className="text-danger">{errors.renewalDate}</small>
+              )}
             </div>
             <div className="col-12">
               <div className="form-check d-flex align-items-center">
@@ -887,7 +966,7 @@ const MemberFormLayer = () => {
               <div className="row gy-3 gx-4 align-items-center">
                 <div className="col-md-6">
                   <label className="form-label fw-semibold">
-                    Training Date
+                    Training Date <span className="text-danger">*</span>
                   </label>
                   <input
                     type="date"
@@ -896,6 +975,9 @@ const MemberFormLayer = () => {
                     value={formData.trainingYear}
                     onChange={handleChange}
                   />
+                  {errors.trainingYear && (
+                    <small className="text-danger">{errors.trainingYear}</small>
+                  )}
                 </div>
                 <div className="col-md-6 mt-3">
                   <div className="d-flex gap-4 mt-3">
@@ -981,7 +1063,9 @@ const MemberFormLayer = () => {
 
               <div className="row gy-3">
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Tenure Date</label>
+                  <label className="form-label fw-semibold">
+                    Tenure Date <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="date"
                     className="form-control radius-8"
@@ -989,6 +1073,9 @@ const MemberFormLayer = () => {
                     value={formData.tenure}
                     onChange={handleChange}
                   />
+                  {errors.tenure && (
+                    <small className="text-danger">{errors.tenure}</small>
+                  )}
                 </div>
                 {/* AsyncSelect for Awards */}
                 <div className="col-md-6">
