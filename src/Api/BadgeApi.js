@@ -27,7 +27,9 @@ class BadgeApi {
   }
   async getBadge(id, currentPage, rowsPerPage) {
     try {
-      const url = id ? `/badge/${id}` : `/badge?page=${currentPage}&limit=${rowsPerPage}`;
+      const url = id
+        ? `/badge/${id}`
+        : `/badge?page=${currentPage}&limit=${rowsPerPage}`;
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
@@ -83,6 +85,28 @@ class BadgeApi {
         error?.message ||
         error?.message ||
         "Failed to delete badge. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+
+  async assignBadge(data) {
+    try {
+      const response = await apiClient.post("/badge/assign", data);
+      if (response.status === 200 || response.status === 201) {
+        ShowNotifications.showAlertNotification(
+          response.data.message || "Badge assigned successfully!",
+          true,
+        );
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        "Failed to assign badge. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
