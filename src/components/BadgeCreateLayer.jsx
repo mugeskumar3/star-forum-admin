@@ -5,13 +5,13 @@ import ImageUploadApi from "../Api/ImageUploadApi";
 import BadgeApi from "../Api/BadgeApi";
 import ShowNotifications from "../helper/ShowNotifications";
 import { IMAGE_BASE_URL } from "../Config/Index";
-
 const BadgeCreateLayer = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [imagePath, setImagePath] = useState("");
+  const [savedImage, setSavedImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -30,10 +30,19 @@ const BadgeCreateLayer = () => {
       const data = response.response.data;
       setName(data.name);
       setType(data.type);
+      setSavedImage(data.badgeImage);
+      let imgPath = "";
+      if (data.badgeImage) {
+        if (typeof data.badgeImage === "string") {
+          imgPath = data.badgeImage;
+        } else if (data.badgeImage.path) {
+          imgPath = data.badgeImage.path;
+        }
+      }
 
-      if (data.badgeImage && data.badgeImage.path) {
-        setImagePath(data.badgeImage.path);
-        setPreview(`${IMAGE_BASE_URL}/${data.badgeImage.path}`);
+      if (imgPath) {
+        setImagePath(imgPath);
+        setPreview(`${IMAGE_BASE_URL}/${imgPath}`);
       }
     }
   };
@@ -61,6 +70,7 @@ const BadgeCreateLayer = () => {
       const response = await ImageUploadApi.deleteImage({ path: imagePath });
       if (response.status) {
         setImagePath("");
+        setSavedImage(null); // Clear saved object as well
         setPreview(null);
       }
     }
@@ -97,7 +107,7 @@ const BadgeCreateLayer = () => {
     }
 
     setIsUploading(true);
-    let finalImagePath = imagePath;
+    let finalImagePath = savedImage || imagePath;
 
     if (selectedFile) {
       const formData = new FormData();
@@ -126,7 +136,7 @@ const BadgeCreateLayer = () => {
       name,
       badgeImage: finalImagePath,
     };
-
+    
     let response;
     if (id) {
       response = await BadgeApi.updateBadge({ ...badgeData, id });
@@ -145,7 +155,7 @@ const BadgeCreateLayer = () => {
     <div className="card h-100 p-0 radius-12">
       <div className="card-header bg-transparent border-bottom">
         <h6 className="text-primary-600 pb-2 mb-0">
-          {id ? "Edit Badge" : "Badge Creation"}
+          {id ? "Edit Badge" : "Create Badge"}
         </h6>
       </div>
       <div className="card-body p-24">
@@ -193,7 +203,7 @@ const BadgeCreateLayer = () => {
               )}
             </div>
 
-            <div className="col-12">
+            <div className="col-12 my-3">
               <label className="form-label">
                 Badge Image <span className="text-danger-600">*</span>
               </label>

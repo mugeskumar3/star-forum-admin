@@ -35,6 +35,7 @@ class ChapterApi {
           page: params.page,
           limit: params.limit,
           search: params.search,
+          regionId: params.regionId,
         },
       };
 

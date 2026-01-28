@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import Select from "react-select";
+import RoleApi from "../Api/RoleApi";
 
 const UserRoleFormLayer = () => {
   const { id } = useParams();
@@ -9,44 +9,11 @@ const UserRoleFormLayer = () => {
 
   const [formData, setFormData] = useState({
     roleName: "",
-    permissions: [],
+    roleCode: "",
   });
-
-  // Features List matching Sidebar
-  const features = [
-    { id: "dashboard", label: "Dashboard" },
-    { id: "roles_permissions", label: "Roles & Permissions" },
-    { id: "admin_registration", label: "Admin Registration" },
-    { id: "organisation", label: "Organisation" },
-    { id: "badge_creation", label: "Badge Creation" },
-    { id: "award", label: "Award" },
-    { id: "business_category", label: "Business Category" },
-    { id: "zone_creation", label: "Zone Creation" },
-    { id: "chapter_creation", label: "Chapter Creation" },
-    { id: "members_registration", label: "Members Registration" },
-    { id: "meeting_creation", label: "Meeting Creation" },
-    { id: "attendance_list", label: "Attendance List" },
-    { id: "general_update", label: "General Update" },
-    { id: "community_update", label: "Community Update" },
-    { id: "star_update", label: "Star Update" },
-    { id: "points", label: "Points" },
-    { id: "training", label: "Training" },
-    { id: "shop_category", label: "Shop Category" },
-    { id: "shop_product", label: "Shop Product" },
-    { id: "shop_order", label: "Shop Order" },
-    { id: "log_report", label: "Log Report" },
-    { id: "renewal_report", label: "Renewal Report" },
-    { id: "chapter_report", label: "Chapter Report" },
-    { id: "report_121", label: "121's Report" },
-    { id: "report_referral", label: "Referral's Report" },
-    { id: "report_visitor", label: "Visitor's Report" },
-    { id: "report_chief_guest", label: "Chief Guest's Report" },
-    { id: "thank_you_slip", label: "Thank you Slip" },
-    { id: "power_date", label: "Power Date" },
-    { id: "testimonials", label: "Testimonials" },
-    { id: "chief_guest_list", label: "Chief Guest List" },
-    { id: "locations", label: "Locations" },
-  ];
+  const [modules, setModules] = useState([]);
+  const [permissions, setPermissions] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const actions = [
     { id: "view", label: "View" },
@@ -55,102 +22,203 @@ const UserRoleFormLayer = () => {
     { id: "delete", label: "Delete" },
   ];
 
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
-    if (isEditMode) {
-      setFormData({
-        roleName: "Chapter Admin",
-        permissions: ["dashboard_view", "chapters_view", "chapters_edit"],
-      });
+    fetchModules();
+  }, []);
+
+  const fetchModules = async () => {
+    try {
+      const response = await RoleApi.getModules();
+      if (response.status) {
+        setModules(response.response.data || []);
+        // Initialize permissions state
+        const initialPermissions = {};
+        (response.response.data || []).forEach((module) => {
+          initialPermissions[module._id] = {
+            view: false,
+            add: false,
+            edit: false,
+            delete: false,
+          };
+        });
+
+        // If not edit mode, set as initial state.
+        // If edit mode, we'll merge strictly after fetching role.
+        if (!isEditMode) {
+          setPermissions(initialPermissions);
+        }
+        return initialPermissions;
+      }
+    } catch (error) {
+      console.error("Error fetching modules:", error);
     }
-  }, [isEditMode]);
+  };
+
+  useEffect(() => {
+    if (isEditMode && modules.length > 0) {
+      fetchRoleDetails();
+    }
+  }, [isEditMode, modules.length]); // Run only after modules are loaded
+
+  const fetchRoleDetails = async () => {
+    setIsLoading(true);
+    try {
+      const response = await RoleApi.getRole(id);
+      if (response.status) {
+        const role = response.response.data;
+        setFormData({
+          roleName: role.name,
+          roleCode: role.code,
+        });
+
+        // Map existing permissions to state
+        // Assuming role.permissions is array of { moduleId, actions: { view: true... } }
+        const newPermissions = {};
+        // Initialize with all false first (or based on loaded modules)
+        modules.forEach((m) => {
+          newPermissions[m._id] = {
+            view: false,
+            add: false,
+            edit: false,
+            delete: false,
+          };
+        });
+
+        if (role.permissions) {
+          role.permissions.forEach((perm) => {
+            // Handle case where perm.moduleId might be populated object or just ID
+            const modId =
+              typeof perm.moduleId === "object"
+                ? perm.moduleId._id
+                : perm.moduleId;
+            if (newPermissions[modId]) {
+              newPermissions[modId] = {
+                ...newPermissions[modId],
+                ...perm.actions,
+              };
+            }
+          });
+        }
+        setPermissions(newPermissions);
+      }
+    } catch (error) {
+      console.error("Error fetching role details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  const handleSelectChange = (selectedOption, { name }) => {
-    setFormData((prev) => ({
+  const togglePermission = (moduleId, actionId) => {
+    setPermissions((prev) => ({
       ...prev,
-      [name]: selectedOption ? selectedOption.value : "Active",
+      [moduleId]: {
+        ...prev[moduleId],
+        [actionId]: !prev[moduleId]?.[actionId],
+      },
     }));
   };
 
-  const togglePermission = (featureId, actionId) => {
-    const permissionKey = `${featureId}_${actionId}`;
-    setFormData((prev) => {
-      const hasPermission = prev.permissions.includes(permissionKey);
-      let newPermissions;
-      if (hasPermission) {
-        newPermissions = prev.permissions.filter((p) => p !== permissionKey);
-      } else {
-        newPermissions = [...prev.permissions, permissionKey];
-      }
-      return { ...prev, permissions: newPermissions };
-    });
+  const isReportModule = (moduleName) => {
+    return moduleName && moduleName.toLowerCase().includes("report");
   };
 
   const toggleColumn = (actionId) => {
-    const allFeaturesSelected = features.every((feature) =>
-      formData.permissions.includes(`${feature.id}_${actionId}`),
+    // Check if all displayed modules have this action checked
+    // For non-view actions, exclude report modules from this check
+    const eligibleModules = modules.filter(
+      (m) => actionId === "view" || !isReportModule(m.name),
     );
 
-    setFormData((prev) => {
-      let newPermissions = [...prev.permissions];
-      if (allFeaturesSelected) {
-        // Uncheck all for this column
-        features.forEach((feature) => {
-          newPermissions = newPermissions.filter(
-            (p) => p !== `${feature.id}_${actionId}`,
-          );
-        });
-      } else {
-        // Check all for this column
-        features.forEach((feature) => {
-          const key = `${feature.id}_${actionId}`;
-          if (!newPermissions.includes(key)) {
-            newPermissions.push(key);
-          }
-        });
-      }
-      return { ...prev, permissions: newPermissions };
+    const allSelected = eligibleModules.every(
+      (module) => permissions[module._id]?.[actionId],
+    );
+
+    setPermissions((prev) => {
+      const newPermissions = { ...prev };
+      modules.forEach((module) => {
+        // Skip modifying permissions for report modules if action is not 'view'
+        if (actionId !== "view" && isReportModule(module.name)) {
+          return;
+        }
+
+        if (!newPermissions[module._id]) {
+          newPermissions[module._id] = {
+            view: false,
+            add: false,
+            edit: false,
+            delete: false,
+          };
+        }
+        newPermissions[module._id] = {
+          ...newPermissions[module._id],
+          [actionId]: !allSelected,
+        };
+      });
+      return newPermissions;
     });
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.roleName.trim()) {
+      newErrors.roleName = "Role Name is required";
+    }
+    if (!formData.roleCode.trim()) {
+      newErrors.roleCode = "Role Code is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Role Form Submitted:", formData);
-    navigate("/user-roles");
-  };
+    if (!validateForm()) return;
 
-  const statusOptions = [
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ];
+    setIsLoading(true);
 
-  const getSelectedOption = (options, value) => {
-    return options.find((option) => option.value === value) || options[0];
-  };
+    const formattedPermissions = Object.entries(permissions).map(
+      ([moduleId, actions]) => ({
+        moduleId,
+        actions,
+      }),
+    );
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
+    const payload = {
+      //   id: isEditMode ? id : undefined, // Some APIs might not want ID in body for create
+      name: formData.roleName,
+      code: formData.roleCode,
+      permissions: formattedPermissions,
+    };
+
+    if (isEditMode) payload.id = id;
+
+    try {
+      let response;
+      if (isEditMode) {
+        response = await RoleApi.updateRole(id, payload);
+      } else {
+        response = await RoleApi.createRole(payload);
+      }
+
+      if (response.status) {
+        navigate("/user-roles");
+      }
+    } catch (error) {
+      console.error("Error saving role:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -169,14 +237,39 @@ const UserRoleFormLayer = () => {
               </label>
               <input
                 type="text"
-                className="form-control radius-8"
+                className={`form-control radius-8 ${errors.roleName ? "is-invalid" : ""}`}
                 name="roleName"
                 value={formData.roleName}
                 onChange={handleChange}
                 placeholder="Enter role name (e.g., Chapter Admin)"
-                required
+                // required // Removed required attribute to allow custom validation
               />
+              {errors.roleName && (
+                <div className="text-danger text-sm mt-1">
+                  {errors.roleName}
+                </div>
+              )}
             </div>
+            <div className="col-md-6 mb-4">
+              <label className="form-label fw-semibold">
+                Role Code <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className={`form-control radius-8 ${errors.roleCode ? "is-invalid" : ""}`}
+                name="roleCode"
+                value={formData.roleCode}
+                onChange={handleChange}
+                placeholder="Enter role code (e.g., CHAPTER_ADMIN)"
+                // required // Removed required attribute
+              />
+              {errors.roleCode && (
+                <div className="text-danger text-sm mt-1">
+                  {errors.roleCode}
+                </div>
+              )}
+            </div>
+
             {/* Permissions Matrix */}
             <div className="col-12 mt-4">
               <h6 className="fw-semibold mb-3">Role Permissions</h6>
@@ -191,7 +284,7 @@ const UserRoleFormLayer = () => {
                         scope="col"
                         className="fw-semibold text-white px-24 py-16"
                       >
-                        Feature
+                        Module
                       </th>
                       {actions.map((action) => (
                         <th
@@ -205,11 +298,19 @@ const UserRoleFormLayer = () => {
                               type="checkbox"
                               id={`col-${action.id}`}
                               onChange={() => toggleColumn(action.id)}
-                              checked={features.every((feature) =>
-                                formData.permissions.includes(
-                                  `${feature.id}_${action.id}`,
-                                ),
-                              )}
+                              checked={
+                                modules.length > 0 &&
+                                modules
+                                  .filter(
+                                    (m) =>
+                                      action.id === "view" ||
+                                      !isReportModule(m.name),
+                                  )
+                                  .every(
+                                    (module) =>
+                                      permissions[module._id]?.[action.id],
+                                  )
+                              }
                             />
                             <label
                               className="cursor-pointer"
@@ -223,32 +324,47 @@ const UserRoleFormLayer = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {features.map((feature, index) => (
+                    {modules.map((module, index) => (
                       <tr
-                        key={feature.id}
+                        key={module._id}
                         className={
-                          index !== features.length - 1
+                          index !== modules.length - 1
                             ? "border-bottom border-neutral-200"
                             : ""
                         }
                       >
                         <td className="px-24 py-12 fw-medium text-secondary-light">
-                          {feature.label}
+                          {module.name}
                         </td>
-                        {actions.map((action) => (
-                          <td key={action.id} className="px-24 py-12">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              checked={formData.permissions.includes(
-                                `${feature.id}_${action.id}`,
+                        {actions.map((action) => {
+                          const isReport = isReportModule(module.name);
+                          const isDisabled = action.id !== "view" && isReport;
+
+                          return (
+                            <td key={action.id} className="px-24 py-12">
+                              {isDisabled ? (
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  disabled
+                                  checked={false} // Force unchecked
+                                />
+                              ) : (
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  checked={
+                                    permissions[module._id]?.[action.id] ||
+                                    false
+                                  }
+                                  onChange={() =>
+                                    togglePermission(module._id, action.id)
+                                  }
+                                />
                               )}
-                              onChange={() =>
-                                togglePermission(feature.id, action.id)
-                              }
-                            />
-                          </td>
-                        ))}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
@@ -266,8 +382,9 @@ const UserRoleFormLayer = () => {
             <button
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
+              disabled={isLoading}
             >
-              Save Role
+              {isLoading ? "Saving..." : "Save Role"}
             </button>
           </div>
         </form>

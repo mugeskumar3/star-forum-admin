@@ -25,9 +25,11 @@ class AwardApi {
       };
     }
   }
-  async getAward(id) {
+  async getAward(id, currentPage, rowsPerPage, search) {
     try {
-      const url = id ? `/award/${id}` : "/award";
+      const url = id
+        ? `/award/${id}`
+        : `/award?page=${currentPage}&limit=${rowsPerPage}&search=${search}`;
       const response = await apiClient.get(url);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };

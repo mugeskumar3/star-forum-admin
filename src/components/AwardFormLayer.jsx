@@ -84,12 +84,14 @@ const AwardFormLayer = () => {
             <Link
               to="/award"
               className="btn btn-outline-secondary radius-8 px-20 py-11"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
+              style={{ width: "120px" }}
             >
               Save
             </button>

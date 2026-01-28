@@ -1,31 +1,13 @@
 import apiClient from "../Config/Index";
 import ShowNotifications from "../helper/ShowNotifications";
 
-class RegionApi {
-  async getAdminUser() {
+class MeetingApi {
+  async createMeeting(data) {
     try {
-      const response = await apiClient.get("/adminUser");
-      if (response.status === 200 || response.status === 201) {
-        return { status: true, response: response.data };
-      }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to get admin user. Please try again.";
-      ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
-    }
-  }
-  async createRegion(data) {
-    try {
-      const response = await apiClient.post("/region", data);
+      const response = await apiClient.post("/meetings/create", data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region created successfully!",
+          response.data.message || "Meeting created successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -34,26 +16,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to create region. Please try again.";
-      ShowNotifications.showAlertNotification(errorMessage, false);
-      return {
-        status: false,
-        response: error?.response?.data || error,
-      };
-    }
-  }
-  async getRegion(zoneId) {
-    try {
-      const url = zoneId ? `/region?zoneId=${zoneId}` : "/region";
-      const response = await apiClient.get(url);
-      if (response.status === 200 || response.status === 201) {
-        return { status: true, response: response.data };
-      }
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to get region. Please try again.";
+        "Failed to create meeting. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -62,11 +25,20 @@ class RegionApi {
     }
   }
 
-  async getRegionByZone(zoneId) {
+  async getMeeting(params = {}) {
     try {
-      const response = await apiClient.get("/region", {
-        params: { zoneId },
-      });
+      const url = params.id
+        ? `/meetings/details/${params.id}`
+        : "/meetings/list";
+      const config = {
+        params: {
+          page: params.page,
+          limit: params.limit,
+          search: params.search,
+        },
+      };
+
+      const response = await apiClient.get(url, config);
       if (response.status === 200 || response.status === 201) {
         return { status: true, response: response.data };
       }
@@ -74,7 +46,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to get regions. Please try again.";
+        "Failed to get meeting data. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -82,12 +54,13 @@ class RegionApi {
       };
     }
   }
-  async updateRegion(data) {
+
+  async updateMeeting(id, data) {
     try {
-      const response = await apiClient.put(`/region/${data.id}`, data);
+      const response = await apiClient.put(`/meetings/edit/${id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region updated successfully!",
+          response.data.message || "Meeting updated successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -96,7 +69,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to update region. Please try again.";
+        "Failed to update meeting. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -104,12 +77,13 @@ class RegionApi {
       };
     }
   }
-  async deleteRegion(id) {
+
+  async deleteMeeting(id) {
     try {
-      const response = await apiClient.delete(`/region/${id}`);
+      const response = await apiClient.delete(`/meetings/delete/${id}`);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
-          response.data.message || "Region deleted successfully!",
+          response.data.message || "Meeting deleted successfully!",
           true,
         );
         return { status: true, response: response.data };
@@ -118,7 +92,7 @@ class RegionApi {
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Failed to delete region. Please try again.";
+        "Failed to delete meeting. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
@@ -128,4 +102,4 @@ class RegionApi {
   }
 }
 
-export default new RegionApi();
+export default new MeetingApi();

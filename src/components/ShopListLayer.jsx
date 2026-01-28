@@ -1,9 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import ZoneApi from "../Api/ZoneApi";
+import RegionApi from "../Api/RegionApi";
+import ChapterApi from "../Api/ChapterApi";
+import MemberApi from "../Api/MemberApi";
+import ProductApi from "../Api/ProductApi";
+import OrderApi from "../Api/OrderApi";
 
 const ShopListLayer = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     zone: "",
     region: "",
@@ -15,40 +22,113 @@ const ShopListLayer = () => {
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Mock Data
-  const zoneOptions = [
-    { value: "Zone A", label: "Zone A" },
-    { value: "Zone B", label: "Zone B" },
-  ];
-  const regionOptions = [
-    { value: "North Region", label: "North Region" },
-    { value: "South Region", label: "South Region" },
-  ];
-  const chapterOptions = [
-    { value: "Star Chapter", label: "Star Chapter" },
-    { value: "Galaxy Chapter", label: "Galaxy Chapter" },
-  ];
-  const memberOptions = [
-    { value: "John Doe", label: "John Doe" },
-    { value: "Jane Smith", label: "Jane Smith" },
-    { value: "Alice Johnson", label: "Alice Johnson" },
-  ];
+  // Lists Data
+  const [zoneOptions, setZoneOptions] = useState([]);
+  const [regionOptions, setRegionOptions] = useState([]);
+  const [chapterOptions, setChapterOptions] = useState([]);
+  const [memberOptions, setMemberOptions] = useState([]);
+  const [productOptions, setProductOptions] = useState([]);
 
-  const productOptions = [
-    { value: 1, label: "T-Shirt", price: 500 },
-    { value: 2, label: "Jeans", price: 1200 },
-    { value: 3, label: "Cap", price: 300 },
-    { value: 4, label: "Jacket", price: 2500 },
-    { value: 5, label: "Sneakers", price: 3000 },
-  ];
+  useEffect(() => {
+    fetchZones();
+    fetchProducts();
+  }, []);
+
+  const fetchZones = async () => {
+    const res = await ZoneApi.getZone();
+    if (res.status) {
+      const options = res.response.data.map((item) => ({
+        value: item._id,
+        label: item.name,
+      }));
+      setZoneOptions(options);
+    }
+  };
+
+  const fetchRegions = async (zoneId) => {
+    const res = await RegionApi.getRegionByZone(zoneId);
+    console.log(res, "oooo");
+    if (res.status) {
+      const options = res.response.data.map((item) => ({
+        value: item._id,
+        label: item.region,
+      }));
+      setRegionOptions(options);
+    } else {
+      setRegionOptions([]);
+    }
+  };
+
+  const fetchChapters = async (regionId) => {
+    const res = await ChapterApi.getChapter({ regionId });
+    if (res.status) {
+      const options = res.response.data.map((item) => ({
+        value: item._id,
+        label: item.chapterName,
+      }));
+      setChapterOptions(options);
+    } else {
+      setChapterOptions([]);
+    }
+  };
+
+  const fetchMembers = async (chapterId) => {
+    const res = await MemberApi.getMembersByChapter({ chapterId });
+    if (res.status) {
+      const options = res.response.data.map((item) => ({
+        value: item._id,
+        label: item.fullName,
+      }));
+      setMemberOptions(options);
+    } else {
+      setMemberOptions([]);
+    }
+  };
+
+  const fetchProducts = async () => {
+    const res = await ProductApi.getProducts();
+    if (res.status) {
+      const options = res.data.data.map((item) => ({
+        value: item._id,
+        label: item.productName,
+        price: item.price,
+      }));
+      setProductOptions(options);
+    }
+  };
 
   const [errors, setErrors] = useState({});
 
   const handleSelectChange = (selectedOption, { name }) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selectedOption ? selectedOption.value : "",
-    }));
+    const value = selectedOption ? selectedOption.value : "";
+
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+
+      // Reset dependent fields
+      if (name === "zone") {
+        newData.region = "";
+        newData.chapter = "";
+        newData.member = "";
+        setRegionOptions([]);
+        setChapterOptions([]);
+        setMemberOptions([]);
+        if (value) fetchRegions(value);
+      } else if (name === "region") {
+        newData.chapter = "";
+        newData.member = "";
+        setChapterOptions([]);
+        setMemberOptions([]);
+        if (value) fetchChapters(value);
+      } else if (name === "chapter") {
+        newData.member = "";
+        setMemberOptions([]);
+        if (value) fetchMembers(value);
+      }
+
+      return newData;
+    });
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -58,13 +138,13 @@ const ShopListLayer = () => {
     if (!selectedOption) return;
 
     // Check if product already exists in cart
-    const existingItem = cart.find((item) => item.id === selectedOption.value);
+    const existingItem = cart.find((item) => item.productId === selectedOption.value);
     if (existingItem) {
       // Increment quantity
       setCart((prev) =>
         prev.map((item) =>
-          item.id === selectedOption.value
-            ? { ...item, count: item.count + 1 }
+          item.productId === selectedOption.value
+            ? { ...item, qty: item.qty + 1, total: (item.qty + 1) * item.price }
             : item,
         ),
       );
@@ -73,10 +153,12 @@ const ShopListLayer = () => {
       setCart((prev) => [
         ...prev,
         {
-          id: selectedOption.value,
+          productId: selectedOption.value,
           name: selectedOption.label,
           price: selectedOption.price,
-          count: 1,
+          qty: 1,
+          amount: selectedOption.price, // unit price alias
+          total: selectedOption.price,
         },
       ]);
     }
@@ -89,9 +171,9 @@ const ShopListLayer = () => {
   const updateQuantity = (id, delta) => {
     setCart((prev) =>
       prev.map((item) => {
-        if (item.id === id) {
-          const newCount = Math.max(1, item.count + delta);
-          return { ...item, count: newCount };
+        if (item.productId === id) {
+          const newQty = Math.max(1, item.qty + delta);
+          return { ...item, qty: newQty, total: newQty * item.price };
         }
         return item;
       }),
@@ -99,15 +181,11 @@ const ShopListLayer = () => {
   };
 
   const removeItem = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+    setCart((prev) => prev.filter((item) => item.productId !== id));
   };
 
   const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + item.price * item.count, 0);
-  };
-
-  const calculateTotal = (items) => {
-    return items.reduce((total, item) => total + item.price * item.count, 0);
+    return cart.reduce((total, item) => total + item.total, 0);
   };
 
   const validateForm = () => {
@@ -139,16 +217,34 @@ const ShopListLayer = () => {
     return isValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    console.log("Order Submitted:", { ...formData, cart });
-    // Navigate to orders list just like the request asked
-    window.location.href = "/orders";
+    const payload = {
+      zoneId: formData.zone,
+      regionId: formData.region,
+      chapterId: formData.chapter,
+      memberId: formData.member,
+      products: cart.map(item => ({
+        productId: item.productId,
+        amount: item.amount, // assuming unit price as per requested payload field 'amount' ? or total amount?  
+        // User sample: "amount": 100, "qty": 1, "price": 100, "total": 100
+        // I will follow the user sample exactly.
+        qty: item.qty,
+        price: item.price,
+        total: item.total
+      })),
+      grantTotal: getTotalPrice()
+    };
+
+    const res = await OrderApi.createOrder(payload);
+    if (res.status) {
+      navigate("/orders");
+    }
   };
 
   const customStyles = (error) => ({
@@ -238,7 +334,7 @@ const ShopListLayer = () => {
                 options={chapterOptions}
                 value={getSelectedOption(chapterOptions, formData.chapter)}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={customStyles(errors.chapter)}
                 placeholder="Chapter"
                 isClearable={false}
               />
@@ -360,7 +456,7 @@ const ShopListLayer = () => {
                     </thead>
                     <tbody>
                       {cart.map((item, index) => (
-                        <tr key={item.id}>
+                        <tr key={item.productId}>
                           <td
                             className="text-center align-middle fw-medium"
                             style={{ width: "60px" }}
@@ -387,8 +483,8 @@ const ShopListLayer = () => {
                                   type="button"
                                   className="btn btn-light border-0 d-flex align-items-center justify-content-center"
                                   style={{ width: "40px" }}
-                                  onClick={() => updateQuantity(item.id, -1)}
-                                  disabled={item.count <= 1}
+                                  onClick={() => updateQuantity(item.productId, -1)}
+                                  disabled={item.qty <= 1}
                                 >
                                   <Icon
                                     icon="mdi:minus"
@@ -405,14 +501,14 @@ const ShopListLayer = () => {
                                     borderRight: "1px solid #dee2e6",
                                   }}
                                 >
-                                  {item.count}
+                                  {item.qty}
                                 </div>
 
                                 <button
                                   type="button"
                                   className="btn btn-light border-0 d-flex align-items-center justify-content-center"
                                   style={{ width: "40px" }}
-                                  onClick={() => updateQuantity(item.id, 1)}
+                                  onClick={() => updateQuantity(item.productId, 1)}
                                 >
                                   <Icon
                                     icon="mdi:plus"
@@ -426,14 +522,14 @@ const ShopListLayer = () => {
                             className="text-center align-middle"
                             style={{ width: "120px" }}
                           >
-                            ₹{item.price * item.count}
+                            ₹{item.total}
                           </td>
                           <td className="text-center align-middle">
                             <button
                               type="button"
                               className="btn btn-danger btn-sm p-1 d-flex align-items-center justify-content-center mx-auto"
                               style={{ width: "32px", height: "32px" }}
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => removeItem(item.productId)}
                             >
                               <Icon
                                 icon="mdi:trash-can-outline"
