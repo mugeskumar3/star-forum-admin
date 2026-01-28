@@ -24,7 +24,7 @@ const AdminRegistrationListLayer = () => {
         null,
         currentPage,
         rowsPerPage,
-        searchTerm
+        searchTerm,
       );
       if (response && response.status && response.response.data) {
         setUsers(response.response.data);
@@ -132,6 +132,9 @@ const AdminRegistrationListLayer = () => {
                     Company Name
                   </th>
                   <th scope="col" style={{ color: "black" }}>
+                    Status
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
                     Role
                   </th>
                   <th
@@ -162,6 +165,17 @@ const AdminRegistrationListLayer = () => {
                       </td>
                       <td>{user.phoneNumber}</td>
                       <td>{user.companyName}</td>
+                      <td>
+                        <span
+                          className={`badge px-24 py-4 radius-4 fw-medium text-sm ${
+                            user.isActive === 1
+                              ? "bg-success-focus text-success-main"
+                              : "bg-danger-focus text-danger-main"
+                          }`}
+                        >
+                          {user.isActive === 1 ? "Active" : "Inactive"}
+                        </span>
+                      </td>
                       <td>
                         <span className="badge bg-primary-focus text-primary-600 border border-primary-main px-24 py-4 radius-4 fw-medium text-sm">
                           {user.roleId?.roleName || user.roleId || "-"}
@@ -258,4 +272,4 @@ const AdminRegistrationListLayer = () => {
   );
 };
 
-export default AdminRegistrationListLayer; 
+export default AdminRegistrationListLayer;
