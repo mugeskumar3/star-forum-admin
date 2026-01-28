@@ -8,6 +8,7 @@ const ChiefGuestReportLayer = () => {
   const [guests, setGuests] = useState(
     Array.from({ length: 20 }).map((_, i) => ({
       id: i + 1,
+      date: `2025-01-${(i % 25) + 1 < 10 ? '0' + ((i % 25) + 1) : (i % 25) + 1}`,
       chiefGuestName: `Chief Guest ${i + 1}`,
       contactNumber: `98765432${i < 10 ? "0" + i : i}`,
       businessCategory: `Category ${i + 1}`,
@@ -15,6 +16,7 @@ const ChiefGuestReportLayer = () => {
       sourceOfEvent: ["Social Media", "Referral", "Website", "Direct"][i % 4],
       invitedBy: `Member ${i + 1}`,
       chapter: ["Star Chapter", "Galaxy Chapter"][i % 2],
+      status: "Pending",
       zone: ["Zone 1", "Zone 2"][i % 2],
       ed: ["ED 1", "ED 2"][i % 2],
       rd: ["RD 1", "RD 2"][i % 2],
@@ -64,6 +66,10 @@ const ChiefGuestReportLayer = () => {
       ...provided,
       zIndex: 9999,
     }),
+  };
+
+  const handleStatusChange = (id, newStatus) => {
+    setGuests(prev => prev.map(guest => guest.id === id ? { ...guest, status: newStatus } : guest));
   };
 
   // Filtering logic
@@ -190,13 +196,16 @@ const ChiefGuestReportLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
-                <th scope="col">Sl.No</th>
-                <th scope="col">Chief Guest Name</th>
-                <th scope="col">Contact Number</th>
-                <th scope="col">Business Category</th>
-                <th scope="col">Business Name</th>
-                <th scope="col">Source of event</th>
-                <th scope="col">Invited By</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Sl.No</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Date</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Chief Guest Name</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Contact Number</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Business Category</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Business Name</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Source of event</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Invited By</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Chapter</th>
+                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -204,17 +213,36 @@ const ChiefGuestReportLayer = () => {
                 currentData.map((guest, index) => (
                   <tr key={guest.id}>
                     <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{guest.date}</td>
                     <td>{guest.chiefGuestName}</td>
                     <td>{guest.contactNumber}</td>
                     <td>{guest.businessCategory}</td>
                     <td>{guest.businessName}</td>
                     <td>{guest.sourceOfEvent}</td>
                     <td>{guest.invitedBy}</td>
+                    <td>{guest.chapter}</td>
+                    <td>
+                      <select
+                        className={`form-select form-select-sm radius-4 fw-medium ${guest.status === "Approved"
+                          ? "bg-success-focus text-success-main border-success-main"
+                          : guest.status === "Rejected"
+                            ? "bg-danger-focus text-danger-main border-danger-main"
+                            : "bg-warning-focus text-warning-main border-warning-main"
+                          }`}
+                        value={guest.status}
+                        onChange={(e) => handleStatusChange(guest.id, e.target.value)}
+                        style={{ width: '120px' }}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                      </select>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center py-4">
+                  <td colSpan="10" className="text-center py-4">
                     No reports found.
                   </td>
                 </tr>

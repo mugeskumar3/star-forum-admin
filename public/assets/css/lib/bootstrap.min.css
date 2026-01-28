@@ -3494,7 +3494,7 @@ textarea.form-control.is-invalid {
     color: var(--bs-btn-active-color);
     background-color: var(--bs-btn-active-bg);
     border-color: var(--bs-btn-active-border-color);
-    border-radius: 0px !important;
+    border-radius: 8px !important;
 }
 
 .btn-check:checked+.btn:focus-visible,

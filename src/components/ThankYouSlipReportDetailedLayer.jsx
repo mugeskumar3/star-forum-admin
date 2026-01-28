@@ -36,15 +36,16 @@ const ThankYouSlipReportDetailedLayer = () => {
     };
 
     // Static Dummy Data for Thank You Slip Report
-    const [reportData] = useState(Array.from({ length: 25 }).map((_, i) => ({
+    const [reportData, setReportData] = useState(Array.from({ length: 25 }).map((_, i) => ({
         id: i + 1,
         date: `2025-01-${(i % 25) + 1 < 10 ? '0' + ((i % 25) + 1) : (i % 25) + 1}`,
         giverName: ['Logarajan S P', 'Mathiarasu M', 'Mano Neelamegam', 'Kumar Raj S', 'Ramesh Kumar'][i % 5],
         receiverName: ['Receiver John', 'Receiver Jane', 'Receiver Robert', 'Receiver Emily', 'Receiver Michael'][i % 5],
         amount: (i + 1) * 1000,
         type: i % 2 === 0 ? 'Inside' : 'Outside',
-        businessType: i % 3 === 0 ? 'New' : i % 3 === 1 ? 'Repeat' : 'Bonus',
+        referral: i % 3 === 0 ? 'New' : 'Repeat',
         comments: i % 4 === 0 ? 'Excellent service' : 'Regular business transaction',
+        starRating: Math.floor(Math.random() * 5) + 1,
         region: regionOptions[i % 4].value,
         zone: zoneOptions[i % 4].value,
         ed: edOptions[i % 3].value,
@@ -202,10 +203,12 @@ const ThankYouSlipReportDetailedLayer = () => {
                     <table className="table bordered-table sm-table mb-0">
                         <thead>
                             <tr>
+                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Sl.No</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Date</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Member Name</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Thank to</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Type</th>
+                                <th scope="col" style={{ color: "black", fontWeight: '600' }}>Referral</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Amount</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Comments</th>
                                 <th scope="col" style={{ color: "black", fontWeight: '600' }}>Star Rating</th>
@@ -213,8 +216,13 @@ const ThankYouSlipReportDetailedLayer = () => {
                         </thead>
                         <tbody>
                             {currentData.length > 0 ? (
-                                currentData.map((item) => (
+                                currentData.map((item, index) => (
                                     <tr key={item.id}>
+                                        <td>
+                                            <span className="text-md mb-0 fw-medium text-secondary-light">
+                                                {(currentPage - 1) * rowsPerPage + index + 1}
+                                            </span>
+                                        </td>
                                         <td>
                                             <span className="text-md mb-0 fw-medium text-secondary-light">
                                                 {item.date}
@@ -237,6 +245,12 @@ const ThankYouSlipReportDetailedLayer = () => {
                                             </span>
                                         </td>
                                         <td>
+                                            <span className={`badge radius-4 px-10 py-4 text-sm ${item.referral === 'New' ? 'bg-primary-focus text-primary-600' : 'bg-neutral-200 text-neutral-600'
+                                                }`}>
+                                                {item.referral}
+                                            </span>
+                                        </td>
+                                        <td>
                                             <span className="text-md mb-0 fw-bold text-success-main">
                                                 {item.amount}
                                             </span>
@@ -253,7 +267,7 @@ const ThankYouSlipReportDetailedLayer = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="7" className="text-center py-4">
+                                    <td colSpan="9" className="text-center py-4">
                                         No data found.
                                     </td>
                                 </tr>
