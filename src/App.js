@@ -31,6 +31,7 @@ import AttendanceListPage from "./pages/AttendanceListPage";
 import ChapterListPage from "./pages/ChapterListPage";
 import ChapterFormPage from "./pages/ChapterFormPage";
 import ChapterViewPage from "./pages/ChapterViewPage";
+import ChapterRoleAssignPage from "./pages/ChapterRoleAssignPage";
 
 import MeetingListPage from "./pages/MeetingListPage";
 import MeetingFormPage from "./pages/MeetingFormPage";
@@ -293,6 +294,11 @@ function App() {
             element={<ChapterFormPage />}
           />
           <Route exact path="/chapter-view/:id" element={<ChapterViewPage />} />
+          <Route
+            exact
+            path="/chapter-roles/:id"
+            element={<ChapterRoleAssignPage />}
+          />
 
           {/* Members Registration */}
           <Route
@@ -426,27 +432,71 @@ function App() {
           <Route exact path="/chapter-report" element={<ChapterReportPage />} />
           {/* Chapter Report */}
           <Route exact path="/chapter-report" element={<ChapterReportPage />} />
-          <Route exact path="/chapter-report-list/:id" element={<ChapterReportListPage />} />
-          <Route exact path="/member-points-report" element={<MemberPointsReportPage />} />
+          <Route
+            exact
+            path="/chapter-report-list/:id"
+            element={<ChapterReportListPage />}
+          />
+          <Route
+            exact
+            path="/member-points-report"
+            element={<MemberPointsReportPage />}
+          />
 
           {/* Visitors Report */}
-          <Route exact path="/visitors-report" element={<VisitorsReportPage />} />
+          <Route
+            exact
+            path="/visitors-report"
+            element={<VisitorsReportPage />}
+          />
           <Route exact path="/visitors-form" element={<VisitorsFormPage />} />
-          <Route exact path="/visitors-form/add" element={<VisitorsFormPage />} />
-          <Route exact path="/visitors-form/edit/:id" element={<VisitorsFormPage />} />
-          <Route exact path="/visitors-form/view/:id" element={<VisitorsFormPage />} />
+          <Route
+            exact
+            path="/visitors-form/add"
+            element={<VisitorsFormPage />}
+          />
+          <Route
+            exact
+            path="/visitors-form/edit/:id"
+            element={<VisitorsFormPage />}
+          />
+          <Route
+            exact
+            path="/visitors-form/view/:id"
+            element={<VisitorsFormPage />}
+          />
 
           {/* Chapter Activity Report */}
           <Route exact path="/note-121" element={<Note121Page />} />
           <Route exact path="/referral-note" element={<ReferralNotePage />} />
           <Route exact path="/thank-you-slip" element={<ThankYouSlipPage />} />
-          <Route exact path="/thank-you-slip-report" element={<ThankYouSlipReportDetailedPage />} />
+          <Route
+            exact
+            path="/thank-you-slip-report"
+            element={<ThankYouSlipReportDetailedPage />}
+          />
           <Route exact path="/power-date" element={<PowerDateReportPage />} />
-          <Route exact path="/trainings-report" element={<TrainingsReportPage />} />
-          <Route exact path="/trainings-report/interested-members/:id" element={<InterestedMembersPage />} />
-          <Route exact path="/chapter-member-list" element={<ChapterMemberListPage />} />
+          <Route
+            exact
+            path="/trainings-report"
+            element={<TrainingsReportPage />}
+          />
+          <Route
+            exact
+            path="/trainings-report/interested-members/:id"
+            element={<InterestedMembersPage />}
+          />
+          <Route
+            exact
+            path="/chapter-member-list"
+            element={<ChapterMemberListPage />}
+          />
           <Route exact path="/testimonials" element={<TestimonialsPage />} />
-          <Route exact path="/testimonials-report" element={<TestimonialsReportDetailedPage />} />
+          <Route
+            exact
+            path="/testimonials-report"
+            element={<TestimonialsReportDetailedPage />}
+          />
 
           {/* Visitors Report */}
           <Route

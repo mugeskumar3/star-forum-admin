@@ -126,7 +126,7 @@ const AdminRegistrationListLayer = () => {
                     Email
                   </th>
                   <th scope="col" style={{ color: "black" }}>
-                    Mobile Number
+                    Phone Number
                   </th>
                   <th scope="col" style={{ color: "black" }}>
                     Company Name
@@ -217,9 +217,6 @@ const AdminRegistrationListLayer = () => {
             onRowsPerPageChange={handleRowsPerPageChange}
             totalRecords={totalRecords}
           />
-          <div className="mt-16 text-secondary-light fw-medium text-end">
-            Total Registered Admins: {totalRecords}
-          </div>
         </div>
       </div>
 

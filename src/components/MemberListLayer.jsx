@@ -190,14 +190,6 @@ const MemberListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Category
                 </th>
-                {/*  Replaced Region with Category as per original? Original had both. Let's check columns. 
-                      Original: S.No, Member Id, Member Name, Chapter, Category, Type, Status, Action.
-                      Wait, previous file code had 'Region' under 'Category' header index? 
-                      Let's stick to columns: ID, Name, Chapter, Region/Category? 
-                      Let's follow logical display or previous.
-                      Previous: Chapter (4th), Region (5th - Header says 'Category'?), Type (6th).
-                      I will use headers: Chapter, Region, Business Category.
-                  */}
                 <th scope="col" style={{ color: "black" }}>
                   Region
                 </th>
@@ -207,11 +199,6 @@ const MemberListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Type
                 </th>
-                {/* Status was inferred from even/odd in mock. Real data might not have status? 
-                     User JSON doesn't show status field explicitly unless boolean?
-                     'isWantSmsEmailUpdates' is boolean. 'clubMemberType'.
-                     I'll omit Status for now if not in payload, or assume Active.
-                 */}
                 <th
                   scope="col"
                   className="text-center"
@@ -236,7 +223,7 @@ const MemberListLayer = () => {
                           alt=""
                           className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
                           onError={(e) => {
-                            e.target.src = "https://placehold.co/40x40"; // Fallback
+                            e.target.src = "https://placehold.co/40x40";
                           }}
                         />
                         <div className="flex-grow-1">
@@ -254,6 +241,10 @@ const MemberListLayer = () => {
                     <td>
                       {member.businessCategory?.name ||
                         member.businessCategory ||
+                        "-"}
+                    </td>
+                    <td>
+                      {member.tenureDate ||
                         "-"}
                     </td>
                     <td>

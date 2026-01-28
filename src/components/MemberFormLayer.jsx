@@ -174,8 +174,6 @@ const MemberFormLayer = () => {
       const res = await MemberApi.getMemberDetails(id);
       if (res.status) {
         const data = res.response.data;
-
-        // Prepare AsyncSelect Objects
         const chapterObj = data.chapter
           ? { value: data.chapter._id, label: data.chapter.chapterName }
           : null;
@@ -185,8 +183,6 @@ const MemberFormLayer = () => {
               label: data.businessCategory.name,
             }
           : null;
-        // Check if referredBy is object or ID. If ID, we might not have label unless populate is used.
-        // Ideally backend populates it. If not, we might ideally fetch it or show ID. Assuming populated.
         const referredByObj = data.referredBy
           ? {
               value: data.referredBy._id,
@@ -197,7 +193,6 @@ const MemberFormLayer = () => {
         setFormData({
           profileImage: data.profileImage || "",
           fullName: data.fullName || "",
-          phoneNumber: data.phoneNumber || data.mobileNumber || "", // Map from API
           email: data.email || "",
           companyName: data.companyName || "",
           membershipId: data.membershipId || "",
@@ -208,7 +203,6 @@ const MemberFormLayer = () => {
           referredBy: referredByObj,
           dob: data.dateOfBirth?.split("T")[0] || "",
           anniversary: data.anniversary?.split("T")[0] || "",
-
           doorNo: data.officeAddress?.doorNo || "",
           oldNo: data.officeAddress?.oldNo || "",
           street: data.officeAddress?.street || "",
@@ -216,7 +210,6 @@ const MemberFormLayer = () => {
           city: data.officeAddress?.city || "",
           state: data.officeAddress?.state || "",
           pincode: data.officeAddress?.pincode || "",
-
           communicationConsent: data.isWantSmsEmailUpdates || false,
           annualFee: data.annualFee || "",
           paymentMode: data.paymentMode || "",
@@ -236,7 +229,7 @@ const MemberFormLayer = () => {
           trainings: data.trainings || [],
 
           tenure: data.tenure?.split("T")[0] || "",
-          awardSelected: null, // Reset as this is for adding *new* award
+          awardSelected: null,
           awards: data.awards || [],
 
           membershipType: data.clubMemberType || "",
@@ -253,7 +246,6 @@ const MemberFormLayer = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    // Clear error on change
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -264,7 +256,6 @@ const MemberFormLayer = () => {
       ...prev,
       [name]: selectedOption,
     }));
-    // Clear error on change
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -299,8 +290,6 @@ const MemberFormLayer = () => {
       newErrors.phoneNumber = "Phone Number is required";
     if (!formData.region) newErrors.region = "Region is required";
     if (!formData.chapter) newErrors.chapter = "Chapter is required";
-
-    // New mandatory fields
     if (!formData.membershipId)
       newErrors.membershipId = "Membership ID is required";
     if (!formData.position) newErrors.position = "Position is required";
@@ -321,7 +310,6 @@ const MemberFormLayer = () => {
 
     if (!formData.trainingYear)
       newErrors.trainingYear = "Training Date is required";
-    if (!formData.tenure) newErrors.tenure = "Tenure Date is required";
     if (!formData.membershipType)
       newErrors.membershipType = "Membership Type is required";
 
@@ -1077,7 +1065,6 @@ const MemberFormLayer = () => {
                     <small className="text-danger">{errors.tenure}</small>
                   )}
                 </div>
-                {/* AsyncSelect for Awards */}
                 <div className="col-md-6">
                   <label className="form-label fw-semibold">Choose Award</label>
                   <AsyncSelect

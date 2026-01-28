@@ -200,6 +200,15 @@ const ChapterListLayer = () => {
                         >
                           <Icon icon="lucide:edit" className="menu-icon" />
                         </Link>
+                        <Link
+                          to={`/chapter-roles/${chapter._id}`}
+                          className="bg-primary-focus text-primary-600 bg-hover-primary-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                        >
+                          <Icon
+                            icon="solar:user-id-bold"
+                            className="menu-icon"
+                          />
+                        </Link>
                         <button
                           onClick={() => confirmDelete(chapter)}
                           className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
