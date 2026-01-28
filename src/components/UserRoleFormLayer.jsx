@@ -73,10 +73,7 @@ const UserRoleFormLayer = () => {
           roleCode: role.code,
         });
 
-        // Map existing permissions to state
-        // Assuming role.permissions is array of { moduleId, actions: { view: true... } }
         const newPermissions = {};
-        // Initialize with all false first (or based on loaded modules)
         modules.forEach((m) => {
           newPermissions[m._id] = {
             view: false,
@@ -88,7 +85,6 @@ const UserRoleFormLayer = () => {
 
         if (role.permissions) {
           role.permissions.forEach((perm) => {
-            // Handle case where perm.moduleId might be populated object or just ID
             const modId =
               typeof perm.moduleId === "object"
                 ? perm.moduleId._id
@@ -112,7 +108,13 @@ const UserRoleFormLayer = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const updatedData = { ...prev, [name]: value };
+      if (name === "roleName") {
+        updatedData.roleCode = value.toUpperCase().replace(/\s+/g, "_");
+      }
+      return updatedData;
+    });
     // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -134,8 +136,6 @@ const UserRoleFormLayer = () => {
   };
 
   const toggleColumn = (actionId) => {
-    // Check if all displayed modules have this action checked
-    // For non-view actions, exclude report modules from this check
     const eligibleModules = modules.filter(
       (m) => actionId === "view" || !isReportModule(m.name),
     );
@@ -147,7 +147,6 @@ const UserRoleFormLayer = () => {
     setPermissions((prev) => {
       const newPermissions = { ...prev };
       modules.forEach((module) => {
-        // Skip modifying permissions for report modules if action is not 'view'
         if (actionId !== "view" && isReportModule(module.name)) {
           return;
         }
@@ -242,7 +241,6 @@ const UserRoleFormLayer = () => {
                 value={formData.roleName}
                 onChange={handleChange}
                 placeholder="Enter role name (e.g., Chapter Admin)"
-                // required // Removed required attribute to allow custom validation
               />
               {errors.roleName && (
                 <div className="text-danger text-sm mt-1">
@@ -261,7 +259,6 @@ const UserRoleFormLayer = () => {
                 value={formData.roleCode}
                 onChange={handleChange}
                 placeholder="Enter role code (e.g., CHAPTER_ADMIN)"
-                // required // Removed required attribute
               />
               {errors.roleCode && (
                 <div className="text-danger text-sm mt-1">
