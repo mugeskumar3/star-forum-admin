@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const RenewalReportLayer = () => {
   const [data, setData] = useState([
@@ -95,23 +96,8 @@ const RenewalReportLayer = () => {
 
   const handleRenewSubmit = (e) => {
     e.preventDefault();
-    // Here you would handle the API call to renew
     console.log("Renewing for:", selectedMember.memberName, renewFormData);
     setShowRenewModal(false);
-    // Add success toast or logic here
-  };
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
   };
 
   return (
@@ -168,11 +154,10 @@ const RenewalReportLayer = () => {
                     <td>{item.membershipId}</td>
                     <td>
                       <span
-                        className={`badge ${
-                          item.status === "Expired"
+                        className={`badge ${item.status === "Expired"
                             ? "bg-danger-focus text-danger-main"
                             : "bg-warning-focus text-warning-main"
-                        } px-24 py-4 rounded-pill fw-medium text-sm`}
+                          } px-24 py-4 rounded-pill fw-medium text-sm`}
                       >
                         {item.status}
                       </span>
@@ -212,7 +197,6 @@ const RenewalReportLayer = () => {
         />
       </div>
 
-      {/* Renew Modal */}
       <Modal
         show={showRenewModal}
         onHide={() => setShowRenewModal(false)}
@@ -284,7 +268,7 @@ const RenewalReportLayer = () => {
                     setRenewFormData({ ...renewFormData, transferMode: opt })
                   }
                   placeholder="Select mode"
-                  styles={customStyles}
+                  styles={selectStyles()}
                   required
                 />
               </div>

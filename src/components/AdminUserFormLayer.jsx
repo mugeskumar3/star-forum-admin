@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import AdminUserApi from "../Api/AdminUserApi";
 import RoleApi from "../Api/RoleApi";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const AdminUserFormLayer = () => {
   const navigate = useNavigate();
@@ -123,19 +124,6 @@ const AdminUserFormLayer = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      borderRadius: "8px",
-      minHeight: "44px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
   };
 
   return (
@@ -297,7 +285,7 @@ const AdminUserFormLayer = () => {
                     (opt) => opt.value === formData.roleId,
                   )}
                   onChange={handleSelectChange}
-                  styles={customStyles}
+                  styles={selectStyles(!!errors.roleId)}
                   placeholder="Select Role"
                 />
                 {errors.roleId && (

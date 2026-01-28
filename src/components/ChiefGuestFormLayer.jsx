@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ChiefGuestApi from "../Api/ChiefGuestApi";
+import BusinessCategoryApi from "../Api/BusinessCategoryApi";
+import MemberApi from "../Api/MemberApi";
 import { Spinner } from "react-bootstrap";
+import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const ChiefGuestFormLayer = () => {
   const { id } = useParams();
@@ -20,6 +24,8 @@ const ChiefGuestFormLayer = () => {
     referredBy: "",
     address: "",
   });
+  const [businessCategories, setBusinessCategories] = useState([]);
+  const [members, setMembers] = useState([]);
 
   const [errors, setErrors] = useState({});
 
@@ -46,25 +52,60 @@ const ChiefGuestFormLayer = () => {
     const fetchDetails = async () => {
       if (isEditMode) {
         setLoading(true);
-        const response = await ChiefGuestApi.getChiefGuestDetails(id);
-        if (response.status) {
-          const guest = response.data.data;
-          setFormData({
-            chiefGuestName: guest.chiefGuestName || "",
-            contactNumber: guest.contactNumber || "",
-            emailId: guest.emailId || "",
-            businessName: guest.businessName || "",
-            businessCategory: guest.businessCategory || "",
-            location: guest.location || "",
-            referredBy: guest.referredBy?._id || guest.referredBy || "",
-            address: guest.address || "",
-          });
+        try {
+          const response = await ChiefGuestApi.getChiefGuestDetails(id);
+          if (response.status) {
+            const guest = response.data.data || response.data;
+            setFormData({
+              chiefGuestName: guest.chiefGuestName || "",
+              contactNumber: guest.contactNumber || "",
+              emailId: guest.emailId || "",
+              businessName: guest.businessName || "",
+              businessCategory: guest.businessCategory?._id || guest.businessCategory || "",
+              location: guest.location || "",
+              referredBy: guest.referredBy?._id || guest.referredBy || "",
+              address: guest.address || "",
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching guest details:", error);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       }
     };
     fetchDetails();
   }, [isEditMode, id]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await BusinessCategoryApi.getBusinessCategory(null, 0, 500, "");
+        if (response.status) {
+          const data = response.response?.data?.data || response.response?.data || response.response || [];
+          setBusinessCategories(Array.isArray(data) ? data : []);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const response = await MemberApi.getMembers({ limit: 1000 });
+        if (response.status) {
+          const data = response.response?.data?.members || response.response?.data?.data || response.response?.data || response.response || [];
+          setMembers(Array.isArray(data) ? data : []);
+        }
+      } catch (error) {
+        console.error("Error fetching members:", error);
+      }
+    };
+    fetchMembers();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,21 +113,42 @@ const ChiefGuestFormLayer = () => {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  const handleSelectChange = (selectedOption, name) => {
+    setFormData((prev) => ({ ...prev, [name]: selectedOption ? selectedOption.value : "" }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const categoryOptions = useMemo(() => businessCategories.map((cat) => ({
+    value: cat._id,
+    label: cat.name,
+  })), [businessCategories]);
+
+  const memberOptions = useMemo(() => members.map((member) => ({
+    value: member._id,
+    label: member.fullName || member.name,
+  })), [members]);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setLoading(true);
-      let response;
-      if (isEditMode) {
-        response = await ChiefGuestApi.updateChiefGuest(id, formData);
-      } else {
-        response = await ChiefGuestApi.createChiefGuest(formData);
-      }
+      try {
+        let response;
+        if (isEditMode) {
+          response = await ChiefGuestApi.updateChiefGuest(id, formData);
+        } else {
+          response = await ChiefGuestApi.createChiefGuest(formData);
+        }
 
-      if (response.status) {
-        navigate("/chief-guest-list");
+        if (response.status) {
+          navigate("/chief-guest-list");
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
   };
 
@@ -183,15 +245,17 @@ const ChiefGuestFormLayer = () => {
             {/* Business Category */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Business Category ID <span className="text-danger">*</span>
+                Business Category <span className="text-danger">*</span>
               </label>
-              <input
-                type="text"
-                className="form-control radius-8"
-                name="businessCategory"
-                value={formData.businessCategory}
-                onChange={handleChange}
-                placeholder="Enter Business Category ID"
+              <Select
+                options={categoryOptions}
+                value={categoryOptions.find(opt => String(opt.value) === String(formData.businessCategory)) || null}
+                onChange={(option) => handleSelectChange(option, "businessCategory")}
+                placeholder="Select Business Category"
+                isSearchable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={selectStyles(errors.businessCategory)}
               />
               {errors.businessCategory && (
                 <small className="text-danger">{errors.businessCategory}</small>
@@ -219,15 +283,17 @@ const ChiefGuestFormLayer = () => {
             {/* Referred By */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Referred By (Member ID) <span className="text-danger">*</span>
+                Referred By <span className="text-danger">*</span>
               </label>
-              <input
-                type="text"
-                className="form-control radius-8"
-                name="referredBy"
-                value={formData.referredBy}
-                onChange={handleChange}
-                placeholder="Enter Referrer Member ID"
+              <Select
+                options={memberOptions}
+                value={memberOptions.find(opt => String(opt.value) === String(formData.referredBy)) || null}
+                onChange={(option) => handleSelectChange(option, "referredBy")}
+                placeholder="Select Referrer Member"
+                isSearchable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={selectStyles(errors.referredBy)}
               />
               {errors.referredBy && (
                 <small className="text-danger">{errors.referredBy}</small>

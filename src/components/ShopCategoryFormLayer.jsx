@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import ShopCategoryApi from "../Api/ShopCategoryApi";
 import ImageUploadApi from "../Api/ImageUploadApi";
-import ShowNotifications from "../helper/ShowNotifications";
 import { IMAGE_BASE_URL } from "../Config/Index";
 
 const ShopCategoryFormLayer = () => {
@@ -105,15 +105,12 @@ const ShopCategoryFormLayer = () => {
 
     let finalImage = existingImage;
 
-    // 1. Handle Image Upload / Delete
     if (imageFile) {
-      // If editing and replacing image, delete old one
       if (id && existingImage && existingImage.imageName) {
         const pathToDelete = `${existingImage.imagePath}/${existingImage.imageName}`;
         await ImageUploadApi.deleteImage({ path: pathToDelete });
       }
 
-      // Upload new image
       const form = new FormData();
       form.append("file", imageFile);
       const uploadRes = await ImageUploadApi.uploadImage({
@@ -125,18 +122,16 @@ const ShopCategoryFormLayer = () => {
         finalImage = uploadRes.response.data || uploadRes.response;
       } else {
         setLoading(false);
-        return; // Stop if upload failed
+        return;
       }
     }
 
-    // 2. Prepare Payload
     const payload = {
       name: formData.name,
       categoryImage: finalImage,
       isActive: formData.isActive,
     };
 
-    // 3. Create or Update
     let result;
     if (id) {
       result = await ShopCategoryApi.updateShopCategory(id, payload);
@@ -174,27 +169,6 @@ const ShopCategoryFormLayer = () => {
     }
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -205,7 +179,6 @@ const ShopCategoryFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Category Name */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Category Name <span className="text-danger">*</span>
@@ -223,7 +196,6 @@ const ShopCategoryFormLayer = () => {
               )}
             </div>
 
-            {/* Status */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Status <span className="text-danger">*</span>
@@ -235,7 +207,7 @@ const ShopCategoryFormLayer = () => {
                   (opt) => opt.value === formData.isActive,
                 )}
                 onChange={handleStatusChange}
-                styles={customStyles}
+                styles={selectStyles(errors.status)}
                 isClearable={false}
               />
               {errors.status && (
@@ -243,7 +215,6 @@ const ShopCategoryFormLayer = () => {
               )}
             </div>
 
-            {/* Image Upload */}
             <div className="col-12">
               <label className="form-label fw-semibold">
                 Category Image <span className="text-danger">*</span>

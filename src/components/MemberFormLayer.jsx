@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
+import { selectStyles } from "../helper/SelectStyles";
 import MemberApi from "../Api/MemberApi";
 import ChapterApi from "../Api/ChapterApi";
 import RegionApi from "../Api/RegionApi";
@@ -220,8 +221,6 @@ const MemberFormLayer = () => {
           gstNo: data.gstNumber || "",
           sendWelcomeSms: data.sendWelcomeSms || false,
 
-          sendWelcomeSms: data.sendWelcomeSms || false,
-
           trainingYear: data.trainingYear?.split("T")[0] || "",
           mrp: data.trainingTypes?.includes("MRP") || false,
           mtp: data.trainingTypes?.includes("MTP") || false,
@@ -429,18 +428,6 @@ const MemberFormLayer = () => {
     return options.find((option) => option.value === value) || null;
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": { borderColor: "#dee2e6" },
-    }),
-    singleValue: (provided) => ({ ...provided, color: "#495057" }),
-    valueContainer: (provided) => ({ ...provided, paddingLeft: "16px" }),
-  };
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
@@ -577,7 +564,7 @@ const MemberFormLayer = () => {
                           formData.region,
                         )}
                         onChange={handleRegionChange}
-                        styles={customStyles}
+                        styles={selectStyles(errors.region)}
                         placeholder="Select Region"
                         isClearable={false}
                       />
@@ -601,15 +588,13 @@ const MemberFormLayer = () => {
                         onChange={(val) =>
                           setFormData((prev) => ({ ...prev, chapter: val }))
                         }
-                        styles={customStyles}
+                        styles={selectStyles(errors.chapter)}
                         placeholder="Select Chapter"
                       />
                       {errors.chapter && (
                         <small className="text-danger">{errors.chapter}</small>
                       )}
                     </div>
-
-                    {/* Membership ID REMOVED */}
 
                     {/* Position */}
                     <div className="col-md-4">
@@ -645,7 +630,7 @@ const MemberFormLayer = () => {
                             businessCategory: val,
                           }))
                         }
-                        styles={customStyles}
+                        styles={selectStyles()}
                         placeholder="Select Category"
                         isClearable
                       />
@@ -665,7 +650,7 @@ const MemberFormLayer = () => {
                         onChange={(val) =>
                           setFormData((prev) => ({ ...prev, referredBy: val }))
                         }
-                        styles={customStyles}
+                        styles={selectStyles()}
                         placeholder="Search Member..."
                         isClearable
                       />
@@ -1147,7 +1132,7 @@ const MemberFormLayer = () => {
             </div>
           </div>
 
-          <div className="d-flex justify-content-end gap-2 mt-24 pt-3 border-top">
+          <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/members-registration"
               className="btn btn-outline-secondary radius-8 px-20 py-11"
@@ -1158,7 +1143,7 @@ const MemberFormLayer = () => {
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
             >
-              {isEditMode ? "Update Member" : "Save New Member"}
+              {isEditMode ? "Update" : "Save"}
             </button>
           </div>
         </form>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useNavigate } from 'react-router-dom';
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TablePagination from './TablePagination';
 
 const TrainingsReportLayer = () => {
@@ -20,29 +21,11 @@ const TrainingsReportLayer = () => {
     const rdOptions = ['RD Suresh', 'RD Megha', 'RD Arjun'].map(rd => ({ value: rd, label: rd }));
     const chapterOptions = ['ARAM Chapter', 'Arni Chapter', 'Salem Chapter', 'Coimbatore Chapter'].map(c => ({ value: c, label: c }));
 
-    const customStyles = {
-        control: (provided) => ({
-            ...provided,
-            minHeight: "40px",
-            borderRadius: "8px",
-            border: "1px solid #dee2e6",
-            boxShadow: "none",
-            "&:hover": {
-                border: "1px solid #dee2e6",
-            },
-        }),
-        menu: (provided) => ({
-            ...provided,
-            zIndex: 9999,
-        }),
-    };
-
     // Static Dummy Data for Trainings Report
     const [reportData] = useState(Array.from({ length: 25 }).map((_, i) => ({
         id: i + 1,
         trainingTitle: ['Member Success Program', 'Leadership Team Training', 'Advanced Networking', 'Presentation Skills', 'Social Media Training'][i % 5],
         date: `2025-01-${(i % 25) + 1 < 10 ? '0' + ((i % 25) + 1) : (i % 25) + 1}`,
-        // time: i % 2 === 0 ? '10:00 AM - 01:00 PM' : '02:00 PM - 05:00 PM',
         trainerName: ['Trainer Rajesh', 'Trainer Priya', 'Trainer Amit', 'Trainer Sneha', 'Trainer Vikram'][i % 5],
         location: i % 2 === 0 ? 'Online (Zoom)' : 'Hotel Residency, Chennai',
         totalRegistered: 20 + (i % 30),
@@ -99,7 +82,6 @@ const TrainingsReportLayer = () => {
     );
 
     const handleActionClick = (item) => {
-        // Redirection to the new page instead of modal
         navigate(`/trainings-report/interested-members/${item.id}`);
     };
 
@@ -134,7 +116,7 @@ const TrainingsReportLayer = () => {
                             value={selectedRegion}
                             onChange={setSelectedRegion}
                             placeholder="Region"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -144,7 +126,7 @@ const TrainingsReportLayer = () => {
                             value={selectedZone}
                             onChange={setSelectedZone}
                             placeholder="Zone"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -154,7 +136,7 @@ const TrainingsReportLayer = () => {
                             value={selectedEd}
                             onChange={setSelectedEd}
                             placeholder="ED"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -164,7 +146,7 @@ const TrainingsReportLayer = () => {
                             value={selectedRd}
                             onChange={setSelectedRd}
                             placeholder="RD"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -174,7 +156,7 @@ const TrainingsReportLayer = () => {
                             value={selectedChapter}
                             onChange={setSelectedChapter}
                             placeholder="Chapter"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>

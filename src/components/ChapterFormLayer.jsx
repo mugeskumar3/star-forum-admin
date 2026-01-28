@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Country, State } from "country-state-city";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import ChapterApi from "../Api/ChapterApi";
 import ZoneApi from "../Api/ZoneApi";
 import RegionApi from "../Api/RegionApi";
@@ -144,23 +145,6 @@ const ChapterFormLayer = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const customStyles = {
-    menuList: (provided) => ({
-      ...provided,
-      maxHeight: 280,
-    }),
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "44px",
-      borderRadius: "8px",
-      borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      },
-    }),
-  };
-
   const fieldOptions = {
     weekday: [
       { value: "monday", label: "Monday" },
@@ -176,28 +160,6 @@ const ChapterFormLayer = () => {
       { value: "online", label: "Online" },
       { value: "hybrid", label: "Hybrid" },
     ],
-  };
-
-  const handleCountryChange = (selectedOption) => {
-    setSelectedCountry(selectedOption);
-    setSelectedState(null);
-    setFormData((prev) => ({
-      ...prev,
-      country: selectedOption ? selectedOption.label : "",
-      state: "",
-      zoneId: "",
-    }));
-    if (errors.country) setErrors((prev) => ({ ...prev, country: "" }));
-  };
-
-  const handleStateChange = (selectedOption) => {
-    setSelectedState(selectedOption);
-    setFormData((prev) => ({
-      ...prev,
-      state: selectedOption ? selectedOption.label : "",
-      zoneId: "",
-    }));
-    if (errors.state) setErrors((prev) => ({ ...prev, state: "" }));
   };
 
   const handleSelectChange = (selectedOption, { name }) => {
@@ -285,7 +247,7 @@ const ChapterFormLayer = () => {
                     setErrors((prev) => ({ ...prev, country: "" }));
                 }}
                 placeholder="Select Country"
-                styles={customStyles}
+                styles={selectStyles(errors.country)}
                 error={errors.country}
               />
               {errors.country && (
@@ -300,11 +262,11 @@ const ChapterFormLayer = () => {
                 options={
                   formData.country
                     ? State.getStatesOfCountry(formData.country).map(
-                        (state) => ({
-                          value: state.isoCode,
-                          label: state.name,
-                        }),
-                      )
+                      (state) => ({
+                        value: state.isoCode,
+                        label: state.name,
+                      }),
+                    )
                     : []
                 }
                 value={selectedState}
@@ -319,7 +281,7 @@ const ChapterFormLayer = () => {
                     setErrors((prev) => ({ ...prev, state: "" }));
                 }}
                 placeholder="Select State"
-                styles={customStyles}
+                styles={selectStyles(errors.state)}
                 isDisabled={!formData.country}
                 error={errors.state}
               />
@@ -345,7 +307,7 @@ const ChapterFormLayer = () => {
                   }
                 }}
                 placeholder="Select Zone"
-                styles={customStyles}
+                styles={selectStyles(errors.zoneId)}
                 isDisabled={!formData.state}
                 error={errors.zoneId}
               />
@@ -365,7 +327,7 @@ const ChapterFormLayer = () => {
                 )}
                 onChange={handleSelectChange}
                 placeholder="Select Region"
-                styles={customStyles}
+                styles={selectStyles(errors.regionId)}
                 error={errors.regionId}
               />
               {errors.regionId && (
@@ -382,7 +344,7 @@ const ChapterFormLayer = () => {
                 value={edOptions.find((opt) => opt.value === formData.edId)}
                 onChange={handleSelectChange}
                 placeholder="Select Executive Director"
-                styles={customStyles}
+                styles={selectStyles(errors.edId)}
                 error={errors.edId}
               />
               {errors.edId && (
@@ -399,7 +361,7 @@ const ChapterFormLayer = () => {
                 value={rdOptions.find((opt) => opt.value === formData.rdId)}
                 onChange={handleSelectChange}
                 placeholder="Select Regional Director"
-                styles={customStyles}
+                styles={selectStyles(errors.rdId)}
                 error={errors.rdId}
               />
               {errors.rdId && (
@@ -450,7 +412,7 @@ const ChapterFormLayer = () => {
                 )}
                 onChange={handleSelectChange}
                 placeholder="Select Weekday"
-                styles={customStyles}
+                styles={selectStyles(errors.weekday)}
                 error={errors.weekday}
               />
               {errors.weekday && (
@@ -470,7 +432,7 @@ const ChapterFormLayer = () => {
                 )}
                 onChange={handleSelectChange}
                 placeholder="Select Meeting Type"
-                styles={customStyles}
+                styles={selectStyles(errors.meetingType)}
                 error={errors.meetingType}
               />
               {errors.meetingType && (

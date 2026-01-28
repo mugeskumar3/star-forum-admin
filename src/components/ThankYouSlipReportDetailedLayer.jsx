@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TablePagination from "./TablePagination";
 
 const ThankYouSlipReportDetailedLayer = () => {
@@ -36,23 +37,6 @@ const ThankYouSlipReportDetailedLayer = () => {
     "Gamma Chapter",
     "Delta Chapter",
   ].map((c) => ({ value: c, label: c }));
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      border: "1px solid #dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        border: "1px solid #dee2e6",
-      },
-    }),
-    menu: (provided) => ({
-      ...provided,
-      zIndex: 9999,
-    }),
-  };
 
   // Static Dummy Data for Thank You Slip Report
   const [reportData, setReportData] = useState(
@@ -126,12 +110,211 @@ const ThankYouSlipReportDetailedLayer = () => {
       : true;
 
     return (
-      matchesSearch &&
-      matchesRegion &&
-      matchesZone &&
-      matchesEd &&
-      matchesRd &&
-      matchesChapter
+      <div className="card h-100 p-0 radius-12 overflow-hidden">
+        <div className="card-header border-bottom bg-base py-16 px-24">
+          <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+            <h6 className="text-primary-600 pb-2 mb-0">
+              Thank You Slip Report
+            </h6>
+            <div className="d-flex align-items-center flex-wrap gap-3">
+              <form className="navbar-search">
+                <input
+                  type="text"
+                  className="bg-base h-40-px w-auto"
+                  name="search"
+                  placeholder="Search Member"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Icon icon="ion:search-outline" className="icon" />
+              </form>
+            </div>
+          </div>
+
+          {/* Top Filters */}
+
+          <div className="row g-3 align-items-end">
+            <div className="col-xl col-md-4 col-sm-6">
+              <Select
+                options={regionOptions}
+                value={selectedRegion}
+                onChange={setSelectedRegion}
+                placeholder="Region"
+                styles={selectStyles()}
+                isClearable
+              />
+            </div>
+            <div className="col-xl col-md-4 col-sm-6">
+              <Select
+                options={zoneOptions}
+                value={selectedZone}
+                onChange={setSelectedZone}
+                placeholder="Zone"
+                styles={selectStyles()}
+                isClearable
+              />
+            </div>
+            <div className="col-xl col-md-4 col-sm-6">
+              <Select
+                options={edOptions}
+                value={selectedEd}
+                onChange={setSelectedEd}
+                placeholder="ED"
+                styles={selectStyles()}
+                isClearable
+              />
+            </div>
+            <div className="col-xl col-md-4 col-sm-6">
+              <Select
+                options={rdOptions}
+                value={selectedRd}
+                onChange={setSelectedRd}
+                placeholder="RD"
+                styles={selectStyles()}
+                isClearable
+              />
+            </div>
+            <div className="col-xl-2 col-md-4 col-sm-6">
+              <Select
+                options={chapterOptions}
+                value={selectedChapter}
+                onChange={setSelectedChapter}
+                placeholder="Chapter"
+                styles={selectStyles()}
+                isClearable
+              />
+            </div>
+            <div className="col-xl-auto col-md-4 col-sm-6 d-flex align-items-end">
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="btn btn-outline-danger d-flex align-items-center gap-2 radius-8 h-40-px text-nowrap w-100"
+                title="Clear All Filters"
+              >
+                <Icon icon="solar:filter-remove-bold-duotone" fontSize={20} />
+                Clear Filter
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="card-body p-24">
+          <div className="table-responsive scroll-sm">
+            <table className="table bordered-table sm-table mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Sl.No
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Date
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Member Name
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Thank to
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Type
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Referral
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Amount
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Comments
+                  </th>
+                  <th scope="col" style={{ color: "black", fontWeight: "600" }}>
+                    Star Rating
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.length > 0 ? (
+                  currentData.map((item, index) => (
+                    <tr key={item.id}>
+                      <td>
+                        <span className="text-md mb-0 fw-medium text-secondary-light">
+                          {(currentPage - 1) * rowsPerPage + index + 1}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-md mb-0 fw-medium text-secondary-light">
+                          {item.date}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-md mb-0 fw-medium text-primary-600">
+                          {item.giverName}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-md mb-0 fw-medium text-dark">
+                          {item.receiverName}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          className={`badge radius-4 px-10 py-4 text-sm ${
+                            item.type === "Inside"
+                              ? "bg-success-focus text-success-main"
+                              : "bg-info-focus text-info-main"
+                          }`}
+                        >
+                          {item.type}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          className={`badge radius-4 px-10 py-4 text-sm ${
+                            item.referral === "New"
+                              ? "bg-primary-focus text-primary-600"
+                              : "bg-neutral-200 text-neutral-600"
+                          }`}
+                        >
+                          {item.referral}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-md mb-0 fw-bold text-success-main">
+                          {item.amount}
+                        </span>
+                      </td>
+                      <td>
+                        <div
+                          className="text-md mb-0 fw-normal text-secondary-light"
+                          style={{ maxWidth: "200px" }}
+                        >
+                          {item.comments}
+                        </div>
+                      </td>
+                      <td>{renderStars(item.starRating)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="text-center py-4">
+                      No data found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            totalRecords={totalRecords}
+          />
+        </div>
+      </div>
     );
   });
 
