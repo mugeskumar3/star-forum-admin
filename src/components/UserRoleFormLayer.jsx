@@ -33,7 +33,6 @@ const UserRoleFormLayer = () => {
       const response = await RoleApi.getModules();
       if (response.status) {
         setModules(response.response.data || []);
-        // Initialize permissions state
         const initialPermissions = {};
         (response.response.data || []).forEach((module) => {
           initialPermissions[module._id] = {
@@ -43,9 +42,6 @@ const UserRoleFormLayer = () => {
             delete: false,
           };
         });
-
-        // If not edit mode, set as initial state.
-        // If edit mode, we'll merge strictly after fetching role.
         if (!isEditMode) {
           setPermissions(initialPermissions);
         }
@@ -60,7 +56,7 @@ const UserRoleFormLayer = () => {
     if (isEditMode && modules.length > 0) {
       fetchRoleDetails();
     }
-  }, [isEditMode, modules.length]); // Run only after modules are loaded
+  }, [isEditMode, modules.length]);
 
   const fetchRoleDetails = async () => {
     setIsLoading(true);
@@ -194,7 +190,6 @@ const UserRoleFormLayer = () => {
     );
 
     const payload = {
-      //   id: isEditMode ? id : undefined, // Some APIs might not want ID in body for create
       name: formData.roleName,
       code: formData.roleCode,
       permissions: formattedPermissions,
@@ -266,8 +261,6 @@ const UserRoleFormLayer = () => {
                 </div>
               )}
             </div>
-
-            {/* Permissions Matrix */}
             <div className="col-12 mt-4">
               <h6 className="fw-semibold mb-3">Role Permissions</h6>
               <div className="table-responsive rounded-8 border border-neutral-200">
@@ -295,6 +288,11 @@ const UserRoleFormLayer = () => {
                               type="checkbox"
                               id={`col-${action.id}`}
                               onChange={() => toggleColumn(action.id)}
+                              style={{
+                                width: "20px",
+                                height: "20px",
+                                cursor: "pointer",
+                              }}
                               checked={
                                 modules.length > 0 &&
                                 modules
@@ -344,7 +342,12 @@ const UserRoleFormLayer = () => {
                                   className="form-check-input"
                                   type="checkbox"
                                   disabled
-                                  checked={false} // Force unchecked
+                                  checked={false}
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    backgroundColor: "#e9ecef",
+                                  }}
                                 />
                               ) : (
                                 <input
@@ -357,6 +360,11 @@ const UserRoleFormLayer = () => {
                                   onChange={() =>
                                     togglePermission(module._id, action.id)
                                   }
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    cursor: "pointer",
+                                  }}
                                 />
                               )}
                             </td>

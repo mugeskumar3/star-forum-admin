@@ -14,6 +14,7 @@ const BadgeAssignLayer = () => {
   });
   const [selectedAssignTo, setSelectedAssignTo] = useState(null);
   const [selectedBadge, setSelectedBadge] = useState(null);
+  const [errors, setErrors] = useState({});
 
   // Options state
   const [badgeOptions, setBadgeOptions] = useState([]);
@@ -74,7 +75,7 @@ const BadgeAssignLayer = () => {
         if (Array.isArray(members)) {
           return members.map((m) => ({
             value: m._id,
-            label: `${m.fullName} (${m.membershipId})`,
+            label: `${m.fullName} - ${m.membershipId}`,
           }));
         }
         return [];
@@ -86,11 +87,28 @@ const BadgeAssignLayer = () => {
     }
   };
 
+  const validate = () => {
+    let tempErrors = {};
+    let isValid = true;
+
+    if (!selectedAssignTo) {
+      tempErrors.assignTo = `Please select a ${assignType.label}`;
+      isValid = false;
+    }
+
+    if (!selectedBadge) {
+      tempErrors.badge = "Please select a badge";
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedAssignTo || !selectedBadge) {
-      // Add validation error display if needed
+    if (!validate()) {
       return;
     }
 
@@ -137,6 +155,7 @@ const BadgeAssignLayer = () => {
                 onChange={(val) => {
                   setAssignType(val);
                   setSelectedAssignTo(null); // Reset selection on type change
+                  setErrors({ ...errors, assignTo: "" });
                 }}
                 styles={customStyles}
                 isClearable={false}
@@ -153,10 +172,18 @@ const BadgeAssignLayer = () => {
                   defaultOptions
                   loadOptions={loadChapterOptions}
                   value={selectedAssignTo}
-                  onChange={setSelectedAssignTo}
+                  onChange={(val) => {
+                    setSelectedAssignTo(val);
+                    setErrors({ ...errors, assignTo: "" });
+                  }}
                   styles={customStyles}
                   placeholder="Search Chapter..."
                 />
+                {errors.assignTo && (
+                  <p className="text-danger-600 text-sm mt-1">
+                    {errors.assignTo}
+                  </p>
+                )}
               </div>
             )}
 
@@ -170,10 +197,18 @@ const BadgeAssignLayer = () => {
                   defaultOptions
                   loadOptions={loadMemberOptions}
                   value={selectedAssignTo}
-                  onChange={setSelectedAssignTo}
+                  onChange={(val) => {
+                    setSelectedAssignTo(val);
+                    setErrors({ ...errors, assignTo: "" });
+                  }}
                   styles={customStyles}
                   placeholder="Search Member..."
                 />
+                {errors.assignTo && (
+                  <p className="text-danger-600 text-sm mt-1">
+                    {errors.assignTo}
+                  </p>
+                )}
               </div>
             )}
 
@@ -184,11 +219,17 @@ const BadgeAssignLayer = () => {
               <Select
                 options={badgeOptions}
                 value={selectedBadge}
-                onChange={setSelectedBadge}
+                onChange={(val) => {
+                  setSelectedBadge(val);
+                  setErrors({ ...errors, badge: "" });
+                }}
                 styles={customStyles}
                 placeholder="Search Badge..."
                 isSearchable
               />
+              {errors.badge && (
+                <p className="text-danger-600 text-sm mt-1">{errors.badge}</p>
+              )}
             </div>
 
             <div className="col-12 d-flex justify-content-start gap-3 mt-4">

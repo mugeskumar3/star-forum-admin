@@ -281,21 +281,33 @@ const MeetingListLayer = () => {
               </div>
               <div className="text-start">
                 <p className="mb-1">
-                  <strong>Chapter:</strong> {selectedMeeting.chapter}
+                  <strong>Topic:</strong> {selectedMeeting.meetingTopic}
                 </p>
                 <p className="mb-1">
-                  <strong>Amount:</strong> ₹{selectedMeeting.amount}
+                  <strong>Chapter:</strong>{" "}
+                  {Array.isArray(selectedMeeting.chapters)
+                    ? selectedMeeting.chapters
+                        .map((c) => c.chapterName || c.name)
+                        .join(", ")
+                    : selectedMeeting.chapters}
                 </p>
                 <p className="mb-1">
-                  <strong>Location:</strong> {selectedMeeting.location}
+                  <strong>Meeting Fee:</strong> ₹{selectedMeeting.meetingFee}
+                </p>
+                <p className="mb-1">
+                  <strong>Visitor Fee:</strong> ₹{selectedMeeting.visitorFee}
+                </p>
+                <p className="mb-1">
+                  <strong>Location:</strong>{" "}
+                  {selectedMeeting.location?.name || selectedMeeting.location}
                 </p>
                 <p className="mb-1">
                   <strong>Start:</strong>{" "}
-                  {new Date(selectedMeeting.startDate).toLocaleString()}
+                  {new Date(selectedMeeting.startDateTime).toLocaleString()}
                 </p>
                 <p className="mb-0">
                   <strong>End:</strong>{" "}
-                  {new Date(selectedMeeting.endDate).toLocaleString()}
+                  {new Date(selectedMeeting.endDateTime).toLocaleString()}
                 </p>
               </div>
             </>

@@ -117,9 +117,6 @@ const AwardListLayer = () => {
                   Award Name
                 </th>
                 <th scope="col" style={{ color: "black" }}>
-                  Status
-                </th>
-                <th scope="col" style={{ color: "black" }}>
                   Created Date
                 </th>
                 <th
@@ -142,17 +139,6 @@ const AwardListLayer = () => {
                           {award.name}
                         </span>
                       </div>
-                    </td>
-                    <td>
-                      <span
-                        className={`badge ${
-                          award.isActive
-                            ? "bg-success-focus text-success-main"
-                            : "bg-danger-focus text-danger-main"
-                        }`}
-                      >
-                        {award.isActive ? "Active" : "Inactive"}
-                      </span>
                     </td>
                     <td>
                       {award.createdAt
