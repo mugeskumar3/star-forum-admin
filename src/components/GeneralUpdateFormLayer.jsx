@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import TablePagination from "./TablePagination";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const GeneralUpdateFormLayer = () => {
   const [updates, setUpdates] = useState([
@@ -98,33 +99,6 @@ const GeneralUpdateFormLayer = () => {
     return options.find((option) => option.value === value) || options[0];
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      height: "40px",
-      borderRadius: "12px",
-      borderColor: "#dee2e6",
-      minWidth: "80px",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      height: "40px",
-      padding: "0 8px",
-    }),
-    indicatorsContainer: (provided) => ({
-      ...provided,
-      height: "40px",
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-  };
 
   return (
     <div className="card h-100 p-0 radius-12">
@@ -138,7 +112,7 @@ const GeneralUpdateFormLayer = () => {
             value={getSelectedOption(rowsOptions, rowsPerPage)}
             onChange={handleSelectChange}
             options={rowsOptions}
-            styles={customStyles}
+            styles={selectStyles()}
             isSearchable={false}
             isClearable={false}
             menuPlacement="auto"

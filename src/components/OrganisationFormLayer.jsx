@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
 import OrganisationApi from "../Api/OrganisationApi";
@@ -54,7 +55,7 @@ const OrganisationFormLayer = () => {
     if (response && response.status && response.response.data) {
       const users = response.response.data;
       const options = users.map((user) => ({
-        value: user._id, // Use _id
+        value: user._id,
         label: user.name,
       }));
       setEdOptions(options);
@@ -67,29 +68,25 @@ const OrganisationFormLayer = () => {
     if (response && response.status && response.response.data) {
       const data = response.response.data;
 
-      // Normalize rd data (ensure array)
       let normalizedRdIds = [];
-      const rdData = data.rd || data.rdIds; // Check both rd and rdIds
+      const rdData = data.rd || data.rdIds;
 
       if (Array.isArray(rdData)) {
         normalizedRdIds = rdData.map((r) =>
           typeof r === "object" ? r._id : r,
         );
       } else if (rdData) {
-        // Handle case where it might be a single value erroneously or just one check
         normalizedRdIds = [typeof rdData === "object" ? rdData._id : rdData];
       }
 
-      // Normalize data to ensure we have IDs for select fields if API returns populated objects
       const normalizedData = {
         ...data,
-        zoneId: data.zone?._id || data.zone || data.zoneId, // handle both potential keys
+        zoneId: data.zone?._id || data.zone || data.zoneId,
         edId: data.ed?._id || data.ed || data.edId,
         rdIds: normalizedRdIds,
       };
       setFormData(normalizedData);
 
-      // Pre-populate country select
       const countryObj = Country.getAllCountries().find(
         (c) => c.name === data.country,
       );
@@ -137,27 +134,6 @@ const OrganisationFormLayer = () => {
   const getSelectedOptions = (options, values) => {
     if (!Array.isArray(values)) return [];
     return options.filter((option) => values.includes(option.value));
-  };
-
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
   };
 
   const validateForm = () => {
@@ -254,8 +230,7 @@ const OrganisationFormLayer = () => {
                   }
                 }}
                 placeholder="Select Country"
-                styles={customStyles}
-                error={formErrors.country}
+                styles={selectStyles(formErrors.country)}
               />
               {formErrors.country && (
                 <div className="text-danger mt-1 fontsize-14">
@@ -272,13 +247,13 @@ const OrganisationFormLayer = () => {
                 options={
                   formData.country
                     ? State.getStatesOfCountry(
-                        Country.getAllCountries().find(
-                          (c) => c.name === formData.country,
-                        )?.isoCode,
-                      ).map((state) => ({
-                        value: state.isoCode,
-                        label: state.name,
-                      }))
+                      Country.getAllCountries().find(
+                        (c) => c.name === formData.country,
+                      )?.isoCode,
+                    ).map((state) => ({
+                      value: state.isoCode,
+                      label: state.name,
+                    }))
                     : []
                 }
                 value={
@@ -290,7 +265,7 @@ const OrganisationFormLayer = () => {
                   setFormData({
                     ...formData,
                     state: selectedOption ? selectedOption.label : "",
-                    zoneId: "", // Reset zoneId
+                    zoneId: "",
                   });
                   if (formErrors.state) {
                     setFormErrors({ ...formErrors, state: "" });
@@ -298,8 +273,7 @@ const OrganisationFormLayer = () => {
                 }}
                 placeholder="Select State"
                 isDisabled={!formData.country}
-                styles={customStyles}
-                error={formErrors.state}
+                styles={selectStyles(formErrors.state)}
               />
               {formErrors.state && (
                 <div className="text-danger mt-1 fontsize-14">
@@ -326,11 +300,10 @@ const OrganisationFormLayer = () => {
                 onChange={(selectedOption) =>
                   handleSelectChange(selectedOption, { name: "zoneId" })
                 }
-                styles={customStyles}
+                styles={selectStyles(formErrors.zoneId)}
                 placeholder="Select Zone"
                 isClearable={false}
                 isDisabled={!formData.state}
-                error={formErrors.zoneId}
               />
               {formErrors.zoneId && (
                 <div className="text-danger mt-1 fontsize-14">
@@ -345,9 +318,8 @@ const OrganisationFormLayer = () => {
               </label>
               <input
                 type="text"
-                className={`form-control radius-8 ${
-                  formErrors.region ? "border-danger" : ""
-                }`}
+                className={`form-control radius-8 ${formErrors.region ? "border-danger" : ""
+                  }`}
                 name="region"
                 value={formData.region}
                 onChange={handleInputChange}
@@ -369,12 +341,11 @@ const OrganisationFormLayer = () => {
                 isMulti
                 name="rdIds"
                 options={rdOptions}
-                value={getSelectedOptions(rdOptions, formData.rdIds)} 
+                value={getSelectedOptions(rdOptions, formData.rdIds)}
                 onChange={handleMultiSelectChange}
-                styles={customStyles}
+                styles={selectStyles(formErrors.rdIds)}
                 placeholder="Select RD Names"
                 isClearable={false}
-                error={formErrors.rdIds}
               />
               {formErrors.rdIds && (
                 <div className="text-danger mt-1 fontsize-14">
@@ -391,12 +362,11 @@ const OrganisationFormLayer = () => {
               <Select
                 name="edId"
                 options={edOptions}
-                value={getSelectedOption(edOptions, formData.edId)} // Value is ID
+                value={getSelectedOption(edOptions, formData.edId)}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(formErrors.edId)}
                 placeholder="Select ED Name"
                 isClearable={false}
-                error={formErrors.edId}
               />
               {formErrors.edId && (
                 <div className="text-danger mt-1 fontsize-14">
@@ -405,7 +375,6 @@ const OrganisationFormLayer = () => {
               )}
             </div>
 
-            {/* Buttons */}
             <div className="col-12 mt-4 pt-4 border-top">
               <div className="d-flex justify-content-end gap-3">
                 <Link

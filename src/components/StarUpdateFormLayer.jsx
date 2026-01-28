@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const StarUpdateFormLayer = () => {
   const { id } = useParams();
@@ -33,19 +33,6 @@ const StarUpdateFormLayer = () => {
       });
     }
   }, [isEditMode]);
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "44px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-  };
 
   const chapterOptions = [
     { value: "chennai", label: "Chennai" },
@@ -101,7 +88,7 @@ const StarUpdateFormLayer = () => {
                 value={formData.chapter}
                 onChange={handleMultiSelectChange}
                 placeholder="Select Chapters"
-                styles={customStyles}
+                styles={selectStyles()}
                 required
               />
             </div>
@@ -118,7 +105,7 @@ const StarUpdateFormLayer = () => {
                 value={formData.category}
                 onChange={handleMultiSelectChange}
                 placeholder="Select Categories"
-                styles={customStyles}
+                styles={selectStyles()}
                 required
               />
             </div>

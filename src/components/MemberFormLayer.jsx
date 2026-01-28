@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
+import { selectStyles } from "../helper/SelectStyles";
 import MemberApi from "../Api/MemberApi";
 import ChapterApi from "../Api/ChapterApi";
 import RegionApi from "../Api/RegionApi";
@@ -181,17 +182,17 @@ const MemberFormLayer = () => {
           : null;
         const busCatObj = data.businessCategory
           ? {
-              value: data.businessCategory._id,
-              label: data.businessCategory.name,
-            }
+            value: data.businessCategory._id,
+            label: data.businessCategory.name,
+          }
           : null;
         // Check if referredBy is object or ID. If ID, we might not have label unless populate is used.
         // Ideally backend populates it. If not, we might ideally fetch it or show ID. Assuming populated.
         const referredByObj = data.referredBy
           ? {
-              value: data.referredBy._id,
-              label: data.referredBy.name || data.referredBy.fullName,
-            }
+            value: data.referredBy._id,
+            label: data.referredBy.name || data.referredBy.fullName,
+          }
           : null;
 
         setFormData({
@@ -225,8 +226,6 @@ const MemberFormLayer = () => {
           joiningDate: data.joiningDate?.split("T")[0] || "",
           renewalDate: data.renewalDate?.split("T")[0] || "",
           gstNo: data.gstNumber || "",
-          sendWelcomeSms: data.sendWelcomeSms || false,
-
           sendWelcomeSms: data.sendWelcomeSms || false,
 
           trainingYear: data.trainingYear?.split("T")[0] || "",
@@ -441,18 +440,6 @@ const MemberFormLayer = () => {
     return options.find((option) => option.value === value) || null;
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": { borderColor: "#dee2e6" },
-    }),
-    singleValue: (provided) => ({ ...provided, color: "#495057" }),
-    valueContainer: (provided) => ({ ...provided, paddingLeft: "16px" }),
-  };
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
@@ -589,7 +576,7 @@ const MemberFormLayer = () => {
                           formData.region,
                         )}
                         onChange={handleRegionChange}
-                        styles={customStyles}
+                        styles={selectStyles(errors.region)}
                         placeholder="Select Region"
                         isClearable={false}
                       />
@@ -613,15 +600,13 @@ const MemberFormLayer = () => {
                         onChange={(val) =>
                           setFormData((prev) => ({ ...prev, chapter: val }))
                         }
-                        styles={customStyles}
+                        styles={selectStyles(errors.chapter)}
                         placeholder="Select Chapter"
                       />
                       {errors.chapter && (
                         <small className="text-danger">{errors.chapter}</small>
                       )}
                     </div>
-
-                    {/* Membership ID REMOVED */}
 
                     {/* Position */}
                     <div className="col-md-4">
@@ -657,7 +642,7 @@ const MemberFormLayer = () => {
                             businessCategory: val,
                           }))
                         }
-                        styles={customStyles}
+                        styles={selectStyles()}
                         placeholder="Select Category"
                         isClearable
                       />
@@ -677,7 +662,7 @@ const MemberFormLayer = () => {
                         onChange={(val) =>
                           setFormData((prev) => ({ ...prev, referredBy: val }))
                         }
-                        styles={customStyles}
+                        styles={selectStyles()}
                         placeholder="Search Member..."
                         isClearable
                       />
@@ -797,370 +782,7 @@ const MemberFormLayer = () => {
             </div>
           </div>
 
-          {/* 3. CONSENT & SUBSCRIPTION */}
-          <div className="row gy-3 mb-24">
-            <div className="col-12">
-              <div className="form-check d-flex align-items-center">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="communicationConsent"
-                  id="communicationConsent"
-                  checked={formData.communicationConsent}
-                  onChange={handleChange}
-                />
-                <label
-                  className="form-check-label fw-semibold"
-                  htmlFor="communicationConsent"
-                >
-                  I wish to receive updates via SMS and E-Mail
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="row gy-3 mb-24">
-            <div className="col-12">
-              <h6 className="text-primary-600 pb-2 mb-3">
-                Subscription Details
-              </h6>
-            </div>
-            <div className="col-md-4">
-              <label className="form-label fw-semibold">
-                Annual Fee <span className="text-danger">*</span>
-              </label>
-              <input
-                type="number"
-                className="form-control radius-8"
-                name="annualFee"
-                value={formData.annualFee}
-                onChange={handleChange}
-              />
-              {errors.annualFee && (
-                <small className="text-danger">{errors.annualFee}</small>
-              )}
-            </div>
-            <div className="col-md-4">
-              <label className="form-label fw-semibold">
-                Transaction ID <span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className="form-control radius-8"
-                name="transactionId"
-                value={formData.transactionId}
-                onChange={handleChange}
-              />
-              {errors.transactionId && (
-                <small className="text-danger">{errors.transactionId}</small>
-              )}
-            </div>
-            <div className="col-md-4">
-              <label className="form-label fw-semibold">
-                GST No <span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className="form-control radius-8"
-                name="gstNo"
-                value={formData.gstNo}
-                onChange={handleChange}
-              />
-              {errors.gstNo && (
-                <small className="text-danger">{errors.gstNo}</small>
-              )}
-            </div>
-            <div className="col-md-3">
-              <label className="form-label fw-semibold">
-                Payment Mode <span className="text-danger">*</span>
-              </label>
-              <Select
-                name="paymentMode"
-                options={paymentModeOptions}
-                value={getSelectedOption(
-                  paymentModeOptions,
-                  formData.paymentMode,
-                )}
-                onChange={(opt) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    paymentMode: opt ? opt.value : "",
-                  }));
-                  if (errors.paymentMode)
-                    setErrors((prev) => ({ ...prev, paymentMode: "" }));
-                }}
-                styles={customStyles}
-                placeholder="Select Mode"
-                isClearable={false}
-              />
-              {errors.paymentMode && (
-                <small className="text-danger">{errors.paymentMode}</small>
-              )}
-            </div>
-            <div className="col-md-3">
-              <label className="form-label fw-semibold">
-                Payment Date <span className="text-danger">*</span>
-              </label>
-              <input
-                type="date"
-                className="form-control radius-8"
-                name="paymentDate"
-                value={formData.paymentDate}
-                onChange={handleChange}
-              />
-              {errors.paymentDate && (
-                <small className="text-danger">{errors.paymentDate}</small>
-              )}
-            </div>
-            <div className="col-md-3">
-              <label className="form-label fw-semibold">
-                Joining Date <span className="text-danger">*</span>
-              </label>
-              <input
-                type="date"
-                className="form-control radius-8"
-                name="joiningDate"
-                value={formData.joiningDate}
-                onChange={handleChange}
-              />
-              {errors.joiningDate && (
-                <small className="text-danger">{errors.joiningDate}</small>
-              )}
-            </div>
-            <div className="col-md-3">
-              <label className="form-label fw-semibold">
-                Renewal Date <span className="text-danger">*</span>
-              </label>
-              <input
-                type="date"
-                className="form-control radius-8"
-                name="renewalDate"
-                value={formData.renewalDate}
-                onChange={handleChange}
-              />
-              {errors.renewalDate && (
-                <small className="text-danger">{errors.renewalDate}</small>
-              )}
-            </div>
-            <div className="col-12">
-              <div className="form-check d-flex align-items-center">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="sendWelcomeSms"
-                  id="sendWelcomeSms"
-                  checked={formData.sendWelcomeSms}
-                  onChange={handleChange}
-                />
-                <label className="form-check-label" htmlFor="sendWelcomeSms">
-                  Send Welcome SMS
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* 4. TRAINING REPORT */}
-          <div className="row gy-4 mb-24">
-            <div className="col-12">
-              <h6 className="text-primary-600 pb-2 mb-3">Training Report</h6>
-              <div className="row gy-3 gx-4 align-items-center">
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Training Date <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    className="form-control radius-8"
-                    name="trainingYear"
-                    value={formData.trainingYear}
-                    onChange={handleChange}
-                  />
-                  {errors.trainingYear && (
-                    <small className="text-danger">{errors.trainingYear}</small>
-                  )}
-                </div>
-                <div className="col-md-6 mt-3">
-                  <div className="d-flex gap-4 mt-3">
-                    <div className="form-check d-flex align-items-center">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        name="mrp"
-                        id="mrp"
-                        checked={formData.mrp}
-                        onChange={handleChange}
-                      />
-                      <label className="form-check-label" htmlFor="mrp">
-                        MRP
-                      </label>
-                    </div>
-                    <div className="form-check d-flex align-items-center">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        name="mtp"
-                        id="mtp"
-                        checked={formData.mtp}
-                        onChange={handleChange}
-                      />
-                      <label className="form-check-label" htmlFor="mtp">
-                        MTP
-                      </label>
-                    </div>
-                    <div className="form-check d-flex align-items-center">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        name="atp"
-                        id="atp"
-                        checked={formData.atp}
-                        onChange={handleChange}
-                      />
-                      <label className="form-check-label" htmlFor="atp">
-                        ATP
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 5. AWARDS REPORT */}
-            <div className="col-12">
-              <h6 className="text-primary-600 pb-2 mb-3">Add Awards Report</h6>
-
-              {/* List of Added Awards */}
-              {formData.awards.length > 0 && (
-                <div className="table-responsive mb-3">
-                  <table className="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Tenure</th>
-                        <th>Award</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {formData.awards.map((itm, idx) => (
-                        <tr key={idx}>
-                          <td>{itm.tenure}</td>
-                          <td>{itm.award}</td>
-                          <td>
-                            <button
-                              type="button"
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleRemoveAward(idx)}
-                            >
-                              <Icon icon="fluent:delete-24-regular" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              <div className="row gy-3">
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">
-                    Tenure Date <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    className="form-control radius-8"
-                    name="tenure"
-                    value={formData.tenure}
-                    onChange={handleChange}
-                  />
-                  {errors.tenure && (
-                    <small className="text-danger">{errors.tenure}</small>
-                  )}
-                </div>
-                {/* AsyncSelect for Awards */}
-                <div className="col-md-6">
-                  <label className="form-label fw-semibold">Choose Award</label>
-                  <AsyncSelect
-                    name="awardSelected"
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={loadAwardOptions}
-                    value={formData.awardSelected}
-                    onChange={(val) =>
-                      setFormData((prev) => ({ ...prev, awardSelected: val }))
-                    }
-                    styles={customStyles}
-                    placeholder="Select Award"
-                    isClearable={false}
-                  />
-                </div>
-                <div className="col-md-12 text-end">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary btn-sm radius-8"
-                    onClick={handleAddAward}
-                  >
-                    Add Award
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 6. CLUB MEMBER */}
-          <div className="row gy-3 mb-24">
-            <div className="col-12">
-              <h6 className="text-primary-600 border-bottom border-primary-100 pb-2 mb-3">
-                CNI Club Member
-              </h6>
-              <p className="text-primary-600 pb-2 mb-3">
-                Select Membership Type <span className="text-danger">*</span>
-              </p>
-            </div>
-            <div className="col-12">
-              <div className="d-flex flex-wrap gap-4 align-items-center">
-                {["Gold", "Diamond", "Platinum"].map((type) => (
-                  <div
-                    className="form-check d-flex align-items-center"
-                    key={type}
-                  >
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="membershipType"
-                      id={`${type}Member`}
-                      value={type}
-                      checked={formData.membershipType === type}
-                      onChange={handleChange}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor={`${type}Member`}
-                    >
-                      {type} Member
-                    </label>
-                  </div>
-                ))}
-
-                <button
-                  type="button"
-                  className="text-danger border-0 bg-transparent ms-auto text-sm"
-                  onClick={() =>
-                    setFormData((prev) => ({ ...prev, membershipType: "" }))
-                  }
-                >
-                  Reset Selection
-                </button>
-              </div>
-              {errors.membershipType && (
-                <small className="text-danger d-block mt-2">
-                  {errors.membershipType}
-                </small>
-              )}
-            </div>
-          </div>
-
-          <div className="d-flex justify-content-end gap-2 mt-24 pt-3 border-top">
+          <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/members-registration"
               className="btn btn-outline-secondary radius-8 px-20 py-11"
@@ -1171,7 +793,7 @@ const MemberFormLayer = () => {
               type="submit"
               className="btn btn-primary radius-8 px-20 py-11"
             >
-              {isEditMode ? "Update Member" : "Save New Member"}
+              {isEditMode ? "Update" : "Save"}
             </button>
           </div>
         </form>
