@@ -306,10 +306,7 @@ const MemberFormLayer = () => {
         try {
           const res = await ImageUploadApi.uploadImage(uploadData);
           if (res.status) {
-            finalImagePath =
-              res.response.data?.url ||
-              res.response.data?.imagePath ||
-              (typeof res.response.data === "string" ? res.response.data : "");
+            finalImagePath = res.response.data;
           } else {
             return;
           }

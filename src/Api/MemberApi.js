@@ -73,7 +73,7 @@ class MemberApi {
 
   async updateMember(id, data) {
     try {
-      const response = await apiClient.put(`/member/update/${id}`, data);
+      const response = await apiClient.patch(`/member/update/${id}`, data);
       if (response.status === 200 || response.status === 201) {
         ShowNotifications.showAlertNotification(
           response.data.message || "Member updated successfully!",
