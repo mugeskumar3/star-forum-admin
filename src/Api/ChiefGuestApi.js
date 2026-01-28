@@ -76,7 +76,7 @@ class ChiefGuestApi {
 
     async deleteChiefGuest(id) {
         try {
-            const response = await apiClient.delete(`/chief-guest/details/${id}`);
+            const response = await apiClient.delete(`/chief-guest/delete/${id}`);
             if (response.status === 200) {
                 ShowNotifications.showAlertNotification(
                     response.data.message || "Chief Guest deleted successfully!",

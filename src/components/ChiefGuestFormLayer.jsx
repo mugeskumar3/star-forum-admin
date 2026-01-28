@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ChiefGuestApi from "../Api/ChiefGuestApi";
+import BusinessCategoryApi from "../Api/BusinessCategoryApi";
+import MemberApi from "../Api/MemberApi";
 import { Spinner } from "react-bootstrap";
+import Select from "react-select";
 
 const ChiefGuestFormLayer = () => {
   const { id } = useParams();
@@ -20,6 +23,8 @@ const ChiefGuestFormLayer = () => {
     referredBy: "",
     address: "",
   });
+  const [businessCategories, setBusinessCategories] = useState([]);
+  const [members, setMembers] = useState([]);
 
   const [errors, setErrors] = useState({});
 
@@ -54,7 +59,7 @@ const ChiefGuestFormLayer = () => {
             contactNumber: guest.contactNumber || "",
             emailId: guest.emailId || "",
             businessName: guest.businessName || "",
-            businessCategory: guest.businessCategory || "",
+            businessCategory: guest.businessCategory?._id || guest.businessCategory || "",
             location: guest.location || "",
             referredBy: guest.referredBy?._id || guest.referredBy || "",
             address: guest.address || "",
@@ -65,11 +70,67 @@ const ChiefGuestFormLayer = () => {
     };
     fetchDetails();
   }, [isEditMode, id]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await BusinessCategoryApi.getBusinessCategory(null, 0, 100, "");
+      if (response.status) {
+        setBusinessCategories(response.response.data || []);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const response = await MemberApi.getMembersByChapter();
+      if (response.status) {
+        setMembers(response.response.data || []);
+      }
+    };
+    fetchMembers();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const handleSelectChange = (selectedOption, name) => {
+    setFormData((prev) => ({ ...prev, [name]: selectedOption ? selectedOption.value : "" }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const categoryOptions = businessCategories.map((cat) => ({
+    value: cat._id,
+    label: cat.name,
+  }));
+
+  const memberOptions = members.map((member) => ({
+    value: member._id,
+    label: member.fullName,
+  }));
+
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      borderRadius: "8px",
+      minHeight: "44px",
+      borderColor: state.isFocused ? "#C4161C" : "#d1d5db",
+      boxShadow: state.isFocused ? "0 0 0 1px #C4161C" : "none",
+      "&:hover": {
+        borderColor: state.isFocused ? "#C4161C" : "#d1d5db",
+      },
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected ? "#C4161C" : state.isFocused ? "#f8d7da" : "white",
+      color: state.isSelected ? "white" : "black",
+      "&:active": {
+        backgroundColor: "#C4161C",
+        color: "white",
+      },
+    }),
   };
 
   const handleSubmit = async (e) => {
@@ -183,15 +244,17 @@ const ChiefGuestFormLayer = () => {
             {/* Business Category */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Business Category ID <span className="text-danger">*</span>
+                Business Category <span className="text-danger">*</span>
               </label>
-              <input
-                type="text"
-                className="form-control radius-8"
-                name="businessCategory"
-                value={formData.businessCategory}
-                onChange={handleChange}
-                placeholder="Enter Business Category ID"
+              <Select
+                options={categoryOptions}
+                value={categoryOptions.find(opt => opt.value === formData.businessCategory)}
+                onChange={(option) => handleSelectChange(option, "businessCategory")}
+                placeholder="Select Business Category"
+                isSearchable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={customStyles}
               />
               {errors.businessCategory && (
                 <small className="text-danger">{errors.businessCategory}</small>
@@ -219,15 +282,17 @@ const ChiefGuestFormLayer = () => {
             {/* Referred By */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
-                Referred By (Member ID) <span className="text-danger">*</span>
+                Referred By <span className="text-danger">*</span>
               </label>
-              <input
-                type="text"
-                className="form-control radius-8"
-                name="referredBy"
-                value={formData.referredBy}
-                onChange={handleChange}
-                placeholder="Enter Referrer Member ID"
+              <Select
+                options={memberOptions}
+                value={memberOptions.find(opt => opt.value === formData.referredBy)}
+                onChange={(option) => handleSelectChange(option, "referredBy")}
+                placeholder="Select Referrer Member"
+                isSearchable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                styles={customStyles}
               />
               {errors.referredBy && (
                 <small className="text-danger">{errors.referredBy}</small>

@@ -24,7 +24,7 @@ const UserRoleListLayer = () => {
 
       if (response.status) {
         setRoles(response.response.data || []);
-        setTotalRecords(response.response.total || 0); // Adjust according to API response structure
+        setTotalRecords(response.response.total || 0);
       } else {
         setRoles([]);
         setTotalRecords(0);
@@ -115,28 +115,15 @@ const UserRoleListLayer = () => {
               <table className="table bordered-table sm-table mb-0">
                 <thead>
                   <tr>
-                    {/* <th scope="col" style={{ color: "black" }}>
-                      Role ID
-                    </th> */}
+                    <th scope="col" style={{ color: "black" }}>
+                      S.No
+                    </th>
                     <th scope="col" style={{ color: "black" }}>
                       Role Name
                     </th>
                     <th scope="col" style={{ color: "black" }}>
-                      Code
-                    </th>
-                    {/* <th
-                      scope="col"
-                      className="text-center"
-                      style={{ color: "black" }}
-                    >
-                      Active Users
-                    </th> */}
-                    <th scope="col" style={{ color: "black" }}>
                       Created Date
                     </th>
-                    {/* <th scope="col" style={{ color: "black" }}>
-                      Status
-                    </th> */}
                     <th
                       scope="col"
                       className="text-center"
@@ -148,28 +135,18 @@ const UserRoleListLayer = () => {
                 </thead>
                 <tbody>
                   {roles && roles.length > 0 ? (
-                    roles.map((role) => (
+                    roles.map((role, index) => (
                       <tr key={role._id}>
-                        {/* <td>
-                          <span className="text-md mb-0 fw-medium text-primary-600">
-                            {role._id.substring(0, 6)}...
+                        <td>
+                          <span className="text-md mb-0 fw-medium text-secondary-light">
+                            {currentPage * rowsPerPage + index + 1}.
                           </span>
-                        </td> */}
+                        </td>
                         <td>
                           <span className="text-md mb-0 fw-medium text-secondary-light">
                             {role.name}
                           </span>
                         </td>
-                        <td>
-                          <span className="text-md mb-0 fw-normal text-secondary-light">
-                            {role.code}
-                          </span>
-                        </td>
-                        {/* <td className="text-center">
-                          <span className="text-md mb-0 fw-normal text-secondary-light">
-                            {role.activeUsers || 0}
-                          </span>
-                        </td> */}
                         <td>
                           <span className="text-md mb-0 fw-normal text-secondary-light">
                             {new Date(role.createdAt).toLocaleDateString(
@@ -182,26 +159,8 @@ const UserRoleListLayer = () => {
                             )}
                           </span>
                         </td>
-                        {/* <td>
-                          <span
-                            className={`badge radius-4 px-10 py-4 text-sm ${getStatusBadgeClass(
-                              role.status || "Active"
-                            )}`}
-                          >
-                            {role.status || "Active"}
-                          </span>
-                        </td> */}
                         <td className="text-center">
                           <div className="d-flex align-items-center gap-10 justify-content-center">
-                            {/* <Link
-                              to={`/user-roles/view/${role._id}`}
-                              className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                            >
-                              <Icon
-                                icon="majesticons:eye-line"
-                                className="icon text-xl"
-                              />
-                            </Link> */}
                             <Link
                               to={`/user-roles/edit/${role._id}`}
                               className="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
