@@ -348,7 +348,6 @@ const TrainingFormLayer = () => {
                 name="trainingDateTime"
                 value={formData.trainingDateTime}
                 onChange={handleChange}
-                required
               />
               {errors.trainingDateTime && (
                 <small className="text-danger">{errors.trainingDateTime}</small>
