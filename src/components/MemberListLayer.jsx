@@ -7,7 +7,7 @@ import MemberApi from "../Api/MemberApi";
 
 const MemberListLayer = () => {
   const [members, setMembers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMembershipType, setSelectedMembershipType] = useState("All");
@@ -69,7 +69,7 @@ const MemberListLayer = () => {
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const handleDeleteClick = async (id) => {
@@ -136,7 +136,7 @@ const MemberListLayer = () => {
               )}
               onChange={(selectedOption) => {
                 setSelectedMembershipType(selectedOption.value);
-                setCurrentPage(1);
+                setCurrentPage(0);
               }}
               styles={customStyles}
               isSearchable={false}
@@ -152,7 +152,7 @@ const MemberListLayer = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(0);
               }}
             />
             <Icon icon="ion:search-outline" className="icon" />
@@ -225,7 +225,7 @@ const MemberListLayer = () => {
               {members.length > 0 ? (
                 members.map((member, index) => (
                   <tr key={member._id || member.id}>
-                    <td>{(currentPage - 1) * rowsPerPage + index + 1}</td>
+                    <td>{currentPage * rowsPerPage + index + 1}</td>
                     <td>{member.membershipId}</td>
                     <td>
                       <div className="d-flex align-items-center">

@@ -160,6 +160,7 @@ const TrainingListLayer = () => {
           <table className="table bordered-table sm-table mb-0">
             <thead>
               <tr>
+                <th scope="col">S.No</th>
                 <th scope="col">Training ID</th>
                 <th scope="col" style={{ minWidth: "150px" }}>
                   Training Title
@@ -175,8 +176,9 @@ const TrainingListLayer = () => {
             </thead>
             <tbody>
               {trainings.length > 0 ? (
-                trainings.map((item) => (
+                trainings.map((item,index) => (
                   <tr key={item._id || item.trainingId}>
+                    <td>{currentPage * rowsPerPage + index + 1}</td>
                     <td>
                       <span className="text-md mb-0 fw-medium text-primary-600">
                         {item.trainingId || item._id}
@@ -214,7 +216,7 @@ const TrainingListLayer = () => {
 
                     <td>
                       <span
-                        className={`badge radius-4 px-10 py-4 text-sm ${getStatusBadgeClass(
+                        className={`badge radius-4 px-10 py-4 text-sm text-capitalize ${getStatusBadgeClass(
                           item.status,
                         )}`}
                       >
