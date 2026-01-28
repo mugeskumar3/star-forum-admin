@@ -29,9 +29,7 @@ class MemberApi {
     try {
       const config = {
         params: {
-          page: params.page,
-          limit: params.limit,
-          search: params.search, // Assuming the API supports search
+          ...params,
         },
       };
 

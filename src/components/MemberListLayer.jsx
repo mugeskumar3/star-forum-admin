@@ -143,6 +143,9 @@ const MemberListLayer = () => {
                   Chapter
                 </th>
                 <th scope="col" style={{ color: "black" }}>
+                  Category
+                </th>
+                <th scope="col" style={{ color: "black" }}>
                   Region
                 </th>
                 <th scope="col" style={{ color: "black" }}>
@@ -175,7 +178,7 @@ const MemberListLayer = () => {
                           alt=""
                           className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
                           onError={(e) => {
-                            e.target.src = "https://placehold.co/40x40"; // Fallback
+                            e.target.src = "https://placehold.co/40x40";
                           }}
                         />
                         <div className="flex-grow-1">
@@ -195,6 +198,7 @@ const MemberListLayer = () => {
                         member.businessCategory ||
                         "-"}
                     </td>
+                    <td>{member.tenureDate || "-"}</td>
                     <td>
                       <span
                         className={`badge ${member.clubMemberType === "Platinum" ? "bg-primary-50 text-primary-600" : member.clubMemberType === "Gold" ? "bg-warning-50 text-warning-600" : "bg-secondary-50 text-secondary-600"} px-12 py-4 radius-4`}

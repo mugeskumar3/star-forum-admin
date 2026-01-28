@@ -65,6 +65,14 @@ const AdminUserFormLayer = () => {
       // Only allow numbers and max 4 digits
       const cleanedValue = value.replace(/\D/g, "").slice(0, 4);
       setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
+    } else if (name === "name") {
+      // Allow only alphabets and spaces (no numbers)
+      if (/[0-9]/.test(value)) return;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    } else if (name === "phoneNumber") {
+      // Allow only numbers (no alphabets)
+      if (/[a-zA-Z]/.test(value)) return;
+      setFormData((prev) => ({ ...prev, [name]: value }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
