@@ -136,7 +136,7 @@ const BadgeCreateLayer = () => {
       name,
       badgeImage: finalImagePath,
     };
-    
+
     let response;
     if (id) {
       response = await BadgeApi.updateBadge({ ...badgeData, id });
@@ -277,16 +277,21 @@ const BadgeCreateLayer = () => {
               )}
             </div>
 
-            <div className="col-12 d-flex justify-content-start gap-3 mt-4">
-              <Link to="/badge" className="btn btn-outline-danger-600 px-32">
+            <div className="col-12 d-flex justify-content-end gap-3 mt-4">
+              <Link
+                to="/badge"
+                className="btn btn-outline-danger-600 px-32 justify-content-center"
+                style={{ width: "120px" }}
+              >
                 Cancel
               </Link>
               <button
                 type="submit"
-                className="btn btn-primary-600 px-32"
+                className="btn btn-primary-600 px-32 justify-content-center"
                 disabled={isUploading}
+                style={{ width: "120px" }}
               >
-                Submit
+                Save
               </button>
             </div>
           </div>

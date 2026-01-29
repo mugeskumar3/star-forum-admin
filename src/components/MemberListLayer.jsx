@@ -25,7 +25,7 @@ const MemberListLayer = () => {
         page: currentPage,
         limit: rowsPerPage,
         search: searchTerm,
-        membershipType:
+        memberType:
           selectedMembershipType !== "All" ? selectedMembershipType : undefined,
       };
 
@@ -169,7 +169,9 @@ const MemberListLayer = () => {
                       <div className="d-flex align-items-center">
                         <img
                           src={
-                            member.profileImage || "https://placehold.co/40x40"
+                            member.profileImage?.path ||
+                            member.profileImage ||
+                            "https://placehold.co/40x40"
                           }
                           alt=""
                           className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
@@ -187,14 +189,16 @@ const MemberListLayer = () => {
                         </div>
                       </div>
                     </td>
-                    <td>{member.chapter?.chapterName || member.chapter}</td>
-                    <td>{member.region?.name || member.region || "-"}</td>
+                    <td>
+                      {member.chapter?.chapterName || member.chapter || "-"}
+                    </td>
                     <td>
                       {member.businessCategory?.name ||
                         member.businessCategory ||
                         "-"}
                     </td>
-                    <td>{member.tenureDate || "-"}</td>
+                    <td>{member.region?.name || member.region || "-"}</td>
+                    <td>{member.companyName || "-"}</td>
                     <td>
                       <span
                         className={`badge ${member.clubMemberType === "Platinum" ? "bg-primary-50 text-primary-600" : member.clubMemberType === "Gold" ? "bg-warning-50 text-warning-600" : "bg-secondary-50 text-secondary-600"} px-12 py-4 radius-4`}

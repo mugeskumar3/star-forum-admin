@@ -61,7 +61,8 @@ const ChiefGuestFormLayer = () => {
               contactNumber: guest.contactNumber || "",
               emailId: guest.emailId || "",
               businessName: guest.businessName || "",
-              businessCategory: guest.businessCategory?._id || guest.businessCategory || "",
+              businessCategory:
+                guest.businessCategory?._id || guest.businessCategory || "",
               location: guest.location || "",
               referredBy: guest.referredBy?._id || guest.referredBy || "",
               address: guest.address || "",
@@ -80,9 +81,18 @@ const ChiefGuestFormLayer = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await BusinessCategoryApi.getBusinessCategory(null, 0, 500, "");
+        const response = await BusinessCategoryApi.getBusinessCategory(
+          null,
+          0,
+          500,
+          "",
+        );
         if (response.status) {
-          const data = response.response?.data?.data || response.response?.data || response.response || [];
+          const data =
+            response.response?.data?.data ||
+            response.response?.data ||
+            response.response ||
+            [];
           setBusinessCategories(Array.isArray(data) ? data : []);
         }
       } catch (error) {
@@ -97,7 +107,12 @@ const ChiefGuestFormLayer = () => {
       try {
         const response = await MemberApi.getMembers({ limit: 1000 });
         if (response.status) {
-          const data = response.response?.data?.members || response.response?.data?.data || response.response?.data || response.response || [];
+          const data =
+            response.response?.data?.members ||
+            response.response?.data?.data ||
+            response.response?.data ||
+            response.response ||
+            [];
           setMembers(Array.isArray(data) ? data : []);
         }
       } catch (error) {
@@ -114,20 +129,30 @@ const ChiefGuestFormLayer = () => {
   };
 
   const handleSelectChange = (selectedOption, name) => {
-    setFormData((prev) => ({ ...prev, [name]: selectedOption ? selectedOption.value : "" }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "",
+    }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const categoryOptions = useMemo(() => businessCategories.map((cat) => ({
-    value: cat._id,
-    label: cat.name,
-  })), [businessCategories]);
+  const categoryOptions = useMemo(
+    () =>
+      businessCategories.map((cat) => ({
+        value: cat._id,
+        label: cat.name,
+      })),
+    [businessCategories],
+  );
 
-  const memberOptions = useMemo(() => members.map((member) => ({
-    value: member._id,
-    label: member.fullName || member.name,
-  })), [members]);
-
+  const memberOptions = useMemo(
+    () =>
+      members.map((member) => ({
+        value: member._id,
+        label: member.fullName || member.name,
+      })),
+    [members],
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -249,8 +274,15 @@ const ChiefGuestFormLayer = () => {
               </label>
               <Select
                 options={categoryOptions}
-                value={categoryOptions.find(opt => String(opt.value) === String(formData.businessCategory)) || null}
-                onChange={(option) => handleSelectChange(option, "businessCategory")}
+                value={
+                  categoryOptions.find(
+                    (opt) =>
+                      String(opt.value) === String(formData.businessCategory),
+                  ) || null
+                }
+                onChange={(option) =>
+                  handleSelectChange(option, "businessCategory")
+                }
                 placeholder="Select Business Category"
                 isSearchable
                 className="react-select-container"
@@ -287,7 +319,11 @@ const ChiefGuestFormLayer = () => {
               </label>
               <Select
                 options={memberOptions}
-                value={memberOptions.find(opt => String(opt.value) === String(formData.referredBy)) || null}
+                value={
+                  memberOptions.find(
+                    (opt) => String(opt.value) === String(formData.referredBy),
+                  ) || null
+                }
                 onChange={(option) => handleSelectChange(option, "referredBy")}
                 placeholder="Select Referrer Member"
                 isSearchable
@@ -322,14 +358,16 @@ const ChiefGuestFormLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/chief-guest-list"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-20 py-11 justify-content-center"
               disabled={loading}
+              style={{ width: "120px" }}
             >
               {loading ? (
                 <>

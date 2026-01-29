@@ -261,7 +261,7 @@ const ShopCategoryFormLayer = () => {
                         {imageFile
                           ? imageFile.name
                           : existingImage?.imageName ||
-                          existingImage?.path?.split("/").pop()}
+                            existingImage?.path?.split("/").pop()}
                       </p>
                     </div>
                   </div>
@@ -285,15 +285,20 @@ const ShopCategoryFormLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/shop-category-list"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-18 py-11"
+              className="btn btn-primary radius-8 px-18 py-11 justify-content-center"
               disabled={loading}
-              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C", width: "85px" }}
+              style={{
+                backgroundColor: "#C4161C",
+                borderColor: "#C4161C",
+                width: "120px",
+              }}
             >
               {loading ? "Saving..." : "Save "}
             </button>

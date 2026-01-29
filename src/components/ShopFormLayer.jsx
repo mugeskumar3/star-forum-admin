@@ -247,7 +247,9 @@ const ShopFormLayer = () => {
                 placeholder="Enter product name"
               />
               {errors.productName && (
-                <div className="invalid-feedback text-danger">{errors.productName}</div>
+                <div className="invalid-feedback text-danger">
+                  {errors.productName}
+                </div>
               )}
             </div>
 
@@ -266,7 +268,9 @@ const ShopFormLayer = () => {
                   placeholder="Enter price"
                 />
                 {errors.price && (
-                  <div className="invalid-feedback text-danger">{errors.price}</div>
+                  <div className="invalid-feedback text-danger">
+                    {errors.price}
+                  </div>
                 )}
               </div>
             </div>
@@ -307,7 +311,9 @@ const ShopFormLayer = () => {
                     onChange={handleImageChange}
                   />
                   {errors.image && (
-                    <div className="invalid-feedback text-danger">{errors.image}</div>
+                    <div className="invalid-feedback text-danger">
+                      {errors.image}
+                    </div>
                   )}
                 </div>
               )}
@@ -372,15 +378,16 @@ const ShopFormLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/shop-create"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-20 py-11 justify-content-center"
               disabled={loading}
-              style={{ width: "90px" }}
+              style={{ width: "120px" }}
             >
               {loading ? "Saving..." : "Save"}
             </button>

@@ -76,22 +76,22 @@ const TrainingFormLayer = () => {
 
             const mappedChapterIds = data.chapterIds
               ? data.chapterIds.map((c) => {
-                if (typeof c === "object") {
-                  return { value: c._id, label: c.chapterName || c.name };
-                }
-                const match = chapters.find((opt) => opt.value === c);
-                return match || { value: c, label: "Unknown Chapter" };
-              })
+                  if (typeof c === "object") {
+                    return { value: c._id, label: c.chapterName || c.name };
+                  }
+                  const match = chapters.find((opt) => opt.value === c);
+                  return match || { value: c, label: "Unknown Chapter" };
+                })
               : [];
 
             const mappedTrainerIds = data.trainerIds
               ? data.trainerIds.map((t) => {
-                if (typeof t === "object") {
-                  return { value: t._id, label: t.name };
-                }
-                const match = trainers.find((opt) => opt.value === t);
-                return match || { value: t, label: "Unknown Trainer" };
-              })
+                  if (typeof t === "object") {
+                    return { value: t._id, label: t.name };
+                  }
+                  const match = trainers.find((opt) => opt.value === t);
+                  return match || { value: t, label: "Unknown Trainer" };
+                })
               : [];
 
             const formatDateForInput = (dateString) => {
@@ -112,15 +112,15 @@ const TrainingFormLayer = () => {
               duration: data.duration || "",
               mode: data.mode
                 ? modeOptions.find(
-                  (opt) => opt.value === data.mode.toLowerCase(),
-                ) || { value: data.mode, label: data.mode }
+                    (opt) => opt.value === data.mode.toLowerCase(),
+                  ) || { value: data.mode, label: data.mode }
                 : null,
               locationOrLink: data.locationOrLink || "",
               maxAllowed: data.maxAllowed || "",
               status: data.status
                 ? statusOptions.find(
-                  (opt) => opt.value === data.status.toLowerCase(),
-                ) || { value: data.status, label: data.status }
+                    (opt) => opt.value === data.status.toLowerCase(),
+                  ) || { value: data.status, label: data.status }
                 : null,
             });
           }
@@ -422,18 +422,18 @@ const TrainingFormLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/training-list"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
-              style={{ minWidth: "120px" }}
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-20 py-11 justify-content-center"
               disabled={loading}
-              style={{ minWidth: "120px" }}
+              style={{ width: "120px" }}
             >
-              {loading ? "Saving..." : "Save Training"}
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
