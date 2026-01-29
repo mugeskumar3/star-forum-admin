@@ -133,11 +133,7 @@ const RenewalReportLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Status
                 </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -154,15 +150,16 @@ const RenewalReportLayer = () => {
                     <td>{item.membershipId}</td>
                     <td>
                       <span
-                        className={`badge ${item.status === "Expired"
+                        className={`badge ${
+                          item.status === "Expired"
                             ? "bg-danger-focus text-danger-main"
                             : "bg-warning-focus text-warning-main"
-                          } px-24 py-4 rounded-pill fw-medium text-sm`}
+                        } px-24 py-4 rounded-pill fw-medium text-sm`}
                       >
                         {item.status}
                       </span>
                     </td>
-                    <td className="text-center">
+                    <td>
                       <button
                         onClick={() => handleRenewClick(item)}
                         className="btn btn-primary btn-sm text-sm px-12 py-6 radius-8"

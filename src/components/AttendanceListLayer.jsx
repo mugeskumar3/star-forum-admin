@@ -14,8 +14,16 @@ const AttendanceListLayer = () => {
     dateRange: "month",
     fromDate: "",
     toDate: "",
-    month: { value: new Date().getMonth() + 1, label: new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date()) },
-    year: { value: new Date().getFullYear(), label: new Date().getFullYear().toString() },
+    month: {
+      value: new Date().getMonth() + 1,
+      label: new Intl.DateTimeFormat("en-US", { month: "long" }).format(
+        new Date(),
+      ),
+    },
+    year: {
+      value: new Date().getFullYear(),
+      label: new Date().getFullYear().toString(),
+    },
   });
 
   const handleFilterChange = (name, selectedOption) => {
@@ -98,11 +106,17 @@ const AttendanceListLayer = () => {
                 <th scope="col">Region</th>
                 <th scope="col">Date</th>
                 <th scope="col">Chapter</th>
-                <th scope="col" className="text-center">Total Members</th>
-                <th scope="col" className="text-center">Present</th>
-                <th scope="col" className="text-center">Absent</th>
+                <th scope="col" className="text-center">
+                  Total Members
+                </th>
+                <th scope="col" className="text-center">
+                  Present
+                </th>
+                <th scope="col" className="text-center">
+                  Absent
+                </th>
                 <th scope="col">Type</th>
-                <th scope="col" className="text-center">Action</th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -113,13 +127,19 @@ const AttendanceListLayer = () => {
                   <td>{meeting.date}</td>
                   <td>{meeting.chapter}</td>
                   <td className="text-center">{meeting.totalMembers}</td>
-                  <td className="text-center text-success-main fw-semibold">{meeting.present}</td>
-                  <td className="text-center text-danger-main fw-semibold">{meeting.absent}</td>
+                  <td className="text-center text-success-main fw-semibold">
+                    {meeting.present}
+                  </td>
+                  <td className="text-center text-danger-main fw-semibold">
+                    {meeting.absent}
+                  </td>
                   <td>{meeting.type}</td>
-                  <td className="text-center">
+                  <td>
                     <button
-                      onClick={() => navigate(`/meeting-attendance/${meeting.id}`)}
-                      className="btn btn-primary-600 btn-sm radius-8 px-12 py-6 d-flex align-items-center gap-2 mx-auto"
+                      onClick={() =>
+                        navigate(`/meeting-attendance/${meeting.id}`)
+                      }
+                      className="btn btn-primary-600 btn-sm radius-8 px-12 py-6 d-flex align-items-center gap-2"
                     >
                       <Icon icon="lucide:eye" />
                       View

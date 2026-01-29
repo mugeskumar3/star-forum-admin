@@ -130,11 +130,7 @@ const OrganisationListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   ED
                 </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -178,8 +174,8 @@ const OrganisationListLayer = () => {
                       </span>
                     </td>
 
-                    <td className="text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2">
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
                         <Link
                           to={`/organisation/edit/${org._id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"

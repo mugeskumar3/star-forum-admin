@@ -111,9 +111,7 @@ const ShopCategoryListLayer = () => {
                 <th scope="col">Image</th>
                 <th scope="col">Category Name</th>
                 <th scope="col">Status</th>
-                <th scope="col" className="text-center">
-                  Action
-                </th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -157,8 +155,8 @@ const ShopCategoryListLayer = () => {
                         {category.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         {/* 
                          User said "Action (edit ,delete anough)". 
                          I will keep View button invisible or remove if strictly needed. 

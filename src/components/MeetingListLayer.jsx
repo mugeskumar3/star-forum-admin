@@ -126,9 +126,7 @@ const MeetingListLayer = () => {
                 <th scope="col" className="text-center">
                   QR Code
                 </th>
-                <th scope="col" className="text-center">
-                  Action
-                </th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -168,8 +166,8 @@ const MeetingListLayer = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         <button
                           type="button"
                           onClick={() => showQRCode(item)}

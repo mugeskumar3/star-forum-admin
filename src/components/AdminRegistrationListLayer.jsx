@@ -137,11 +137,7 @@ const AdminRegistrationListLayer = () => {
                   <th scope="col" style={{ color: "black" }}>
                     Role
                   </th>
-                  <th
-                    scope="col"
-                    className="text-center"
-                    style={{ color: "black" }}
-                  >
+                  <th scope="col" style={{ color: "black" }}>
                     Action
                   </th>
                 </tr>
@@ -177,12 +173,12 @@ const AdminRegistrationListLayer = () => {
                         </span>
                       </td>
                       <td>
-                        <span className="badge bg-primary-focus text-primary-600 border border-primary-main px-24 py-4 radius-4 fw-medium text-sm">
-                          {user.roleId?.roleName || user.roleId || "-"}
+                        <span className="badge bg-primary-focus text-primary-600 border px-24 py-4 radius-4 fw-medium text-sm">
+                          {user.roleName || "-"}
                         </span>
                       </td>
-                      <td className="text-center">
-                        <div className="d-flex align-items-center gap-10 justify-content-center">
+                      <td>
+                        <div className="d-flex align-items-center gap-10">
                           <Link
                             to={`/admin-registration/view/${user._id}`}
                             className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"

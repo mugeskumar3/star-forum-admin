@@ -169,14 +169,12 @@ const TrainingListLayer = () => {
                   Date & Time
                 </th>
                 <th scope="col">Status</th>
-                <th scope="col" className="text-center">
-                  Action
-                </th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
               {trainings.length > 0 ? (
-                trainings.map((item,index) => (
+                trainings.map((item, index) => (
                   <tr key={item._id || item.trainingId}>
                     <td>{currentPage * rowsPerPage + index + 1}</td>
                     <td>
@@ -223,8 +221,8 @@ const TrainingListLayer = () => {
                         {item.status}
                       </span>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         <button
                           onClick={() => handleViewClick(item)}
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"

@@ -204,11 +204,7 @@ const LocationListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Status
                 </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -241,8 +237,8 @@ const LocationListLayer = () => {
                         {location.status === "Active" ? "Yes" : "No"}
                       </span>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         {/* View and Edit buttons commented out as requested just to create the list for now, or can be added if pages exist. 
                              Adding basic placeholders for now to match UI request. 
                          */}

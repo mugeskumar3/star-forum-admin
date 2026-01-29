@@ -72,8 +72,10 @@ const OrdersLayer = () => {
   // Format Date Helper
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      day: '2-digit', month: 'short', year: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     });
   };
 
@@ -99,7 +101,10 @@ const OrdersLayer = () => {
       <div className="card h-100 p-0 radius-12">
         <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-end">
           <div className="d-flex align-items-center flex-wrap gap-3">
-            <form className="navbar-search" onSubmit={(e) => e.preventDefault()}>
+            <form
+              className="navbar-search"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <input
                 type="text"
                 className="bg-base h-40-px w-auto"
@@ -113,7 +118,6 @@ const OrdersLayer = () => {
               />
               <Icon icon="ion:search-outline" className="icon" />
             </form>
-
           </div>
         </div>
         <div className="card-body p-24">
@@ -131,9 +135,7 @@ const OrdersLayer = () => {
                   <th scope="col">amount</th>
                   <th scope="col">createdDate</th>
                   <th scope="col">Status</th>
-                  <th scope="col" className="text-center">
-                    Action
-                  </th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -213,8 +215,8 @@ const OrdersLayer = () => {
                           </ul>
                         </div>
                       </td>
-                      <td className="text-center">
-                        <div className="d-flex align-items-center gap-10 justify-content-center">
+                      <td>
+                        <div className="d-flex align-items-center gap-10">
                           <button
                             type="button"
                             onClick={() => handleViewOrder(order._id)}
@@ -253,27 +255,56 @@ const OrdersLayer = () => {
 
       {/* Order Details Modal */}
       {showModal && selectedOrderDetails && (
-        <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} tabIndex="-1">
+        <div
+          className="modal fade show d-block"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          tabIndex="-1"
+        >
           <div className="modal-dialog modal-lg modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Order Details - #{selectedOrderDetails.orderId}</h5>
-                <button type="button" className="btn-close" onClick={closeModal}></button>
+                <h5 className="modal-title">
+                  Order Details - #{selectedOrderDetails.orderId}
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={closeModal}
+                ></button>
               </div>
               <div className="modal-body">
                 <div className="row mb-4">
                   <div className="col-md-6">
                     <h6 className="fw-bold">Client Info:</h6>
-                    <p className="mb-1">Name: {selectedOrderDetails.memberName}</p>
-                    <p className="mb-1">Phone: {selectedOrderDetails.contactNumber}</p>
-                    <p className="mb-1">Zone: {selectedOrderDetails.zoneName}</p>
-                    <p className="mb-1">Region: {selectedOrderDetails.regionName}</p>
-                    <p className="mb-1">Chapter: {selectedOrderDetails.chapterName}</p>
+                    <p className="mb-1">
+                      Name: {selectedOrderDetails.memberName}
+                    </p>
+                    <p className="mb-1">
+                      Phone: {selectedOrderDetails.contactNumber}
+                    </p>
+                    <p className="mb-1">
+                      Zone: {selectedOrderDetails.zoneName}
+                    </p>
+                    <p className="mb-1">
+                      Region: {selectedOrderDetails.regionName}
+                    </p>
+                    <p className="mb-1">
+                      Chapter: {selectedOrderDetails.chapterName}
+                    </p>
                   </div>
                   <div className="col-md-6 text-md-end">
                     <h6 className="fw-bold">Order Info:</h6>
-                    <p className="mb-1">Date: {formatDate(selectedOrderDetails.orderDate)}</p>
-                    <p className="mb-1">Status: <span className={`badge ${getStatusBadgeClass(selectedOrderDetails.status)}`}>{selectedOrderDetails.status}</span></p>
+                    <p className="mb-1">
+                      Date: {formatDate(selectedOrderDetails.orderDate)}
+                    </p>
+                    <p className="mb-1">
+                      Status:{" "}
+                      <span
+                        className={`badge ${getStatusBadgeClass(selectedOrderDetails.status)}`}
+                      >
+                        {selectedOrderDetails.status}
+                      </span>
+                    </p>
                   </div>
                 </div>
 
@@ -299,15 +330,25 @@ const OrdersLayer = () => {
                     </tbody>
                     <tfoot>
                       <tr>
-                        <td colSpan="3" className="text-end fw-bold">Grand Total:</td>
-                        <td className="text-end fw-bold">₹{selectedOrderDetails.grantTotal}</td>
+                        <td colSpan="3" className="text-end fw-bold">
+                          Grand Total:
+                        </td>
+                        <td className="text-end fw-bold">
+                          ₹{selectedOrderDetails.grantTotal}
+                        </td>
                       </tr>
                     </tfoot>
                   </table>
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closeModal}
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>

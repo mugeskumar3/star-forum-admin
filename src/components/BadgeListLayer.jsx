@@ -99,9 +99,7 @@ const BadgeListLayer = () => {
                 <th scope="col">Type</th>
                 <th scope="col">Badge Name</th>
                 <th scope="col">Image</th>
-                <th scope="col" className="text-center">
-                  Action
-                </th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -132,8 +130,8 @@ const BadgeListLayer = () => {
                         )}
                       </div>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         <Link
                           to={`/badge/edit/${item._id}`} // Assuming we will create this route
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"

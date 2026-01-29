@@ -29,7 +29,8 @@ const OrganisationFormLayer = () => {
   const [filteredZones, setFilteredZones] = useState([]);
 
   useEffect(() => {
-    fetchAdminUsers();
+    fetchEdUsers();
+    fetchRdUsers();
     if (id) {
       getOrganisationById(id);
     }
@@ -50,8 +51,8 @@ const OrganisationFormLayer = () => {
     }
   };
 
-  const fetchAdminUsers = async () => {
-    const response = await RegionApi.getAdminUser();
+  const fetchEdUsers = async () => {
+    const response = await RegionApi.getRoleBasedUser("ED");
     if (response && response.status && response.response.data) {
       const users = response.response.data;
       const options = users.map((user) => ({
@@ -59,6 +60,16 @@ const OrganisationFormLayer = () => {
         label: user.name,
       }));
       setEdOptions(options);
+    }
+  };
+  const fetchRdUsers = async () => {
+    const response = await RegionApi.getRoleBasedUser("RD");
+    if (response && response.status && response.response.data) {
+      const users = response.response.data;
+      const options = users.map((user) => ({
+        value: user._id,
+        label: user.name,
+      }));
       setRdOptions(options);
     }
   };
@@ -192,7 +203,9 @@ const OrganisationFormLayer = () => {
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-        <h6 className="text-primary-600 pb-2 mb-0">{id ? "Edit" : "Create"} Organisation</h6>
+        <h6 className="text-primary-600 pb-2 mb-0">
+          {id ? "Edit" : "Create"} Organisation
+        </h6>
         <div className="d-flex gap-2">
           <Link to="/zone/add" className="btn btn-primary btn-sm">
             <Icon icon="ic:baseline-plus" className="text-xl me-1" />
@@ -247,13 +260,13 @@ const OrganisationFormLayer = () => {
                 options={
                   formData.country
                     ? State.getStatesOfCountry(
-                      Country.getAllCountries().find(
-                        (c) => c.name === formData.country,
-                      )?.isoCode,
-                    ).map((state) => ({
-                      value: state.isoCode,
-                      label: state.name,
-                    }))
+                        Country.getAllCountries().find(
+                          (c) => c.name === formData.country,
+                        )?.isoCode,
+                      ).map((state) => ({
+                        value: state.isoCode,
+                        label: state.name,
+                      }))
                     : []
                 }
                 value={
@@ -318,8 +331,9 @@ const OrganisationFormLayer = () => {
               </label>
               <input
                 type="text"
-                className={`form-control radius-8 ${formErrors.region ? "border-danger" : ""
-                  }`}
+                className={`form-control radius-8 ${
+                  formErrors.region ? "border-danger" : ""
+                }`}
                 name="region"
                 value={formData.region}
                 onChange={handleInputChange}
@@ -331,7 +345,26 @@ const OrganisationFormLayer = () => {
                 </div>
               )}
             </div>
-
+            <div className="col-md-6">
+              <label className="form-label fw-medium">
+                Executive Director (ED){" "}
+                <span className="text-danger-600">*</span>
+              </label>
+              <Select
+                name="edId"
+                options={edOptions}
+                value={getSelectedOption(edOptions, formData.edId)}
+                onChange={handleSelectChange}
+                styles={selectStyles(formErrors.edId)}
+                placeholder="Select ED Name"
+                isClearable={false}
+              />
+              {formErrors.edId && (
+                <div className="text-danger mt-1 fontsize-14">
+                  {formErrors.edId}
+                </div>
+              )}
+            </div>
             <div className="col-md-6">
               <label className="form-label fw-medium">
                 Regional Director (RD){" "}
@@ -350,27 +383,6 @@ const OrganisationFormLayer = () => {
               {formErrors.rdIds && (
                 <div className="text-danger mt-1 fontsize-14">
                   {formErrors.rdIds}
-                </div>
-              )}
-            </div>
-
-            <div className="col-md-6">
-              <label className="form-label fw-medium">
-                Executive Director (ED){" "}
-                <span className="text-danger-600">*</span>
-              </label>
-              <Select
-                name="edId"
-                options={edOptions}
-                value={getSelectedOption(edOptions, formData.edId)}
-                onChange={handleSelectChange}
-                styles={selectStyles(formErrors.edId)}
-                placeholder="Select ED Name"
-                isClearable={false}
-              />
-              {formErrors.edId && (
-                <div className="text-danger mt-1 fontsize-14">
-                  {formErrors.edId}
                 </div>
               )}
             </div>

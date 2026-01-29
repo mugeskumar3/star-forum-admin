@@ -137,7 +137,9 @@ const ShopListLayer = () => {
   const handleProductSelect = (selectedOption) => {
     if (!selectedOption) return;
 
-    const existingItem = cart.find((item) => item.productId === selectedOption.value);
+    const existingItem = cart.find(
+      (item) => item.productId === selectedOption.value,
+    );
     if (existingItem) {
       setCart((prev) =>
         prev.map((item) =>
@@ -226,14 +228,14 @@ const ShopListLayer = () => {
       regionId: formData.region,
       chapterId: formData.chapter,
       memberId: formData.member,
-      products: cart.map(item => ({
+      products: cart.map((item) => ({
         productId: item.productId,
         amount: item.amount,
         qty: item.qty,
         price: item.price,
-        total: item.total
+        total: item.total,
       })),
-      grantTotal: getTotalPrice()
+      grantTotal: getTotalPrice(),
     };
 
     const res = await OrderApi.createOrder(payload);
@@ -445,7 +447,9 @@ const ShopListLayer = () => {
                                   type="button"
                                   className="btn btn-light border-0 d-flex align-items-center justify-content-center"
                                   style={{ width: "40px" }}
-                                  onClick={() => updateQuantity(item.productId, -1)}
+                                  onClick={() =>
+                                    updateQuantity(item.productId, -1)
+                                  }
                                   disabled={item.qty <= 1}
                                 >
                                   <Icon
@@ -468,7 +472,9 @@ const ShopListLayer = () => {
                                   type="button"
                                   className="btn btn-light border-0 d-flex align-items-center justify-content-center"
                                   style={{ width: "40px" }}
-                                  onClick={() => updateQuantity(item.productId, 1)}
+                                  onClick={() =>
+                                    updateQuantity(item.productId, 1)
+                                  }
                                 >
                                   <Icon
                                     icon="mdi:plus"
@@ -484,10 +490,10 @@ const ShopListLayer = () => {
                           >
                             ₹{item.total}
                           </td>
-                          <td className="text-center align-middle">
+                          <td className="align-middle">
                             <button
                               type="button"
-                              className="btn btn-danger btn-sm p-1 d-flex align-items-center justify-content-center mx-auto"
+                              className="btn btn-danger btn-sm p-1 d-flex align-items-center justify-content-center"
                               style={{ width: "32px", height: "32px" }}
                               onClick={() => removeItem(item.productId)}
                             >

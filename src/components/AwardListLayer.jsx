@@ -72,129 +72,125 @@ const AwardListLayer = () => {
 
   return (
     <>
-    <div className="card h-100 p-0 radius-12">
-      <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-        <div className="d-flex align-items-center flex-wrap gap-3">
-          <h6 className="text-primary-600 pb-2 mb-0">Award List</h6>
+      <div className="card h-100 p-0 radius-12">
+        <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+          <div className="d-flex align-items-center flex-wrap gap-3">
+            <h6 className="text-primary-600 pb-2 mb-0">Award List</h6>
+          </div>
+          <div className="d-flex align-items-center flex-wrap gap-3">
+            <form className="navbar-search">
+              <input
+                type="text"
+                className="bg-base h-40-px w-auto"
+                name="search"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(0);
+                }}
+              />
+              <Icon icon="ion:search-outline" className="icon" />
+            </form>
+            <Link
+              to="/award/add"
+              className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+              style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+            >
+              <Icon
+                icon="ic:baseline-plus"
+                className="icon text-xl line-height-1"
+              />
+              Add New Award
+            </Link>
+          </div>
         </div>
-        <div className="d-flex align-items-center flex-wrap gap-3">
-          <form className="navbar-search">
-            <input
-              type="text"
-              className="bg-base h-40-px w-auto"
-              name="search"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(0);
-              }}
-            />
-            <Icon icon="ion:search-outline" className="icon" />
-          </form>
-          <Link
-            to="/award/add"
-            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-            style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
-          >
-            <Icon
-              icon="ic:baseline-plus"
-              className="icon text-xl line-height-1"
-            />
-            Add New Award
-          </Link>
-        </div>
-      </div>
-      <div className="card-body p-24">
-        <div className="table-responsive scroll-sm">
-          <table className="table bordered-table sm-table mb-0">
-            <thead>
-              <tr>
-                <th scope="col" style={{ color: "black" }}>
-                  S.No
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Award Name
-                </th>
-                <th scope="col" style={{ color: "black" }}>
-                  Created Date
-                </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {awards.length > 0 ? (
-                awards.map((award, index) => (
-                  <tr key={index}>
-                    <td>{currentPage * rowsPerPage + index + 1}</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="text-md mb-0 fw-normal text-secondary-light">
-                          {award.name}
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      {award.createdAt
-                        ? new Date(award.createdAt)
-                            .toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })
-                            .replace(/ /g, "-")
-                        : "-"}
-                    </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
-                        <Link
-                          to={`/award/edit/${award._id}`}
-                          className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                        >
-                          <Icon icon="lucide:edit" className="menu-icon" />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => confirmDelete(award)}
-                          className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
-                        >
-                          <Icon
-                            icon="fluent:delete-24-regular"
-                            className="menu-icon"
-                          />
-                        </button>
-                      </div>
+        <div className="card-body p-24">
+          <div className="table-responsive scroll-sm">
+            <table className="table bordered-table sm-table mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" style={{ color: "black" }}>
+                    S.No
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Award Name
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Created Date
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {awards.length > 0 ? (
+                  awards.map((award, index) => (
+                    <tr key={index}>
+                      <td>{currentPage * rowsPerPage + index + 1}</td>
+                      <td>
+                        <div className="d-flex align-items-center">
+                          <span className="text-md mb-0 fw-normal text-secondary-light">
+                            {award.name}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        {award.createdAt
+                          ? new Date(award.createdAt)
+                              .toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })
+                              .replace(/ /g, "-")
+                          : "-"}
+                      </td>
+                      <td>
+                        <div className="d-flex align-items-center gap-10">
+                          <Link
+                            to={`/award/edit/${award._id}`}
+                            className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                          >
+                            <Icon icon="lucide:edit" className="menu-icon" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => confirmDelete(award)}
+                            className="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                          >
+                            <Icon
+                              icon="fluent:delete-24-regular"
+                              className="menu-icon"
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center py-4">
+                      {loading ? "Loading..." : "No awards found."}
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" className="text-center py-4">
-                    {loading ? "Loading..." : "No awards found."}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-        <TablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          totalRecords={totalRecords}
-        />
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            totalRecords={totalRecords}
+          />
+        </div>
       </div>
-      </div>
-      
+
       <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} centered>
         <Modal.Body className="text-center p-5">
           <div className="d-flex justify-content-center mb-3">
