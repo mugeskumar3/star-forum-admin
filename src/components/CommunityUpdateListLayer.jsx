@@ -69,8 +69,9 @@ const CommunityUpdateListLayer = () => {
         "Vikram Singh",
       ][i % 5],
       title: `Community Update Title ${startId + i}`,
-      details: `This is the detailed description for the community update regarding item ${startId + i
-        }.`,
+      details: `This is the detailed description for the community update regarding item ${
+        startId + i
+      }.`,
       responses: Array.from({ length: (i % 5) + 1 }, (_, j) => ({
         id: j + 1,
         userName: `Responder ${j + 1}`,
@@ -338,11 +339,7 @@ const CommunityUpdateListLayer = () => {
               <th scope="col" style={{ color: "black" }}>
                 Response
               </th>
-              <th
-                scope="col"
-                className="text-center"
-                style={{ color: "black" }}
-              >
+              <th scope="col" style={{ color: "black" }}>
                 Action
               </th>
             </tr>
@@ -371,8 +368,8 @@ const CommunityUpdateListLayer = () => {
                       {item.responses.length}
                     </span>
                   </td>
-                  <td className="text-center">
-                    <div className="d-flex align-items-center gap-10 justify-content-center">
+                  <td>
+                    <div className="d-flex align-items-center gap-10">
                       <button
                         type="button"
                         onClick={() => confirmDelete(item)}

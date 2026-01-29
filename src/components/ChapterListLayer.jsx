@@ -131,11 +131,7 @@ const ChapterListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Created Date
                 </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -183,8 +179,8 @@ const ChapterListLayer = () => {
                       </span>
                     </td>
 
-                    <td className="text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2">
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
                         <Link
                           to={`/chapter-view/${chapter._id}`}
                           className="bg-info-focus text-info-600 bg-hover-info-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"

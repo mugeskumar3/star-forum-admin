@@ -201,11 +201,7 @@ const ChapterRoleAssignLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Member
                 </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -217,8 +213,8 @@ const ChapterRoleAssignLayer = () => {
                     <td>{index + 1}</td>
                     <td>{item.role}</td>
                     <td>{item.member}</td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center justify-content-center gap-2">
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
                         <button
                           onClick={() => handleEdit(item)}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle border-0"
