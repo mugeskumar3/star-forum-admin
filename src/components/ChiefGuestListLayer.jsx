@@ -127,11 +127,7 @@ const ChiefGuestListLayer = () => {
                   <th scope="col" style={{ color: "black" }}>
                     Referred By
                   </th>
-                  <th
-                    scope="col"
-                    className="text-center"
-                    style={{ color: "black" }}
-                  >
+                  <th scope="col" style={{ color: "black" }}>
                     Action
                   </th>
                 </tr>
@@ -150,8 +146,8 @@ const ChiefGuestListLayer = () => {
                       <td>{guest.businessName}</td>
                       <td>{guest.location}</td>
                       <td>{guest.referredBy?.name || "N/A"}</td>
-                      <td className="text-center">
-                        <div className="d-flex align-items-center gap-10 justify-content-center">
+                      <td>
+                        <div className="d-flex align-items-center gap-10">
                           <Link
                             to={`/chief-guest-history`}
                             className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle"
@@ -169,7 +165,10 @@ const ChiefGuestListLayer = () => {
                             onClick={() => confirmDelete(guest._id)}
                             className="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle border-0"
                           >
-                            <Icon icon="lucide:trash-2" className="icon text-sm" />
+                            <Icon
+                              icon="lucide:trash-2"
+                              className="icon text-sm"
+                            />
                           </button>
                         </div>
                       </td>
@@ -210,8 +209,8 @@ const ChiefGuestListLayer = () => {
         </Modal.Header>
         <Modal.Body>
           <p className="text-secondary-light">
-            Are you sure you want to delete this chief guest? This action cannot be
-            undone.
+            Are you sure you want to delete this chief guest? This action cannot
+            be undone.
           </p>
         </Modal.Body>
         <Modal.Footer>

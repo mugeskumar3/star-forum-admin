@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TrainingApi from "../Api/TrainingApi";
 import ChapterApi from "../Api/ChapterApi";
 import RegionApi from "../Api/RegionApi";
+
 const TrainingFormLayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -223,40 +225,6 @@ const TrainingFormLayer = () => {
     }
   };
 
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      padding: "2px",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    placeholder: (provided) => ({
-      ...provided,
-      color: "#6c757d",
-    }),
-    multiValue: (provided) => ({
-      ...provided,
-      backgroundColor: "#eef2ff",
-      borderRadius: "4px",
-    }),
-    multiValueLabel: (provided) => ({
-      ...provided,
-      color: "#4f46e5",
-    }),
-    multiValueRemove: (provided) => ({
-      ...provided,
-      color: "#4f46e5",
-      ":hover": {
-        backgroundColor: "#e0e7ff",
-        color: "#4338ca",
-      },
-    }),
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -277,7 +245,7 @@ const TrainingFormLayer = () => {
                 options={chapterOptions}
                 value={formData.chapterIds}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.chapterIds)}
                 placeholder="Select Chapters..."
               />
               {errors.chapterIds && (
@@ -312,7 +280,7 @@ const TrainingFormLayer = () => {
                 options={trainerOptions}
                 value={formData.trainerIds}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.trainerIds)}
                 placeholder="Select Trainers..."
               />
               {errors.trainerIds && (
@@ -380,7 +348,7 @@ const TrainingFormLayer = () => {
                 options={modeOptions}
                 value={formData.mode}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.mode)}
                 placeholder="Select Mode"
               />
               {errors.mode && (
@@ -428,7 +396,7 @@ const TrainingFormLayer = () => {
                 options={statusOptions}
                 value={formData.status}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.status)}
                 placeholder="Select Status"
               />
               {errors.status && (
@@ -454,18 +422,18 @@ const TrainingFormLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/training-list"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
-              style={{ minWidth: "120px" }}
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-20 py-11 justify-content-center"
               disabled={loading}
-              style={{ minWidth: "120px" }}
+              style={{ width: "120px" }}
             >
-              {loading ? "Saving..." : "Save Training"}
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>

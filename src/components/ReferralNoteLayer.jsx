@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import { Modal, Button } from "react-bootstrap";
 import TablePagination from "./TablePagination";
 
@@ -58,23 +59,6 @@ const ReferralNoteLayer = () => {
     { value: "RD 1", label: "RD 1" },
     { value: "RD 2", label: "RD 2" },
   ];
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      border: "1px solid #dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        border: "1px solid #dee2e6",
-      },
-    }),
-    menu: (provided) => ({
-      ...provided,
-      zIndex: 9999,
-    }),
-  };
 
   // Filtering logic
   const filteredReferrals = referrals.filter((referral) => {
@@ -188,7 +172,7 @@ const ReferralNoteLayer = () => {
               value={selectedChapter}
               onChange={setSelectedChapter}
               placeholder="Chapter"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -198,7 +182,7 @@ const ReferralNoteLayer = () => {
               value={selectedZone}
               onChange={setSelectedZone}
               placeholder="Zone"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -208,7 +192,7 @@ const ReferralNoteLayer = () => {
               value={selectedEd}
               onChange={setSelectedEd}
               placeholder="ED"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -218,7 +202,7 @@ const ReferralNoteLayer = () => {
               value={selectedRd}
               onChange={setSelectedRd}
               placeholder="RD"
-              styles={customStyles}
+              styles={selectStyles()}
               isClearable
             />
           </div>
@@ -249,7 +233,7 @@ const ReferralNoteLayer = () => {
                 <th scope="col">Referral Name</th>
                 <th scope="col">Temp</th>
                 <th scope="col">Comments</th>
-                <th scope="col" className="text-center">Action</th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -280,7 +264,7 @@ const ReferralNoteLayer = () => {
                       </span>
                     </td>
                     <td style={{ minWidth: "200px" }}>{item.comments}</td>
-                    <td className="text-center">
+                    <td>
                       <button
                         className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
                         onClick={() => handleViewDetails(item)}
@@ -311,7 +295,6 @@ const ReferralNoteLayer = () => {
         />
       </div>
 
-      {/* View Details Modal */}
       <Modal
         centered
         show={showViewModal}
@@ -328,15 +311,21 @@ const ReferralNoteLayer = () => {
               <div className="p-16 radius-8 bg-neutral-100 border">
                 <div className="mb-12">
                   <h6 className="mb-4 fw-bold text-dark text-sm">Phone:</h6>
-                  <p className="mb-0 text-secondary-light">{selectedReferral.phone}</p>
+                  <p className="mb-0 text-secondary-light">
+                    {selectedReferral.phone}
+                  </p>
                 </div>
                 <div className="mb-12">
                   <h6 className="mb-4 fw-bold text-dark text-sm">Email:</h6>
-                  <p className="mb-0 text-secondary-light">{selectedReferral.email}</p>
+                  <p className="mb-0 text-secondary-light">
+                    {selectedReferral.email}
+                  </p>
                 </div>
                 <div>
                   <h6 className="mb-4 fw-bold text-dark text-sm">Address:</h6>
-                  <p className="mb-0 text-secondary-light">{selectedReferral.address}</p>
+                  <p className="mb-0 text-secondary-light">
+                    {selectedReferral.address}
+                  </p>
                 </div>
               </div>
             </div>

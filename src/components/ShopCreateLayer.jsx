@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const ShopCreateLayer = () => {
   const [formData, setFormData] = useState({
@@ -71,7 +72,6 @@ const ShopCreateLayer = () => {
       return;
     }
     console.log("Form Submitted:", formData);
-    // Static UI only, so no API call
   };
 
   const categoryOptions = [
@@ -85,27 +85,6 @@ const ShopCreateLayer = () => {
     return options.find((option) => option.value === value) || null;
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -114,7 +93,6 @@ const ShopCreateLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Product Name */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Product Name <span className="text-danger">*</span>
@@ -132,7 +110,6 @@ const ShopCreateLayer = () => {
               )}
             </div>
 
-            {/* Price */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Price <span className="text-danger">*</span>
@@ -155,7 +132,6 @@ const ShopCreateLayer = () => {
               )}
             </div>
 
-            {/* Category */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Category <span className="text-danger">*</span>
@@ -165,7 +141,7 @@ const ShopCreateLayer = () => {
                 options={categoryOptions}
                 value={getSelectedOption(categoryOptions, formData.category)}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.category)}
                 placeholder="Select Category"
                 isClearable={false}
               />
@@ -174,7 +150,6 @@ const ShopCreateLayer = () => {
               )}
             </div>
 
-            {/* Image Upload */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Product Image <span className="text-danger">*</span>
@@ -232,7 +207,6 @@ const ShopCreateLayer = () => {
               )}
             </div>
 
-            {/* Description */}
             <div className="col-12">
               <label className="form-label fw-semibold">Description</label>
               <textarea
@@ -249,13 +223,15 @@ const ShopCreateLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/shop-list"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Save Product
             </button>

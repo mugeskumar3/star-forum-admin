@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
+import { selectStyles } from "../helper/SelectStyles";
 import BadgeApi from "../Api/BadgeApi";
 import ChapterApi from "../Api/ChapterApi";
 import MemberApi from "../Api/MemberApi";
@@ -25,12 +26,12 @@ const BadgeAssignLayer = () => {
 
   useEffect(() => {
     fetchBadges();
-  }, []);
+  }, [assignType.value]);
 
   const fetchBadges = async () => {
     try {
       // Fetch all badges (pagination might be needed if many badges, but starting with basics)
-      const res = await BadgeApi.getBadge(null, 0, 100);
+      const res = await BadgeApi.getBadge(null, 0, 100, assignType.value);
       if (res.status) {
         setBadgeOptions(
           res.response.data.map((b) => ({
@@ -125,18 +126,6 @@ const BadgeAssignLayer = () => {
     }
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "48px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": { borderColor: "#dee2e6" },
-    }),
-    valueContainer: (provided) => ({ ...provided, paddingLeft: "16px" }),
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header bg-transparent border-bottom">
@@ -157,7 +146,7 @@ const BadgeAssignLayer = () => {
                   setSelectedAssignTo(null); // Reset selection on type change
                   setErrors({ ...errors, assignTo: "" });
                 }}
-                styles={customStyles}
+                styles={selectStyles()}
                 isClearable={false}
               />
             </div>
@@ -176,7 +165,7 @@ const BadgeAssignLayer = () => {
                     setSelectedAssignTo(val);
                     setErrors({ ...errors, assignTo: "" });
                   }}
-                  styles={customStyles}
+                  styles={selectStyles(!!errors.assignTo)}
                   placeholder="Search Chapter..."
                 />
                 {errors.assignTo && (
@@ -201,7 +190,7 @@ const BadgeAssignLayer = () => {
                     setSelectedAssignTo(val);
                     setErrors({ ...errors, assignTo: "" });
                   }}
-                  styles={customStyles}
+                  styles={selectStyles(!!errors.assignTo)}
                   placeholder="Search Member..."
                 />
                 {errors.assignTo && (
@@ -223,7 +212,7 @@ const BadgeAssignLayer = () => {
                   setSelectedBadge(val);
                   setErrors({ ...errors, badge: "" });
                 }}
-                styles={customStyles}
+                styles={selectStyles(!!errors.badge)}
                 placeholder="Search Badge..."
                 isSearchable
               />
@@ -232,7 +221,7 @@ const BadgeAssignLayer = () => {
               )}
             </div>
 
-            <div className="col-12 d-flex justify-content-start gap-3 mt-4">
+            <div className="col-12 d-flex justify-content-end gap-3 my-3">
               <Link to="/badge" className="btn btn-outline-danger-600 px-32">
                 Cancel
               </Link>

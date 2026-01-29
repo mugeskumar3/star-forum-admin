@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import ZoneApi from "../Api/ZoneApi";
 import RegionApi from "../Api/RegionApi";
 import ChapterApi from "../Api/ChapterApi";
@@ -47,7 +48,6 @@ const ShopListLayer = () => {
 
   const fetchRegions = async (zoneId) => {
     const res = await RegionApi.getRegionByZone(zoneId);
-    console.log(res, "oooo");
     if (res.status) {
       const options = res.response.data.map((item) => ({
         value: item._id,
@@ -137,10 +137,10 @@ const ShopListLayer = () => {
   const handleProductSelect = (selectedOption) => {
     if (!selectedOption) return;
 
-    // Check if product already exists in cart
-    const existingItem = cart.find((item) => item.productId === selectedOption.value);
+    const existingItem = cart.find(
+      (item) => item.productId === selectedOption.value,
+    );
     if (existingItem) {
-      // Increment quantity
       setCart((prev) =>
         prev.map((item) =>
           item.productId === selectedOption.value
@@ -149,7 +149,6 @@ const ShopListLayer = () => {
         ),
       );
     } else {
-      // Add new item
       setCart((prev) => [
         ...prev,
         {
@@ -157,12 +156,12 @@ const ShopListLayer = () => {
           name: selectedOption.label,
           price: selectedOption.price,
           qty: 1,
-          amount: selectedOption.price, // unit price alias
+          amount: selectedOption.price,
           total: selectedOption.price,
         },
       ]);
     }
-    setSelectedProduct(null); // Reset dropdown
+    setSelectedProduct(null);
     if (errors.cart) {
       setErrors((prev) => ({ ...prev, cart: "" }));
     }
@@ -229,16 +228,14 @@ const ShopListLayer = () => {
       regionId: formData.region,
       chapterId: formData.chapter,
       memberId: formData.member,
-      products: cart.map(item => ({
+      products: cart.map((item) => ({
         productId: item.productId,
-        amount: item.amount, // assuming unit price as per requested payload field 'amount' ? or total amount?  
-        // User sample: "amount": 100, "qty": 1, "price": 100, "total": 100
-        // I will follow the user sample exactly.
+        amount: item.amount,
         qty: item.qty,
         price: item.price,
-        total: item.total
+        total: item.total,
       })),
-      grantTotal: getTotalPrice()
+      grantTotal: getTotalPrice(),
     };
 
     const res = await OrderApi.createOrder(payload);
@@ -246,33 +243,6 @@ const ShopListLayer = () => {
       navigate("/orders");
     }
   };
-
-  const customStyles = (error) => ({
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: state.isFocused ? "#86b7fe" : error ? "#dc3545" : "#dee2e6",
-      boxShadow: state.isFocused
-        ? "0 0 0 0.25rem rgba(13, 110, 253, 0.25)"
-        : "none",
-      "&:hover": {
-        borderColor: state.isFocused
-          ? "#86b7fe"
-          : error
-            ? "#dc3545"
-            : "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
-  });
 
   const getSelectedOption = (options, value) => {
     return options.find((option) => option.value === value) || null;
@@ -286,7 +256,6 @@ const ShopListLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Zone Selection */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Zone <span className="text-danger">*</span>
@@ -296,7 +265,7 @@ const ShopListLayer = () => {
                 options={zoneOptions}
                 value={getSelectedOption(zoneOptions, formData.zone)}
                 onChange={handleSelectChange}
-                styles={customStyles(errors.zone)}
+                styles={selectStyles(errors.zone)}
                 placeholder="Select Zone"
                 isClearable={false}
               />
@@ -305,7 +274,6 @@ const ShopListLayer = () => {
               )}
             </div>
 
-            {/* Region Selection */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Region <span className="text-danger">*</span>
@@ -315,7 +283,7 @@ const ShopListLayer = () => {
                 options={regionOptions}
                 value={getSelectedOption(regionOptions, formData.region)}
                 onChange={handleSelectChange}
-                styles={customStyles(errors.region)}
+                styles={selectStyles(errors.region)}
                 placeholder="Select Region"
                 isClearable={false}
               />
@@ -324,7 +292,6 @@ const ShopListLayer = () => {
               )}
             </div>
 
-            {/* Chapter Selection */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Chapter <span className="text-danger">*</span>
@@ -334,7 +301,7 @@ const ShopListLayer = () => {
                 options={chapterOptions}
                 value={getSelectedOption(chapterOptions, formData.chapter)}
                 onChange={handleSelectChange}
-                styles={customStyles(errors.chapter)}
+                styles={selectStyles(errors.chapter)}
                 placeholder="Chapter"
                 isClearable={false}
               />
@@ -343,7 +310,6 @@ const ShopListLayer = () => {
               )}
             </div>
 
-            {/* Member Selection */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Member <span className="text-danger">*</span>
@@ -353,7 +319,7 @@ const ShopListLayer = () => {
                 options={memberOptions}
                 value={getSelectedOption(memberOptions, formData.member)}
                 onChange={handleSelectChange}
-                styles={customStyles(errors.member)}
+                styles={selectStyles(errors.member)}
                 placeholder="Select Member"
                 isClearable={false}
               />
@@ -362,7 +328,6 @@ const ShopListLayer = () => {
               )}
             </div>
 
-            {/* Product Selection */}
             <div className="col-12">
               <label className="form-label fw-semibold">
                 Select Product <span className="text-danger">*</span>
@@ -372,7 +337,7 @@ const ShopListLayer = () => {
                 options={productOptions}
                 value={selectedProduct}
                 onChange={handleProductSelect}
-                styles={customStyles(errors.cart)}
+                styles={selectStyles(errors.cart)}
                 placeholder="Search & Select Product..."
                 isClearable={true}
               />
@@ -381,7 +346,6 @@ const ShopListLayer = () => {
               )}
             </div>
 
-            {/* Product Cart Table - Only show if cart has items */}
             {cart.length > 0 && (
               <div className="col-12">
                 <div className="table-responsive">
@@ -483,7 +447,9 @@ const ShopListLayer = () => {
                                   type="button"
                                   className="btn btn-light border-0 d-flex align-items-center justify-content-center"
                                   style={{ width: "40px" }}
-                                  onClick={() => updateQuantity(item.productId, -1)}
+                                  onClick={() =>
+                                    updateQuantity(item.productId, -1)
+                                  }
                                   disabled={item.qty <= 1}
                                 >
                                   <Icon
@@ -491,7 +457,6 @@ const ShopListLayer = () => {
                                     style={{ fontSize: "16px" }}
                                   />
                                 </button>
-
                                 <div
                                   className="d-flex align-items-center justify-content-center fw-semibold"
                                   style={{
@@ -503,12 +468,13 @@ const ShopListLayer = () => {
                                 >
                                   {item.qty}
                                 </div>
-
                                 <button
                                   type="button"
                                   className="btn btn-light border-0 d-flex align-items-center justify-content-center"
                                   style={{ width: "40px" }}
-                                  onClick={() => updateQuantity(item.productId, 1)}
+                                  onClick={() =>
+                                    updateQuantity(item.productId, 1)
+                                  }
                                 >
                                   <Icon
                                     icon="mdi:plus"
@@ -524,10 +490,10 @@ const ShopListLayer = () => {
                           >
                             ₹{item.total}
                           </td>
-                          <td className="text-center align-middle">
+                          <td className="align-middle">
                             <button
                               type="button"
-                              className="btn btn-danger btn-sm p-1 d-flex align-items-center justify-content-center mx-auto"
+                              className="btn btn-danger btn-sm p-1 d-flex align-items-center justify-content-center"
                               style={{ width: "32px", height: "32px" }}
                               onClick={() => removeItem(item.productId)}
                             >

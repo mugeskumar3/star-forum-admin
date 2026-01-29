@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TablePagination from './TablePagination';
 
 const MemberPointsReportLayer = () => {
@@ -16,23 +17,6 @@ const MemberPointsReportLayer = () => {
     const zoneOptions = ['Zone 1', 'Zone 2', 'Zone 3', 'Zone 4'].map(z => ({ value: z, label: z }));
     const edOptions = ['ED Rajesh', 'ED Priya', 'ED Amit'].map(ed => ({ value: ed, label: ed }));
     const rdOptions = ['RD Suresh', 'RD Megha', 'RD Arjun'].map(rd => ({ value: rd, label: rd }));
-
-    const customStyles = {
-        control: (provided) => ({
-            ...provided,
-            minHeight: "40px",
-            borderRadius: "8px",
-            border: "1px solid #dee2e6",
-            boxShadow: "none",
-            "&:hover": {
-                border: "1px solid #dee2e6",
-            },
-        }),
-        menu: (provided) => ({
-            ...provided,
-            zIndex: 9999,
-        }),
-    };
 
     // Static Dummy Data for Member Points Report
     const [reportData] = useState(Array.from({ length: 30 }).map((_, i) => ({
@@ -92,7 +76,6 @@ const MemberPointsReportLayer = () => {
         currentPage * rowsPerPage
     );
 
-    // Calculate total points for each member
     const calculateTotalPoints = (member) => {
         return member.oneToOnes + member.referrals + member.weeklyMeetings +
             member.thankYouNotes + member.visitors + member.chiefGuests +
@@ -128,7 +111,7 @@ const MemberPointsReportLayer = () => {
                             value={selectedRegion}
                             onChange={setSelectedRegion}
                             placeholder="Region"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -139,7 +122,7 @@ const MemberPointsReportLayer = () => {
                             value={selectedZone}
                             onChange={setSelectedZone}
                             placeholder="Zone"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -150,7 +133,7 @@ const MemberPointsReportLayer = () => {
                             value={selectedEd}
                             onChange={setSelectedEd}
                             placeholder="ED"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>
@@ -161,7 +144,7 @@ const MemberPointsReportLayer = () => {
                             value={selectedRd}
                             onChange={setSelectedRd}
                             placeholder="RD"
-                            styles={customStyles}
+                            styles={selectStyles()}
                             isClearable
                         />
                     </div>

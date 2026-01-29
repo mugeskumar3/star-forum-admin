@@ -120,11 +120,7 @@ const BusinessCategoryListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Created Date
                 </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -152,8 +148,8 @@ const BusinessCategoryListLayer = () => {
                             .replace(/ /g, "-")
                         : "-"}
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         <Link
                           to={`/business-category/edit/${category._id}`}
                           className="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"

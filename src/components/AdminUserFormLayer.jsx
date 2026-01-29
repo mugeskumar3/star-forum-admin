@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import AdminUserApi from "../Api/AdminUserApi";
 import RoleApi from "../Api/RoleApi";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 
 const AdminUserFormLayer = () => {
   const navigate = useNavigate();
@@ -64,6 +65,14 @@ const AdminUserFormLayer = () => {
       // Only allow numbers and max 4 digits
       const cleanedValue = value.replace(/\D/g, "").slice(0, 4);
       setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
+    } else if (name === "name") {
+      // Allow only alphabets and spaces (no numbers)
+      if (/[0-9]/.test(value)) return;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    } else if (name === "phoneNumber") {
+      // Allow only numbers (no alphabets)
+      if (/[a-zA-Z]/.test(value)) return;
+      setFormData((prev) => ({ ...prev, [name]: value }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -123,19 +132,6 @@ const AdminUserFormLayer = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      borderRadius: "8px",
-      minHeight: "44px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
   };
 
   return (
@@ -297,7 +293,7 @@ const AdminUserFormLayer = () => {
                     (opt) => opt.value === formData.roleId,
                   )}
                   onChange={handleSelectChange}
-                  styles={customStyles}
+                  styles={selectStyles(!!errors.roleId)}
                   placeholder="Select Role"
                 />
                 {errors.roleId && (
@@ -351,20 +347,18 @@ const AdminUserFormLayer = () => {
             <div className="col-12 d-flex justify-content-end gap-3 mt-4 pt-3">
               <Link
                 to="/admin-registration"
-                className="btn btn-outline-danger-600 px-32 radius-8"
+                className="btn btn-outline-danger-600 px-32 radius-8 justify-content-center"
+                style={{ width: "120px" }}
               >
                 Cancel
               </Link>
               <button
                 type="submit"
-                className="btn btn-primary-600 px-32 radius-8"
+                className="btn btn-primary-600 px-32 radius-8 justify-content-center"
                 disabled={loading}
+                style={{ width: "120px" }}
               >
-                {loading
-                  ? "Saving..."
-                  : isEdit
-                    ? "Update Admin"
-                    : "Create Admin"}
+                {loading ? "Saving..." : isEdit ? "Update" : "Save"}
               </button>
             </div>
           </div>

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
-import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
+import { selectStyles } from "../helper/SelectStyles";
 import ZoneApi from "../Api/ZoneApi";
 
 const ZoneFormLayer = () => {
@@ -16,27 +16,6 @@ const ZoneFormLayer = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
   const [formErrors, setFormErrors] = useState({});
-
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: state.selectProps.error ? "#dc3545" : "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
-  };
 
   const validateForm = () => {
     let errors = {};
@@ -72,10 +51,9 @@ const ZoneFormLayer = () => {
       state: formData.state,
     };
 
-    // Assuming createZone takes the payload directly.
     const response = await ZoneApi.createZone(payload);
     if (response && response.status) {
-      navigate("/organisation/add"); // Navigate back to organisation form or where appropriate
+      navigate("/organisation/add");
     }
   };
 
@@ -128,7 +106,7 @@ const ZoneFormLayer = () => {
                         setFormErrors({ ...formErrors, country: "" });
                     }}
                     placeholder="Select Country"
-                    styles={customStyles}
+                    styles={selectStyles(formErrors.country)}
                   />
                   {formErrors.country && (
                     <div className="text-danger mt-1 fontsize-14">
@@ -167,7 +145,7 @@ const ZoneFormLayer = () => {
                     }}
                     placeholder="Select State"
                     isDisabled={!formData.country}
-                    styles={customStyles}
+                    styles={selectStyles(formErrors.state)}
                   />
                   {formErrors.state && (
                     <div className="text-danger mt-1 fontsize-14">
@@ -199,12 +177,17 @@ const ZoneFormLayer = () => {
               <div className="d-flex justify-content-end gap-3 mt-4">
                 <Link
                   to="/organisation/add"
-                  className="btn btn-outline-secondary px-32"
+                  className="btn btn-outline-secondary px-32 justify-content-center"
+                  style={{ width: "120px" }}
                 >
                   Cancel
                 </Link>
-                <button type="submit" className="btn btn-primary px-32">
-                  <i className="fas fa-save me-2"></i>Save Zone
+                <button
+                  type="submit"
+                  className="btn btn-primary px-32 justify-content-center"
+                  style={{ width: "120px" }}
+                >
+                  <i className="fas fa-save me-2"></i>Save
                 </button>
               </div>
             </div>

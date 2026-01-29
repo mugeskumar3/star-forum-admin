@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import ProductApi from "../Api/ProductApi";
 import ImageUploadApi from "../Api/ImageUploadApi";
 import ShopCategoryApi from "../Api/ShopCategoryApi";
-import ShowNotifications from "../helper/ShowNotifications";
 import { IMAGE_BASE_URL } from "../Config/Index";
 
 const ShopFormLayer = () => {
-  const { id } = useParams(); // Get ID from URL for edit mode
+  const { id } = useParams();
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
 
@@ -23,16 +23,13 @@ const ShopFormLayer = () => {
 
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-  const [existingImage, setExistingImage] = useState(null); // To store existing image data for delete/edit
+  const [existingImage, setExistingImage] = useState(null);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch Categories
   useEffect(() => {
     const fetchCategories = async () => {
       const response = await ShopCategoryApi.getShopCategories();
-      console.log(response, "response");
-
       if (response && response.status) {
         const categories = response.data.data || response.data;
         if (Array.isArray(categories)) {
@@ -47,14 +44,13 @@ const ShopFormLayer = () => {
     fetchCategories();
   }, []);
 
-  // Fetch Product for Edit
   useEffect(() => {
     if (id) {
       const fetchProduct = async () => {
         setLoading(true);
         const response = await ProductApi.getProductDetails(id);
         if (response.status) {
-          const product = response.data.data || response.data; // Adjust based on API structure
+          const product = response.data.data || response.data;
           setFormData({
             productName: product.productName,
             price: product.price,
@@ -65,18 +61,6 @@ const ShopFormLayer = () => {
 
           if (product.productImage) {
             setExistingImage(product.productImage);
-            // If imagePath is relative, you might need a base URL.
-            // Assuming existingImage.imagePath or similar helps construct URL.
-            // For preview, we might assume a base URL if it's just a path.
-            // But usually API returns full URL or we use a helper.
-            // Let's assume we can display it.
-            // The user example had "imagePath": "uploads/products". This is not a URL.
-            // We probably need a base URL for images.
-            // For now, I'll try to show it using a likely path or just the name if full path missing.
-            // Actually, the list view used `product.image`.
-            // I'll assume we can use `http://localhost:5000/` + path + / + imageName as a guess or just use what works.
-            // Wait, the list view in ShopAdminListLayer had `image: "assets/images/..."` hardcoded.
-            // I'll assume the API serves static files.
             setPreviewImage(`${IMAGE_BASE_URL}/${product.productImage.path}`);
           }
         }
@@ -147,7 +131,6 @@ const ShopFormLayer = () => {
       isValid = false;
     }
 
-    // Image validation: required if no existing image and no new image selected
     if (!existingImage && !imageFile && !previewImage) {
       newErrors.image = "Product Image is required";
       isValid = false;
@@ -168,21 +151,12 @@ const ShopFormLayer = () => {
 
     let finalImage = existingImage;
 
-    // 1. Handle Image Upload / Delete
     if (imageFile) {
-      // If editing and replacing image, delete old one
       if (id && existingImage && existingImage.imageName) {
-        // Construct path for delete. User said: path=uploads/image_...
-        // But existingImage has imagePath and imageName.
-        // Let's try to match user's delete query.
-        // user said: `.../delete?path=uploads/image_1769080574306.png`
-        // So it seems to be `imagePath/imageName` or just a path string.
-        // I'll try constructing `${existingImage.imagePath}/${existingImage.imageName}`
         const pathToDelete = `${existingImage.imagePath}/${existingImage.imageName}`;
         await ImageUploadApi.deleteImage({ path: pathToDelete });
       }
 
-      // Upload new image
       const form = new FormData();
       form.append("file", imageFile);
       const uploadRes = await ImageUploadApi.uploadImage({
@@ -191,20 +165,13 @@ const ShopFormLayer = () => {
       });
 
       if (uploadRes.status) {
-        // Response format based on user request:
-        // "imageName": "mouse_1705900000000.png",
-        // "imagePath": "uploads/products",
-        // "originalName": "mouse.png"
-        // I'll assume the API returns this object or similar.
-        // Let's assume uploadRes.response.data holds this or uploadRes.response
         finalImage = uploadRes.response.data || uploadRes.response;
       } else {
         setLoading(false);
-        return; // Stop if upload failed
+        return;
       }
     }
 
-    // 2. Prepare Payload
     const payload = {
       productName: formData.productName,
       price: Number(formData.price),
@@ -214,7 +181,6 @@ const ShopFormLayer = () => {
       isActive: formData.isActive ? true : false,
     };
 
-    // 3. Create or Update
     let result;
     if (id) {
       result = await ProductApi.updateProduct(id, payload);
@@ -229,10 +195,8 @@ const ShopFormLayer = () => {
   };
 
   const handleRemoveImage = async () => {
-    // Case 1: Removing a just-selected local file (not uploaded yet)
     if (imageFile) {
       setImageFile(null);
-      // Revert to existing image if available
       if (existingImage && existingImage.path) {
         setPreviewImage(`${IMAGE_BASE_URL}/${existingImage.path}`);
       } else {
@@ -241,7 +205,6 @@ const ShopFormLayer = () => {
       return;
     }
 
-    // Case 2: Removing an existing server image
     if (existingImage) {
       if (window.confirm("Are you sure you want to delete this image?")) {
         const response = await ImageUploadApi.deleteImage({
@@ -261,37 +224,6 @@ const ShopFormLayer = () => {
     );
   };
 
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: state.isFocused
-        ? "#86b7fe"
-        : errors.categoryId
-          ? "#dc3545"
-          : "#dee2e6",
-      boxShadow: state.isFocused
-        ? "0 0 0 0.25rem rgba(13, 110, 253, 0.25)"
-        : "none",
-      "&:hover": {
-        borderColor: state.isFocused
-          ? "#86b7fe"
-          : errors.categoryId
-            ? "#dc3545"
-            : "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24">
@@ -302,7 +234,6 @@ const ShopFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Product Name */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Product Name <span className="text-danger">*</span>
@@ -316,11 +247,12 @@ const ShopFormLayer = () => {
                 placeholder="Enter product name"
               />
               {errors.productName && (
-                <div className="invalid-feedback text-danger">{errors.productName}</div>
+                <div className="invalid-feedback text-danger">
+                  {errors.productName}
+                </div>
               )}
             </div>
 
-            {/* Price */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Price <span className="text-danger">*</span>
@@ -336,12 +268,13 @@ const ShopFormLayer = () => {
                   placeholder="Enter price"
                 />
                 {errors.price && (
-                  <div className="invalid-feedback text-danger">{errors.price}</div>
+                  <div className="invalid-feedback text-danger">
+                    {errors.price}
+                  </div>
                 )}
               </div>
             </div>
 
-            {/* Category */}
             <div className="col-md-6">
               <label className="form-label fw-semibold">
                 Category <span className="text-danger">*</span>
@@ -351,7 +284,7 @@ const ShopFormLayer = () => {
                 options={categoryOptions}
                 value={getSelectedOption()}
                 onChange={handleSelectChange}
-                styles={customStyles}
+                styles={selectStyles(errors.categoryId)}
                 placeholder={
                   categoryOptions.length > 0
                     ? "Select Category"
@@ -364,7 +297,6 @@ const ShopFormLayer = () => {
               )}
             </div>
 
-            {/* Image Upload */}
             <div className="col-12">
               <label className="form-label fw-semibold">
                 Product Image <span className="text-danger">*</span>
@@ -379,7 +311,9 @@ const ShopFormLayer = () => {
                     onChange={handleImageChange}
                   />
                   {errors.image && (
-                    <div className="invalid-feedback text-danger">{errors.image}</div>
+                    <div className="invalid-feedback text-danger">
+                      {errors.image}
+                    </div>
                   )}
                 </div>
               )}
@@ -428,7 +362,6 @@ const ShopFormLayer = () => {
               )}
             </div>
 
-            {/* Description */}
             <div className="col-12">
               <label className="form-label fw-semibold">Description</label>
               <textarea
@@ -445,15 +378,16 @@ const ShopFormLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/shop-create"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-20 py-11 justify-content-center"
               disabled={loading}
-              style={{ width: "90px" }}
+              style={{ width: "120px" }}
             >
               {loading ? "Saving..." : "Save"}
             </button>

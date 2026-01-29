@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import MeetingApi from "../Api/MeetingApi";
 import ChapterApi from "../Api/ChapterApi";
@@ -22,7 +23,6 @@ const MeetingFormLayer = () => {
   });
 
   const [chapterOptions, setChapterOptions] = useState([]);
-
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -154,8 +154,6 @@ const MeetingFormLayer = () => {
     const lat = e.latLng.lat();
     const lng = e.latLng.lng();
     setMarkerPosition({ lat, lng });
-    // Keep location text as is or update if you want to show coords
-    // setFormData({ ...formData, location: `${lat}, ${lng}` });
     if (errors.location) setErrors((prev) => ({ ...prev, location: "" }));
   };
 
@@ -191,31 +189,6 @@ const MeetingFormLayer = () => {
     }
   };
 
-  const getSelectedOption = (options, value) => {
-    return options.find((option) => option.value === value) || null;
-  };
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      borderRadius: "8px",
-      borderColor: "#dee2e6",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#dee2e6",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#495057",
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      paddingLeft: "16px",
-    }),
-  };
-
   return (
     <div className="card h-100 p-0 radius-12">
       <div className="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
@@ -233,7 +206,6 @@ const MeetingFormLayer = () => {
       <div className="card-body p-24">
         <form onSubmit={handleSubmit}>
           <div className="row gy-4">
-            {/* Row 1: Topic, Meeting Fee, Visitor Fee */}
             <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
@@ -291,7 +263,6 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            {/* Row 2: Chapter and Hotel */}
             <div className="col-md-6">
               <div className="mb-4">
                 <label className="form-label fw-medium">
@@ -305,7 +276,7 @@ const MeetingFormLayer = () => {
                     formData.chapters.includes(option.value),
                   )}
                   onChange={handleSelectChange}
-                  styles={customStyles}
+                  styles={selectStyles(errors.chapters)}
                   placeholder="Select chapters..."
                   isClearable={false}
                 />
@@ -334,7 +305,6 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            {/* Row 3: Date Inputs (3 in a row) */}
             <div className="col-md-4">
               <div className="mb-4">
                 <label className="form-label fw-medium">
@@ -389,7 +359,6 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            {/* Row 4: Location */}
             <div className="col-md-12">
               <div className="mb-4">
                 <label className="form-label fw-medium">
@@ -409,7 +378,6 @@ const MeetingFormLayer = () => {
               </div>
             </div>
 
-            {/* Map Section - Full Width */}
             <div className="col-12 mt-0">
               <LoadScript
                 googleMapsApiKey={
@@ -435,14 +403,19 @@ const MeetingFormLayer = () => {
               <div className="d-flex justify-content-end gap-3">
                 <Link
                   to="/meeting-creation"
-                  className="btn btn-outline-secondary px-32"
+                  className="btn btn-outline-secondary px-32 justify-content-center"
+                  style={{ width: "120px" }}
                 >
                   Cancel
                 </Link>
                 <button
                   type="submit"
-                  className="btn btn-primary px-32"
-                  style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+                  className="btn btn-primary px-32 justify-content-center"
+                  style={{
+                    backgroundColor: "#C4161C",
+                    borderColor: "#C4161C",
+                    width: "120px",
+                  }}
                 >
                   Submit
                 </button>

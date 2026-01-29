@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import { selectStyles } from "../helper/SelectStyles";
 import TablePagination from "./TablePagination";
 import MemberApi from "../Api/MemberApi";
 
@@ -24,35 +25,21 @@ const MemberListLayer = () => {
         page: currentPage,
         limit: rowsPerPage,
         search: searchTerm,
-        // API might expect membershipType filter. Adding it just in case logic exists or for future.
-        // If API doesn't support it, it will ignore.
-        membershipType:
+        memberType:
           selectedMembershipType !== "All" ? selectedMembershipType : undefined,
       };
 
       const res = await MemberApi.getMembers(params);
 
       if (res.status) {
-        // Assuming response structure: { data: { docs: [], totalDocs: 100, ... } } or similar pagination object
-        // Adjust based on actual API response. Common pattern in this project seems to be res.response.data having the list?
-        // Let's assume standard paginate v2 response often used: { docs, totalDocs, limit, page, totalPages }
-        // Or if it's a simple list: { data: [] } and we paginate client side?
-        // User requested "server-side pagination".
-        // Let's assume response.data is the object containing { docs: [...], totalDocs: ... }
-
-        // CHECK ChapterApi/RegionApi usage.
-        // ChapterApi just returns response.data.
-        // If I assume standard mongoose-paginate:
         const data = res.response.data;
         if (data.docs) {
           setMembers(data.docs);
           setTotalRecords(data.totalDocs);
         } else if (Array.isArray(data)) {
-          // Fallback if API returns simple array (not paginated on server effectively?)
           setMembers(data);
           setTotalRecords(data.length);
         } else {
-          // Maybe data itself is the list
           setMembers([]);
         }
       }
@@ -85,41 +72,9 @@ const MemberListLayer = () => {
     { value: "All", label: "All Types" },
     { value: "Gold", label: "Gold" },
     { value: "Platinum", label: "Platinum" },
-    { value: "Silver", label: "Silver" }, // "Diamond" was in form, checking consistency. Form had Gold/Diamond/Platinum. List had Gold/Platinum/Silver. I should probably align them.
+    { value: "Silver", label: "Silver" },
     { value: "Diamond", label: "Diamond" },
   ];
-
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      backgroundColor: "var(--bg-base)",
-      border: "1px solid var(--border-color)",
-      borderRadius: "8px",
-      minHeight: "40px",
-      boxShadow: "none",
-      "&:hover": {
-        border: "1px solid var(--primary-600)",
-      },
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "var(--primary-600)"
-        : state.isFocused
-          ? "var(--primary-50)"
-          : "transparent",
-      color: state.isSelected ? "#fff" : "var(--text-main)",
-      cursor: "pointer",
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "var(--text-main)",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      zIndex: 9999,
-    }),
-  };
 
   return (
     <div className="card h-100 p-0 radius-12">
@@ -138,7 +93,7 @@ const MemberListLayer = () => {
                 setSelectedMembershipType(selectedOption.value);
                 setCurrentPage(0);
               }}
-              styles={customStyles}
+              styles={selectStyles()}
               isSearchable={false}
               placeholder="Select Type"
             />
@@ -190,14 +145,6 @@ const MemberListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Category
                 </th>
-                {/*  Replaced Region with Category as per original? Original had both. Let's check columns. 
-                      Original: S.No, Member Id, Member Name, Chapter, Category, Type, Status, Action.
-                      Wait, previous file code had 'Region' under 'Category' header index? 
-                      Let's stick to columns: ID, Name, Chapter, Region/Category? 
-                      Let's follow logical display or previous.
-                      Previous: Chapter (4th), Region (5th - Header says 'Category'?), Type (6th).
-                      I will use headers: Chapter, Region, Business Category.
-                  */}
                 <th scope="col" style={{ color: "black" }}>
                   Region
                 </th>
@@ -207,16 +154,7 @@ const MemberListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Type
                 </th>
-                {/* Status was inferred from even/odd in mock. Real data might not have status? 
-                     User JSON doesn't show status field explicitly unless boolean?
-                     'isWantSmsEmailUpdates' is boolean. 'clubMemberType'.
-                     I'll omit Status for now if not in payload, or assume Active.
-                 */}
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -231,12 +169,14 @@ const MemberListLayer = () => {
                       <div className="d-flex align-items-center">
                         <img
                           src={
-                            member.profileImage || "https://placehold.co/40x40"
+                            member.profileImage?.path ||
+                            member.profileImage ||
+                            "https://placehold.co/40x40"
                           }
                           alt=""
                           className="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden"
                           onError={(e) => {
-                            e.target.src = "https://placehold.co/40x40"; // Fallback
+                            e.target.src = "https://placehold.co/40x40";
                           }}
                         />
                         <div className="flex-grow-1">
@@ -249,13 +189,16 @@ const MemberListLayer = () => {
                         </div>
                       </div>
                     </td>
-                    <td>{member.chapter?.chapterName || member.chapter}</td>
-                    <td>{member.region?.name || member.region || "-"}</td>
+                    <td>
+                      {member.chapter?.chapterName || member.chapter || "-"}
+                    </td>
                     <td>
                       {member.businessCategory?.name ||
                         member.businessCategory ||
                         "-"}
                     </td>
+                    <td>{member.region?.name || member.region || "-"}</td>
+                    <td>{member.companyName || "-"}</td>
                     <td>
                       <span
                         className={`badge ${member.clubMemberType === "Platinum" ? "bg-primary-50 text-primary-600" : member.clubMemberType === "Gold" ? "bg-warning-50 text-warning-600" : "bg-secondary-50 text-secondary-600"} px-12 py-4 radius-4`}
@@ -263,8 +206,8 @@ const MemberListLayer = () => {
                         {member.clubMemberType || "Member"}
                       </span>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         <Link
                           to={`/members-registration/edit/${member._id || member.id}`}
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"

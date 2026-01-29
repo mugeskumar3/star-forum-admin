@@ -193,11 +193,7 @@ const StarUpdateListLayer = () => {
                 <th scope="col" style={{ color: "black" }}>
                   Response
                 </th>
-                <th
-                  scope="col"
-                  className="text-center"
-                  style={{ color: "black" }}
-                >
+                <th scope="col" style={{ color: "black" }}>
                   Action
                 </th>
               </tr>
@@ -255,8 +251,8 @@ const StarUpdateListLayer = () => {
                         {item.responses.length}
                       </span>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         <Link
                           to={`/star-update/view/${item.id}`}
                           className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"

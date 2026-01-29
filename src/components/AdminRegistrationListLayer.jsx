@@ -24,7 +24,7 @@ const AdminRegistrationListLayer = () => {
         null,
         currentPage,
         rowsPerPage,
-        searchTerm
+        searchTerm,
       );
       if (response && response.status && response.response.data) {
         setUsers(response.response.data);
@@ -126,19 +126,18 @@ const AdminRegistrationListLayer = () => {
                     Email
                   </th>
                   <th scope="col" style={{ color: "black" }}>
-                    Mobile Number
+                    Phone Number
                   </th>
                   <th scope="col" style={{ color: "black" }}>
                     Company Name
                   </th>
                   <th scope="col" style={{ color: "black" }}>
+                    Status
+                  </th>
+                  <th scope="col" style={{ color: "black" }}>
                     Role
                   </th>
-                  <th
-                    scope="col"
-                    className="text-center"
-                    style={{ color: "black" }}
-                  >
+                  <th scope="col" style={{ color: "black" }}>
                     Action
                   </th>
                 </tr>
@@ -163,12 +162,23 @@ const AdminRegistrationListLayer = () => {
                       <td>{user.phoneNumber}</td>
                       <td>{user.companyName}</td>
                       <td>
-                        <span className="badge bg-primary-focus text-primary-600 border border-primary-main px-24 py-4 radius-4 fw-medium text-sm">
-                          {user.roleId?.roleName || user.roleId || "-"}
+                        <span
+                          className={`badge px-24 py-4 radius-4 fw-medium text-sm ${
+                            user.isActive === 1
+                              ? "bg-success-focus text-success-main"
+                              : "bg-danger-focus text-danger-main"
+                          }`}
+                        >
+                          {user.isActive === 1 ? "Active" : "Inactive"}
                         </span>
                       </td>
-                      <td className="text-center">
-                        <div className="d-flex align-items-center gap-10 justify-content-center">
+                      <td>
+                        <span className="badge bg-primary-focus text-primary-600 border px-24 py-4 radius-4 fw-medium text-sm">
+                          {user.roleName || "-"}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="d-flex align-items-center gap-10">
                           <Link
                             to={`/admin-registration/view/${user._id}`}
                             className="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
@@ -217,9 +227,6 @@ const AdminRegistrationListLayer = () => {
             onRowsPerPageChange={handleRowsPerPageChange}
             totalRecords={totalRecords}
           />
-          <div className="mt-16 text-secondary-light fw-medium text-end">
-            Total Registered Admins: {totalRecords}
-          </div>
         </div>
       </div>
 
@@ -261,4 +268,4 @@ const AdminRegistrationListLayer = () => {
   );
 };
 
-export default AdminRegistrationListLayer; 
+export default AdminRegistrationListLayer;

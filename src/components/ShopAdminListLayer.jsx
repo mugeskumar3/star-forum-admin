@@ -112,9 +112,7 @@ const ShopAdminListLayer = () => {
                 <th scope="col">Product Name</th>
                 <th scope="col">Category</th>
                 <th scope="col">Price</th>
-                <th scope="col" className="text-center">
-                  Action
-                </th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -149,8 +147,8 @@ const ShopAdminListLayer = () => {
                     </td>
                     <td>{product.category || product.categoryId}</td>
                     <td>₹{product.price}</td>
-                    <td className="text-center">
-                      <div className="d-flex align-items-center gap-10 justify-content-center">
+                    <td>
+                      <div className="d-flex align-items-center gap-10">
                         <button
                           type="button"
                           onClick={() => handleViewProduct(product)}
@@ -220,7 +218,7 @@ const ShopAdminListLayer = () => {
                 <img
                   src={
                     selectedProduct.productImage &&
-                      selectedProduct.productImage.path
+                    selectedProduct.productImage.path
                       ? `${IMAGE_BASE_URL}/${selectedProduct.productImage.path}`
                       : "https://placehold.co/150x150?text=No+Image"
                   }

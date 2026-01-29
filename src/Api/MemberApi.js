@@ -29,9 +29,7 @@ class MemberApi {
     try {
       const config = {
         params: {
-          page: params.page,
-          limit: params.limit,
-          search: params.search, // Assuming the API supports search
+          ...params,
         },
       };
 
@@ -128,6 +126,34 @@ class MemberApi {
         error?.response?.data?.message ||
         error?.message ||
         "Failed to generate membership ID. Please try again.";
+      ShowNotifications.showAlertNotification(errorMessage, false);
+      return {
+        status: false,
+        response: error?.response?.data || error,
+      };
+    }
+  }
+
+  async getMembersByChapter(params = {}) {
+    try {
+      const config = {
+        params: {
+          chapterId: params.chapterId,
+          page: params.page,
+          limit: params.limit,
+          search: params.search,
+        },
+      };
+
+      const response = await apiClient.get("/member/list", config);
+      if (response.status === 200 || response.status === 201) {
+        return { status: true, response: response.data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to get members. Please try again.";
       ShowNotifications.showAlertNotification(errorMessage, false);
       return {
         status: false,
