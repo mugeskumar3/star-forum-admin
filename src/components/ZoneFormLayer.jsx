@@ -123,13 +123,13 @@ const ZoneFormLayer = () => {
                     options={
                       formData.country
                         ? State.getStatesOfCountry(
-                          Country.getAllCountries().find(
-                            (c) => c.name === formData.country,
-                          )?.isoCode,
-                        ).map((state) => ({
-                          value: state.isoCode,
-                          label: state.name,
-                        }))
+                            Country.getAllCountries().find(
+                              (c) => c.name === formData.country,
+                            )?.isoCode,
+                          ).map((state) => ({
+                            value: state.isoCode,
+                            label: state.name,
+                          }))
                         : []
                     }
                     value={selectedState}
@@ -177,12 +177,17 @@ const ZoneFormLayer = () => {
               <div className="d-flex justify-content-end gap-3 mt-4">
                 <Link
                   to="/organisation/add"
-                  className="btn btn-outline-secondary px-32"
+                  className="btn btn-outline-secondary px-32 justify-content-center"
+                  style={{ width: "120px" }}
                 >
                   Cancel
                 </Link>
-                <button type="submit" className="btn btn-primary px-32">
-                  <i className="fas fa-save me-2"></i>Save Zone
+                <button
+                  type="submit"
+                  className="btn btn-primary px-32 justify-content-center"
+                  style={{ width: "120px" }}
+                >
+                  <i className="fas fa-save me-2"></i>Save
                 </button>
               </div>
             </div>

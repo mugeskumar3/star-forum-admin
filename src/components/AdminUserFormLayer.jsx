@@ -347,20 +347,18 @@ const AdminUserFormLayer = () => {
             <div className="col-12 d-flex justify-content-end gap-3 mt-4 pt-3">
               <Link
                 to="/admin-registration"
-                className="btn btn-outline-danger-600 px-32 radius-8"
+                className="btn btn-outline-danger-600 px-32 radius-8 justify-content-center"
+                style={{ width: "120px" }}
               >
                 Cancel
               </Link>
               <button
                 type="submit"
-                className="btn btn-primary-600 px-32 radius-8"
+                className="btn btn-primary-600 px-32 radius-8 justify-content-center"
                 disabled={loading}
+                style={{ width: "120px" }}
               >
-                {loading
-                  ? "Saving..."
-                  : isEdit
-                    ? "Update Admin"
-                    : "Create Admin"}
+                {loading ? "Saving..." : isEdit ? "Update" : "Save"}
               </button>
             </div>
           </div>

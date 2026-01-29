@@ -391,12 +391,17 @@ const OrganisationFormLayer = () => {
               <div className="d-flex justify-content-end gap-3">
                 <Link
                   to="/organisation"
-                  className="btn btn-outline-secondary px-32"
+                  className="btn btn-outline-secondary px-32 justify-content-center"
+                  style={{ width: "120px" }}
                 >
                   Cancel
                 </Link>
-                <button type="submit" className="btn btn-primary px-32">
-                  <i className="fas fa-save me-2"></i>Save Organisation
+                <button
+                  type="submit"
+                  className="btn btn-primary px-32 justify-content-center"
+                  style={{ width: "120px" }}
+                >
+                  <i className="fas fa-save me-2"></i>Save
                 </button>
               </div>
             </div>

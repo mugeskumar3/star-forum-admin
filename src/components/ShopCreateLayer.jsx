@@ -223,13 +223,15 @@ const ShopCreateLayer = () => {
           <div className="d-flex justify-content-end gap-2 mt-24">
             <Link
               to="/shop-list"
-              className="btn btn-outline-secondary radius-8 px-20 py-11"
+              className="btn btn-outline-secondary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary radius-8 px-20 py-11"
+              className="btn btn-primary radius-8 px-20 py-11 justify-content-center"
+              style={{ width: "120px" }}
             >
               Save Product
             </button>

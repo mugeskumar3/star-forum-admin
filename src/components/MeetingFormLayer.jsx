@@ -89,8 +89,8 @@ const MeetingFormLayer = () => {
         const chapterIds =
           meeting.chapters && Array.isArray(meeting.chapters)
             ? meeting.chapters.map((ch) =>
-              typeof ch === "object" && ch._id ? ch._id : ch,
-            )
+                typeof ch === "object" && ch._id ? ch._id : ch,
+              )
             : [];
 
         setFormData({
@@ -403,14 +403,19 @@ const MeetingFormLayer = () => {
               <div className="d-flex justify-content-end gap-3">
                 <Link
                   to="/meeting-creation"
-                  className="btn btn-outline-secondary px-32"
+                  className="btn btn-outline-secondary px-32 justify-content-center"
+                  style={{ width: "120px" }}
                 >
                   Cancel
                 </Link>
                 <button
                   type="submit"
-                  className="btn btn-primary px-32"
-                  style={{ backgroundColor: "#C4161C", borderColor: "#C4161C" }}
+                  className="btn btn-primary px-32 justify-content-center"
+                  style={{
+                    backgroundColor: "#C4161C",
+                    borderColor: "#C4161C",
+                    width: "120px",
+                  }}
                 >
                   Submit
                 </button>
