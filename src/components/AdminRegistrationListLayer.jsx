@@ -177,8 +177,8 @@ const AdminRegistrationListLayer = () => {
                         </span>
                       </td>
                       <td>
-                        <span className="badge bg-primary-focus text-primary-600 border border-primary-main px-24 py-4 radius-4 fw-medium text-sm">
-                          {user.roleId?.roleName || user.roleId || "-"}
+                        <span className="badge bg-primary-focus text-primary-600 border px-24 py-4 radius-4 fw-medium text-sm">
+                          {user.roleName || "-"}
                         </span>
                       </td>
                       <td className="text-center">

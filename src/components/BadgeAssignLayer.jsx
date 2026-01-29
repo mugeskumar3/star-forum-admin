@@ -26,12 +26,12 @@ const BadgeAssignLayer = () => {
 
   useEffect(() => {
     fetchBadges();
-  }, []);
+  }, [assignType.value]);
 
   const fetchBadges = async () => {
     try {
       // Fetch all badges (pagination might be needed if many badges, but starting with basics)
-      const res = await BadgeApi.getBadge(null, 0, 100);
+      const res = await BadgeApi.getBadge(null, 0, 100, assignType.value);
       if (res.status) {
         setBadgeOptions(
           res.response.data.map((b) => ({
@@ -221,7 +221,7 @@ const BadgeAssignLayer = () => {
               )}
             </div>
 
-            <div className="col-12 d-flex justify-content-start gap-3 mt-4">
+            <div className="col-12 d-flex justify-content-end gap-3 my-3">
               <Link to="/badge" className="btn btn-outline-danger-600 px-32">
                 Cancel
               </Link>
